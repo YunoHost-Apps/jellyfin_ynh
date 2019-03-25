@@ -50,7 +50,7 @@ ynh_print_info "Removing dependencies"
 
 # Remove metapackage and its dependencies
 #ynh_remove_app_dependencies
-ynh_package_remove emby-server
+ynh_package_remove jellyfin
 
 #=================================================
 # REMOVE APP MAIN DIR
