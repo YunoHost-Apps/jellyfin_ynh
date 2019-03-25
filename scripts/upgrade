@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Exit on command errors and treat unset variables as an error
+set -eu
+
+# See comments in install script
+app=$YNH_APP_INSTANCE_NAME
+final_path=/opt/yunohost/$app
+
+# Source YunoHost helpers
+source /usr/share/yunohost/helpers
+
+# Stop emby-server service
+systemctl stop emby-server
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+
+ynh_app_setting_set $app final_path $final_path
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source "$final_path"
+
+#==============================================
+# INSTALL PLEX
+#==============================================
+
+dpkg --install $final_path/emby-server-deb*
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+
+# Create a dedicated nginx config
+#ynh_add_nginx_config
+
+
+#=================================================
+# UPGRADE CONFIG
+#=================================================
+#cp -a ../conf/loolwsd.xml /etc/loolwsd
+#ynh_replace_string "__NEXTCLOUDDOMAIN__" "$nextcloud_domain" "/etc/loolwsd/loolwsd.xml"
+#ynh_replace_string "__PASSWORD__" "$password" "/etc/loolwsd/loolwsd.xml"
+#systemctl restart loolwsd
+
+
+
+# If app is public, add url to SSOWat conf as skipped_uris
+#if [[ $is_public -eq 1 ]]; then
+  # See install script
+#  ynh_app_setting_set "$app" unprotected_uris "/"
+#fi
+
+# Start emby-server service
+systemctl start emby-server
+
