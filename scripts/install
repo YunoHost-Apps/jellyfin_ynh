@@ -79,7 +79,7 @@ ynh_print_info "Installing dependencies..."
 ###		- As well as the section "REINSTALL DEPENDENCIES" in the restore script
 ###		- And the section "UPGRADE DEPENDENCIES" in the upgrade script
 
-wget -O - https://repo.jellyfin.org/debian/jellyfin_team.gpg.key | sudo apt-key add -
+wget -O - https://repo.jellyfin.org/debian/jellyfin_team.gpg.key | apt-key add -
 echo "deb [arch=amd64] https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" >> /etc/apt/sources.list.d/jellyfin.list
 
 ynh_package_update
