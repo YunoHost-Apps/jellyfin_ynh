@@ -159,4 +159,6 @@ if [ $is_public -eq 1 ]; then
 fi
 
 # Reload services
+systemctl enable jellyfin
+systemctl start jellyfin
 systemctl reload nginx
