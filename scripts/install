@@ -79,12 +79,13 @@ ynh_print_info "Installing dependencies..."
 ###		- As well as the section "REINSTALL DEPENDENCIES" in the restore script
 ###		- And the section "UPGRADE DEPENDENCIES" in the upgrade script
 
-wget -O - https://repo.jellyfin.org/debian/jellyfin_team.gpg.key | apt-key add -
-echo "deb [arch=amd64] https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" >> /etc/apt/sources.list.d/jellyfin.list
+#wget -O - https://repo.jellyfin.org/debian/jellyfin_team.gpg.key | apt-key add -
+#echo "deb [arch=$( dpkg --print-architecture )] https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" | tee /etc/apt/sources.list.d/jellyfin.list
+#echo "deb [arch=amd64] https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" >> /etc/apt/sources.list.d/jellyfin.list
 
-ynh_package_update
+#ynh_package_update
 
-ynh_install_app_dependencies jellyfin
+#ynh_install_app_dependencies jellyfin
 
 #=================================================
 # FIND AND OPEN A PORT
@@ -100,6 +101,21 @@ port=$(ynh_find_port 8096)
 # Open this port
 yunohost firewall allow --no-upnp TCP $port 2>&1
 ynh_app_setting_set $app port $port
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+
+ynh_app_setting_set $app final_path $final_path
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source "$final_path"
+
+
+#==============================================
+# INSTALL JELLYFIN
+#==============================================
+
+dpkg --install $final_path/jellyfin.deb
 
 #=================================================
 # NGINX CONFIGURATION
