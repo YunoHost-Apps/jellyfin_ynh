@@ -67,27 +67,6 @@ ynh_app_setting_set $app path $path_url
 ynh_app_setting_set $app is_public $is_public
 
 #=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-
-ynh_print_info "Installing dependencies..."
-
-### `ynh_install_app_dependencies` allows you to add any "apt" dependencies to the package.
-### Those deb packages will be installed as dependencies of this package.
-### If you're not using this helper:
-###		- Remove the section "REMOVE DEPENDENCIES" in the remove script
-###		- As well as the section "REINSTALL DEPENDENCIES" in the restore script
-###		- And the section "UPGRADE DEPENDENCIES" in the upgrade script
-
-#wget -O - https://repo.jellyfin.org/debian/jellyfin_team.gpg.key | apt-key add -
-#echo "deb [arch=$( dpkg --print-architecture )] https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" | tee /etc/apt/sources.list.d/jellyfin.list
-#echo "deb [arch=amd64] https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" >> /etc/apt/sources.list.d/jellyfin.list
-
-#ynh_package_update
-
-#ynh_install_app_dependencies jellyfin
-
-#=================================================
 # FIND AND OPEN A PORT
 #=================================================
 
@@ -106,6 +85,10 @@ ynh_app_setting_set $app port $port
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 
+ynh_app_setting_set $jellyfin-ffmpeg final_path $final_path
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source "$final_path"
+
 ynh_app_setting_set $app final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source "$final_path"
@@ -115,6 +98,7 @@ ynh_setup_source "$final_path"
 # INSTALL JELLYFIN
 #==============================================
 
+dpkg --install $final_path/jellyfin-ffmpeg.deb
 dpkg --install $final_path/jellyfin.deb
 
 #=================================================
