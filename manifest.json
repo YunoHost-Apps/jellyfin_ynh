@@ -37,11 +37,11 @@
                 "name": "path",
                 "type": "path",
                 "ask": {
-                    "en": "Choose a path for Jellyfin /jelly is accepted",
-                    "fr": "Choisissez un chemin pour Jellyfin /jelly est accepté"
+                    "en": "Choose a path for Jellyfin /jellyfin is accepted",
+                    "fr": "Choisissez un chemin pour Jellyfin /jellyfin est accepté"
                 },
-                "example": "/jelly",
-                "default": "/jelly"
+                "example": "/jellyfin",
+                "default": "/jellyfin"
             },
             
             {
