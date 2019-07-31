@@ -85,13 +85,13 @@ ynh_app_setting_set $app port $port
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 
-ynh_app_setting_set $jellyfin-ffmpeg final_path $final_path
+ynh_app_setting_set $app final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source "$final_path"
+ynh_setup_source "$final_path" "$jellyfin-ffmpeg"
 
 ynh_app_setting_set $app final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source "$final_path"
+ynh_setup_source "$final_path" "$app"
 
 
 #==============================================
