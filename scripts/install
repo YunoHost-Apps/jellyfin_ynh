@@ -102,11 +102,21 @@ ynh_app_setting_set $app port $port
 
 ynh_app_setting_set $app final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source "$final_path" "jellyfin-ffmpeg"
+
+case `uname -m` in
+    x86_64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-amd64" ;;
+    aarch64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-arm64" ;;
+    *) ynh_die "Unknown arch" ;;
+esac
 
 ynh_app_setting_set $app final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source "$final_path"
+
+case `uname -m` in
+    x86_64) ynh_setup_source "$final_path" ;;
+    aarch64) ynh_setup_source "$final_path" "jellyfin-arm64" ;;
+    *) ynh_die "Unknown arch" ;;
+esac
 
 
 #==============================================
