@@ -1,7 +1,0 @@
-SOURCE_URL=https://github.com/YunoHost-Apps/jellyfin_ynh/releases/download/10.3.7/jellyfin_10.3.7-1_amd64.deb
-SOURCE_SUM=8d50ddcf8a222d3bab2e3a51c4e8d824889edcb4e76e6df4dbfc68fccfd30420937a598e7d1e3c9832cace5aa038536a8d32dfc82d33d419f6d8b9d52880682e
-SOURCE_SUM_PRG=sha512sum
-SOURCE_FORMAT=deb
-SOURCE_IN_SUBDIR=false
-SOURCE_EXTRACT=false
-SOURCE_FILENAME=jellyfin.deb
