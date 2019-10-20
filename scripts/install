@@ -28,6 +28,7 @@ ynh_abort_if_errors
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 is_public=$YNH_APP_ARG_IS_PUBLIC
+password=$YNH_APP_ARG_PASSWORD
 
 ### If it's a multi-instance app, meaning it can be installed several times independently
 ### The id of the app as stated in the manifest is available as $YNH_APP_ID
@@ -118,6 +119,7 @@ case `uname -m` in
     *) ynh_die "Unknown arch" ;;
 esac
 
+ynh_setup_source "$final_path" "jellyfin-plugin-ldapauth"
 
 #==============================================
 # INSTALL JELLYFIN
@@ -126,6 +128,24 @@ esac
 dpkg --install $final_path/jellyfin-ffmpeg.deb
 dpkg --install $final_path/jellyfin.deb
 rm $final_path/*.deb
+
+#==============================================
+# INSTALL LDAP PLUGIN
+#==============================================
+
+plugins_path=/var/lib/jellyfin/plugins
+plugins_conf_path=$plugins_path/configurations
+plugins_conf_file=$plugins_conf_path/LDAP-Auth.xml
+ldap_plugin_path="$plugins_path/LDAP Authentication"
+
+mkdir -p "$ldap_plugin_path"
+unzip $final_path/jellyfin-plugin-ldapauth.zip -d "$ldap_plugin_path"
+rm $final_path/*.zip
+
+mkdir -p "$plugins_conf_path"
+cp ../conf/LDAP-Auth.xml "$plugins_conf_file"
+ynh_replace_string --match_string="__BINDPASSWORD__" --replace_string="$password" --target_file="$plugins_conf_file"
+chown -R jellyfin:jellyfin "$plugins_path"
 
 #=================================================
 # NGINX CONFIGURATION

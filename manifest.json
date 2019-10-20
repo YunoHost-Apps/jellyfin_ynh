@@ -52,6 +52,15 @@
                     "fr": "Est-ce un site public ?"
                 },
                 "default": "true"
+            },
+            
+            {
+                "name": "password",
+                "type": "password",
+                "ask": {
+                    "en": "Type LDAP admin password",
+                    "fr": "Saisissez le mot de passe de l'admin LDAP"
+                }
             }
         ]
     }

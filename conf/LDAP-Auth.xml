@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<PluginConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <LdapServer>localhost</LdapServer>
+  <LdapBaseDn>ou=users,dc=yunohost,dc=org</LdapBaseDn>
+  <LdapPort>389</LdapPort>
+  <LdapSearchAttributes>uid, cn, mail, displayName</LdapSearchAttributes>
+  <LdapUsernameAttribute>uid</LdapUsernameAttribute>
+  <LdapSearchFilter>(objectClass=mailAccount)</LdapSearchFilter>
+  <LdapAdminFilter>(enabledService=JellyfinAdministrator)</LdapAdminFilter>
+  <LdapBindUser>cn=admin,dc=yunohost,dc=org</LdapBindUser>
+  <LdapBindPassword>__BINDPASSWORD__</LdapBindPassword>
+  <CreateUsersFromLdap>true</CreateUsersFromLdap>
+  <UseSsl>false</UseSsl>
+</PluginConfiguration>
