@@ -1,5 +1,5 @@
-SOURCE_URL=https://github.com/jellyfin/jellyfin/releases/download/v10.4.0/jellyfin_10.4.0-1_debian-amd64.deb
-SOURCE_SUM=3088e1e9c2f502ca003c04a84474dc3a25f9ded7fb8faa5e6d51f1322e118a590c946315d76c8f0c592d030725fcf2f9cab2b1d4e1de83472407ba24fcbdf6ee
+SOURCE_URL=https://github.com/jellyfin/jellyfin/releases/download/v10.4.1/jellyfin_10.4.1-1_debian-amd64.deb
+SOURCE_SUM=11cf6fa418d9a060c89390361f0eb5628a277029457e99ddd39f30d6fa1e69d484a9a321e8000aec8c70d8327460999343065e1993782cb44b1ac3b4cede353d
 SOURCE_SUM_PRG=sha512sum
 SOURCE_FORMAT=deb
 SOURCE_IN_SUBDIR=false

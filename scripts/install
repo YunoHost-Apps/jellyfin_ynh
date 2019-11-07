@@ -102,23 +102,22 @@ ynh_app_setting_set $app port $port
 #=================================================
 
 ynh_app_setting_set $app final_path $final_path
-# Download, check integrity, uncompress and patch the source from app.src
 
+# Download, check integrity, uncompress and patch the source from jellyfin-ffmpeg-[arch].src
 case `uname -m` in
     x86_64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-amd64" ;;
     aarch64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-arm64" ;;
     *) ynh_die "Unknown arch" ;;
 esac
 
-ynh_app_setting_set $app final_path $final_path
-# Download, check integrity, uncompress and patch the source from app.src
-
+# Download, check integrity, uncompress and patch the source from jellyfin-[arch].src
 case `uname -m` in
     x86_64) ynh_setup_source "$final_path" "jellyfin-amd64" ;;
     aarch64) ynh_setup_source "$final_path" "jellyfin-arm64" ;;
     *) ynh_die "Unknown arch" ;;
 esac
 
+# Download, check integrity, uncompress and patch the source from jellyfin-plugin-ldapauth.src
 ynh_setup_source "$final_path" "jellyfin-plugin-ldapauth"
 
 #==============================================
@@ -134,18 +133,11 @@ rm $final_path/*.deb
 #==============================================
 
 plugins_path=/var/lib/jellyfin/plugins
-plugins_conf_path=$plugins_path/configurations
-plugins_conf_file=$plugins_conf_path/LDAP-Auth.xml
 ldap_plugin_path="$plugins_path/LDAP Authentication"
 
 mkdir -p "$ldap_plugin_path"
 unzip $final_path/jellyfin-plugin-ldapauth.zip -d "$ldap_plugin_path"
 rm $final_path/*.zip
-
-mkdir -p "$plugins_conf_path"
-cp ../conf/LDAP-Auth.xml "$plugins_conf_file"
-ynh_replace_string --match_string="__BINDPASSWORD__" --replace_string="$password" --target_file="$plugins_conf_file"
-chown -R jellyfin:jellyfin "$plugins_path"
 
 #=================================================
 # NGINX CONFIGURATION
@@ -164,9 +156,13 @@ ynh_system_user_create $app
 #=================================================
 # MODIFY A CONFIG FILE
 #=================================================
-#cp -a ../conf/onlyoffice-documentserver.conf /etc/onlyoffice/documentserver/nginx/onlyoffice-documentserver.conf
-#ynh_replace_string "__NEXTCLOUDDOMAIN__" "$nextcloud_domain" "/etc/loolwsd/loolwsd.xml"
-#ynh_replace_string "__PASSWORD__" "$password" "/etc/loolwsd/loolwsd.xml"
+plugins_conf_path=$plugins_path/configurations
+plugins_conf_file=$plugins_conf_path/LDAP-Auth.xml
+
+mkdir -p "$plugins_conf_path"
+cp ../conf/LDAP-Auth.xml "$plugins_conf_file"
+ynh_replace_string --match_string="__BINDPASSWORD__" --replace_string="$password" --target_file="$plugins_conf_file"
+chown -R jellyfin:jellyfin "$plugins_path"
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
@@ -177,7 +173,7 @@ ynh_system_user_create $app
 ### you can make a backup of this file before modifying it again if the admin had modified it.
 
 # Calculate and store the config file checksum into the app settings
-#ynh_store_file_checksum "/etc/onlyoffice/documentserver/nginx/onlyoffice-documentserver.conf"
+ynh_store_file_checksum "$plugins_conf_file"
 
 
 #=================================================
