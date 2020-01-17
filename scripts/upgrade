@@ -10,22 +10,39 @@ final_path=/opt/yunohost/$app
 # Source YunoHost helpers
 source /usr/share/yunohost/helpers
 
-# Stop emby-server service
-systemctl stop emby-server
+# Stop jellyfin service
+systemctl stop jellyfin
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 
 ynh_app_setting_set $app final_path $final_path
-# Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source "$final_path"
+
+# Download, check integrity, uncompress and patch the source from jellyfin-ffmpeg-[arch].src
+case `uname -m` in
+    x86_64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-amd64" ;;
+    aarch64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-arm64" ;;
+    *) ynh_die "Unknown arch" ;;
+esac
+
+# Download, check integrity, uncompress and patch the source from jellyfin-[arch].src
+case `uname -m` in
+    x86_64) ynh_setup_source "$final_path" "jellyfin-amd64" ;;
+    aarch64) ynh_setup_source "$final_path" "jellyfin-arm64" ;;
+    *) ynh_die "Unknown arch" ;;
+esac
+
+# Download, check integrity, uncompress and patch the source from jellyfin-plugin-ldapauth.src
+ynh_setup_source "$final_path" "jellyfin-plugin-ldapauth"
 
 #==============================================
-# INSTALL PLEX
+# INSTALL JELLYFIN
 #==============================================
 
-dpkg --install $final_path/emby-server-deb*
+dpkg --install $final_path/jellyfin-ffmpeg.deb
+dpkg --install $final_path/jellyfin.deb
+rm $final_path/*.deb
 
 #=================================================
 # NGINX CONFIGURATION
@@ -51,6 +68,6 @@ dpkg --install $final_path/emby-server-deb*
 #  ynh_app_setting_set "$app" unprotected_uris "/"
 #fi
 
-# Start emby-server service
-systemctl start emby-server
+# Start jellyfin service
+systemctl start jellyfin
 
