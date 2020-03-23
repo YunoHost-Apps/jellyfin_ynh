@@ -169,7 +169,7 @@ ynh_replace_string --match_string="__BINDPASSWORD__" --replace_string="$password
 chown -R jellyfin:jellyfin "$plugins_path"
 
 # Port config
-ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/sys$
+ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/system.xml"
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
