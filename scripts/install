@@ -156,6 +156,8 @@ ynh_system_user_create $app
 #=================================================
 # MODIFY A CONFIG FILE
 #=================================================
+
+# LDAP config
 plugins_conf_path=$plugins_path/configurations
 plugins_conf_file=$plugins_conf_path/LDAP-Auth.xml
 
@@ -163,6 +165,9 @@ mkdir -p "$plugins_conf_path"
 cp ../conf/LDAP-Auth.xml "$plugins_conf_file"
 ynh_replace_string --match_string="__BINDPASSWORD__" --replace_string="$password" --target_file="$plugins_conf_file"
 chown -R jellyfin:jellyfin "$plugins_path"
+
+# Port config
+ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/sys$
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
