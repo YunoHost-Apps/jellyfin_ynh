@@ -3,8 +3,8 @@
     "id": "jellyfin",
     "packaging_format": 1,
     "description": {
-        "en": "Jellyfin package for YunoHost.",
-        "fr": "Jellyfin pour YunoHost."
+        "en": "Your movies, TV shows, music, pictures in the same media system.",
+        "fr": "Vos films, séries, musiques, photographie dans le même système multimédia."
     },
     "version": "10.4.3",
     "url": "https://github.com/jellyfin/jellyfin",
@@ -18,9 +18,7 @@
     },
     "multi_instance": false,
     "services": [
-        "nginx",
-        "php5-fpm",
-        "mysql"
+        "nginx"
     ],
     "arguments": {
         "install": [{
