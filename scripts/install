@@ -67,7 +67,7 @@ ynh_webpath_register "$app" "$domain" "$path_url"
 ynh_app_setting_set "$app" domain "$domain"
 ynh_app_setting_set "$app" path "$path_url"
 ynh_app_setting_set "$app" is_public "$is_public"
-ynh_app_setting_set $app admin $admin
+ynh_app_setting_set "$app" admin "$admin"
 
 #=================================================
 # INSTALL DEPENDENCIES
@@ -160,6 +160,8 @@ ynh_system_user_create "$app"
 #=================================================
 # MODIFY A CONFIG FILE
 #=================================================
+
+# LDAP config
 plugins_conf_path=$plugins_path/configurations
 plugins_conf_file=$plugins_conf_path/LDAP-Auth.xml
 
@@ -180,6 +182,9 @@ ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNum
 # BaseUrl
 ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="/etc/jellyfin/system.xml"
 
+# Port config
+ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/system.xml"
+
 # Setting up the admin user
 userdir="/etc/jellyfin/users/$admin"
 mkdir -p "$userdir"
@@ -196,6 +201,7 @@ cp ../conf/policy.xml "$userdir/"
 # Calculate and store the config file checksum into the app settings
 ynh_store_file_checksum "$plugins_conf_file"
 
+
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
@@ -208,6 +214,7 @@ ynh_store_file_checksum "$plugins_conf_file"
 
 # Set permissions to app files
 #chown -R root: /etc/loolwsd
+
 
 #=================================================
 # SETUP SSOWAT
