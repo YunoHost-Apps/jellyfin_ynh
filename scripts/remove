@@ -56,6 +56,8 @@ ynh_print_info "Removing app main directory"
 
 # Remove the app directory securely
 ynh_secure_remove "$final_path"
+ynh_secure_remove "/etc/jellyfin"
+ynh_secure_remove "/var/lib/jellyfin"
 
 #=================================================
 # REMOVE NGINX CONFIGURATION
