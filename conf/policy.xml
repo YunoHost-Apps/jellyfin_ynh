@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<UserPolicy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <IsAdministrator>true</IsAdministrator>
+  <IsHidden>true</IsHidden>
+  <IsDisabled>false</IsDisabled>
+  <AuthenticationProviderId>Jellyfin.Plugin.LDAP_Auth.LdapAuthenticationProviderPlugin</AuthenticationProviderId>
+</UserPolicy>
