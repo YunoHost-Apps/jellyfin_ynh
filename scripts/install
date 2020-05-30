@@ -53,21 +53,21 @@ final_path=/opt/yunohost/$app
 test ! -e "$final_path" || ynh_die "This path already contains a folder"
 
 # Normalize the url path syntax
-path_url=$(ynh_normalize_url_path $path_url)
+path_url=$(ynh_normalize_url_path "$path_url")
 
 # Check web path availability
-ynh_webpath_available $domain $path_url
+ynh_webpath_available "$domain" "$path_url"
 # Register (book) web path
-ynh_webpath_register $app $domain $path_url
+ynh_webpath_register "$app" "$domain" "$path_url"
 
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
 
-ynh_app_setting_set $app domain $domain
-ynh_app_setting_set $app path $path_url
-ynh_app_setting_set $app is_public $is_public
-ynh_app_setting_set $app admin $admin
+ynh_app_setting_set "$app" domain "$domain"
+ynh_app_setting_set "$app" path "$path_url"
+ynh_app_setting_set "$app" is_public "$is_public"
+ynh_app_setting_set "$app" admin "$admin"
 
 #=================================================
 # INSTALL DEPENDENCIES
@@ -96,17 +96,17 @@ ynh_install_app_dependencies at libass5 libbluray1 libdrm2 libmp3lame0 libopus0 
 # Find a free port
 port=$(ynh_find_port 8096)
 # Open this port
-yunohost firewall allow --no-upnp TCP $port 2>&1
-ynh_app_setting_set $app port $port
+yunohost firewall allow --no-upnp TCP "$port" 2>&1
+ynh_app_setting_set "$app" port "$port"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 
-ynh_app_setting_set $app final_path $final_path
+ynh_app_setting_set "$app" final_path "$final_path"
 
 # Download, check integrity, uncompress and patch the source from jellyfin-ffmpeg-[arch].src
-case `uname -m` in
+case $(uname -m) in
     x86_64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-amd64" ;;
     aarch64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-arm64" ;;
     armv7l) ynh_setup_source "$final_path" "jellyfin-ffmpeg-armhf" ;;
@@ -114,7 +114,7 @@ case `uname -m` in
 esac
 
 # Download, check integrity, uncompress and patch the source from jellyfin-[arch].src
-case `uname -m` in
+case $(uname -m) in
     x86_64) ynh_setup_source "$final_path" "jellyfin-amd64" ;;
     aarch64) ynh_setup_source "$final_path" "jellyfin-arm64" ;;
     armv7l) ynh_setup_source "$final_path" "jellyfin-armhf" ;;
@@ -128,9 +128,9 @@ ynh_setup_source "$final_path" "jellyfin-plugin-ldapauth"
 # INSTALL JELLYFIN
 #==============================================
 
-dpkg --install $final_path/jellyfin-ffmpeg.deb
-dpkg --install $final_path/jellyfin.deb
-rm $final_path/*.deb
+dpkg --install "$final_path"/jellyfin-ffmpeg.deb
+dpkg --install "$final_path"/jellyfin.deb
+rm "$final_path"/*.deb
 
 #==============================================
 # INSTALL LDAP PLUGIN
@@ -140,8 +140,8 @@ plugins_path=/var/lib/jellyfin/plugins
 ldap_plugin_path="$plugins_path/LDAP Authentication"
 
 mkdir -p "$ldap_plugin_path"
-unzip $final_path/jellyfin-plugin-ldapauth.zip -d "$ldap_plugin_path"
-rm $final_path/*.zip
+unzip "$final_path"/jellyfin-plugin-ldapauth.zip -d "$ldap_plugin_path"
+rm "$final_path"/*.zip
 
 #=================================================
 # NGINX CONFIGURATION
@@ -155,7 +155,7 @@ ynh_add_nginx_config
 #=================================================
 
 # Create a system user
-ynh_system_user_create $app
+ynh_system_user_create "$app"
 
 #=================================================
 # MODIFY A CONFIG FILE
@@ -221,7 +221,7 @@ ynh_store_file_checksum "$plugins_conf_file"
 #=================================================
 
 # If app is public, add url to SSOWat conf as skipped_uris
-if [ $is_public -eq 1 ]; then
+if [ "$is_public" -eq 1 ]; then
   # unprotected_uris allows SSO credentials to be passed anyway.
   ynh_app_setting_set "$app" unprotected_uris "/"
 fi
