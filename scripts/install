@@ -122,7 +122,7 @@ case $(uname -m) in
 esac
 
 # Download, check integrity, uncompress and patch the source from jellyfin-plugin-ldapauth.src
-ynh_setup_source "$final_path" "jellyfin-plugin-ldapauth"
+#ynh_setup_source "$final_path" "jellyfin-plugin-ldapauth"
 
 #==============================================
 # INSTALL JELLYFIN
@@ -136,12 +136,12 @@ rm "$final_path"/*.deb
 # INSTALL LDAP PLUGIN
 #==============================================
 
-plugins_path=/var/lib/jellyfin/plugins
-ldap_plugin_path="$plugins_path/LDAP Authentication"
+#plugins_path=/var/lib/jellyfin/plugins
+#ldap_plugin_path="$plugins_path/LDAP Authentication"
 
-mkdir -p "$ldap_plugin_path"
-unzip "$final_path"/jellyfin-plugin-ldapauth.zip -d "$ldap_plugin_path"
-rm "$final_path"/*.zip
+#mkdir -p "$ldap_plugin_path"
+#unzip "$final_path"/jellyfin-plugin-ldapauth.zip -d "$ldap_plugin_path"
+#rm "$final_path"/*.zip
 
 #=================================================
 # NGINX CONFIGURATION
