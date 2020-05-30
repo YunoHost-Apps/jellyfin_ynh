@@ -50,33 +50,6 @@
                     "fr": "Est-ce un site public ?"
                 },
                 "default": "true"
-            },
-
-            {
-                "name": "password",
-                "type": "password",
-                "ask": {
-                    "en": "Type LDAP admin password",
-                    "fr": "Saisissez le mot de passe de l'admin LDAP"
-                },
-                "help": {
-                    "en": "This is your admin panel password. It is needed for Jellyfin's LDAP plugin to bind to YunoHost's server.",
-                    "fr": "Il s'agit du mot de passe d'administration du serveur. Il est nécessaire pour que le plugin LDAP de Jellyfin se connecte à YunoHost."
-                }
-            },
-
-            {
-                "name": "admin",
-                "type": "user",
-                "ask": {
-                    "en": "Choose an admin user",
-                    "fr": "Choisissez l’administrateur"
-                },
-                "example": "johndoe",
-                "help": {
-                    "en": "Choose your YunoHost username, it will be set as a Jellyfin admin.",
-                    "fr": "Choisissez votre utilisateur YunoHost, il sera défini comme un admin dans Jellyfin."
-                }
             }
         ]
     }
