@@ -16,9 +16,9 @@ ynh_print_info "Loading installation settings..."
 
 app=$YNH_APP_INSTANCE_NAME
 
-domain=$(ynh_app_setting_get $app domain)
-port=$(ynh_app_setting_get $app port)
-final_path=$(ynh_app_setting_get $app final_path)
+domain=$(ynh_app_setting_get "$app" domain)
+port=$(ynh_app_setting_get "$app" port)
+final_path=$(ynh_app_setting_get "$app" final_path)
 
 #=================================================
 # STANDARD REMOVE
@@ -27,10 +27,10 @@ final_path=$(ynh_app_setting_get $app final_path)
 #=================================================
 
 # Remove a service from the admin panel, added by `yunohost service add`
-if yunohost service status $app >/dev/null 2>&1
+if yunohost service status "$app" >/dev/null 2>&1
 then
 	ynh_print_info "Removing $app service"
-	yunohost service remove $app
+	yunohost service remove "$app"
 fi
 
 #=================================================
@@ -80,7 +80,7 @@ ynh_remove_logrotate
 if yunohost firewall list | grep -q "\- $port$"
 then
 	ynh_print_info "Closing port $port"
-	ynh_exec_warn_less yunohost firewall disallow TCP $port
+	ynh_exec_warn_less yunohost firewall disallow TCP "$port"
 fi
 
 #=================================================
@@ -106,7 +106,7 @@ ynh_secure_remove "/var/log/$app/"
 ynh_print_info "Removing the dedicated system user"
 
 # Delete a system user
-ynh_system_user_delete $app
+ynh_system_user_delete "$app"
 
 #=================================================
 # END OF SCRIPT
