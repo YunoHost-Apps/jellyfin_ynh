@@ -1,5 +1,5 @@
-SOURCE_URL=https://github.com/jellyfin/jellyfin-ffmpeg/releases/download/v4.2.1-3/jellyfin-ffmpeg_4.2.1-3-stretch_amd64.deb
-SOURCE_SUM=b64d23f21e0c28a4edfe1e25f1185188f6f82e1400cc79c2640ff5b2855e35427ed4e5c48cf9f5c699a1356f161c32a9c671dcc0ec0e6c28374b1fd6b04f8c44
+SOURCE_URL=https://github.com/jellyfin/jellyfin-ffmpeg/releases/download/v4.2.1-7/jellyfin-ffmpeg_4.2.1-7-stretch_amd64.deb
+SOURCE_SUM=04ed00a1121832fe7c32f78fe9cbbebb0a36ef37c9e2689a75b55efa31ec2b73d670ddcb613d01b14721f3db98e409eca208ee425f4853b343155f06906e6e08
 SOURCE_SUM_PRG=sha512sum
 SOURCE_FORMAT=deb
 SOURCE_IN_SUBDIR=false
