@@ -1,7 +1,0 @@
-SOURCE_URL=https://github.com/jellyfin/jellyfin-plugin-ldapauth/releases/download/v6/jellyfin-plugin-ldapauth_6.0.zip
-SOURCE_SUM=e99441644395d4991bb4a4acd3967e583f31ac99d985e8bd706eff64e8ba13236a15ba071ef1536b02eedcc525030bc433c15bc85bfb7d37122826bc0a440fe3
-SOURCE_SUM_PRG=sha512sum
-SOURCE_FORMAT=zip
-SOURCE_IN_SUBDIR=false
-SOURCE_EXTRACT=false
-SOURCE_FILENAME=jellyfin-plugin-ldapauth.zip
