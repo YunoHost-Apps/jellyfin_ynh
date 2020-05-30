@@ -28,8 +28,6 @@ ynh_abort_if_errors
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 is_public=$YNH_APP_ARG_IS_PUBLIC
-password=$YNH_APP_ARG_PASSWORD
-admin=$YNH_APP_ARG_ADMIN
 
 ### If it's a multi-instance app, meaning it can be installed several times independently
 ### The id of the app as stated in the manifest is available as $YNH_APP_ID
@@ -132,17 +130,6 @@ dpkg --install "$final_path"/jellyfin-ffmpeg.deb
 dpkg --install "$final_path"/jellyfin.deb
 rm "$final_path"/*.deb
 
-#==============================================
-# INSTALL LDAP PLUGIN
-#==============================================
-
-#plugins_path=/var/lib/jellyfin/plugins
-#ldap_plugin_path="$plugins_path/LDAP Authentication"
-
-#mkdir -p "$ldap_plugin_path"
-#unzip "$final_path"/jellyfin-plugin-ldapauth.zip -d "$ldap_plugin_path"
-#rm "$final_path"/*.zip
-
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -161,15 +148,6 @@ ynh_system_user_create "$app"
 # MODIFY A CONFIG FILE
 #=================================================
 
-# LDAP config
-#plugins_conf_path=$plugins_path/configurations
-#plugins_conf_file=$plugins_conf_path/LDAP-Auth.xml
-
-#mkdir -p "$plugins_conf_path"
-#cp ../conf/LDAP-Auth.xml "$plugins_conf_file"
-#ynh_replace_string --match_string="__BINDPASSWORD__" --replace_string="$password" --target_file="$plugins_conf_file"
-#chown -R jellyfin:jellyfin "$plugins_path"
-
 # Load services once to generate system.xml
 systemctl enable jellyfin
 systemctl start jellyfin
@@ -185,11 +163,6 @@ ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path
 # Port config
 ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/system.xml"
 
-# Setting up the admin user
-#userdir="/etc/jellyfin/users/$admin"
-#mkdir -p "$userdir"
-#cp ../conf/policy.xml "$userdir/"
-
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
 #=================================================
@@ -199,7 +172,7 @@ ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNum
 ### you can make a backup of this file before modifying it again if the admin had modified it.
 
 # Calculate and store the config file checksum into the app settings
-ynh_store_file_checksum "$plugins_conf_file"
+#ynh_store_file_checksum "$plugins_conf_file"
 
 #=================================================
 # GENERIC FINALIZATION
