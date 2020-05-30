@@ -6,7 +6,7 @@
         "en": "Jellyfin package for YunoHost.",
         "fr": "Jellyfin pour YunoHost."
     },
-    "version": "10.5.5",
+    "version": "10.4.3",
     "url": "https://github.com/jellyfin/jellyfin",
     "license": "GPL-2.0",
     "maintainer": {
@@ -18,9 +18,7 @@
     },
     "multi_instance": false,
     "services": [
-        "nginx",
-        "php5-fpm",
-        "mysql"
+        "nginx"
     ],
     "arguments": {
         "install": [{
@@ -43,7 +41,7 @@
                 "example": "/jellyfin",
                 "default": "/jellyfin"
             },
-            
+
             {
                 "name": "is_public",
                 "type": "boolean",
@@ -53,13 +51,31 @@
                 },
                 "default": "true"
             },
-            
+
             {
                 "name": "password",
                 "type": "password",
                 "ask": {
                     "en": "Type LDAP admin password",
                     "fr": "Saisissez le mot de passe de l'admin LDAP"
+                },
+                "help": {
+                    "en": "This is your admin panel password. It is needed for Jellyfin's LDAP plugin to bind to YunoHost's server.",
+                    "fr": "Il s'agit du mot de passe d'administration du serveur. Il est nécessaire pour que le plugin LDAP de Jellyfin se connecte à YunoHost."
+                }
+            },
+
+            {
+                "name": "admin",
+                "type": "user",
+                "ask": {
+                    "en": "Choose an admin user",
+                    "fr": "Choisissez l’administrateur"
+                },
+                "example": "johndoe",
+                "help": {
+                    "en": "Choose your YunoHost username, it will be set as a Jellyfin admin.",
+                    "fr": "Choisissez votre utilisateur YunoHost, il sera défini comme un admin dans Jellyfin."
                 }
             }
         ]
