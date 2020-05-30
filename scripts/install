@@ -201,7 +201,6 @@ cp ../conf/policy.xml "$userdir/"
 # Calculate and store the config file checksum into the app settings
 ynh_store_file_checksum "$plugins_conf_file"
 
-
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
@@ -214,7 +213,6 @@ ynh_store_file_checksum "$plugins_conf_file"
 
 # Set permissions to app files
 #chown -R root: /etc/loolwsd
-
 
 #=================================================
 # SETUP SSOWAT
