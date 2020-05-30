@@ -107,6 +107,7 @@ ynh_app_setting_set "$app" final_path "$final_path"
 case $(uname -m) in
     x86_64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-amd64" ;;
     aarch64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-arm64" ;;
+    armv7l) ynh_setup_source "$final_path" "jellyfin-ffmpeg-armhf" ;;
     *) ynh_die "Unknown arch" ;;
 esac
 
@@ -114,6 +115,7 @@ esac
 case $(uname -m) in
     x86_64) ynh_setup_source "$final_path" "jellyfin-amd64" ;;
     aarch64) ynh_setup_source "$final_path" "jellyfin-arm64" ;;
+    armv7l) ynh_setup_source "$final_path" "jellyfin-armhf" ;;
     *) ynh_die "Unknown arch" ;;
 esac
 
