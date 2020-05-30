@@ -35,9 +35,6 @@ case $(uname -m) in
     *) ynh_die "Unknown arch" ;;
 esac
 
-# Download, check integrity, uncompress and patch the source from jellyfin-plugin-ldapauth.src
-ynh_setup_source "$final_path" "jellyfin-plugin-ldapauth"
-
 #==============================================
 # INSTALL JELLYFIN
 #==============================================
