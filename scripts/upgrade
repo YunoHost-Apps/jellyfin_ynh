@@ -59,7 +59,6 @@ rm "$final_path"/*.deb
 # Create a dedicated nginx config
 #ynh_add_nginx_config
 
-
 #=================================================
 # UPGRADE CONFIG
 #=================================================
@@ -67,8 +66,6 @@ rm "$final_path"/*.deb
 #ynh_replace_string "__NEXTCLOUDDOMAIN__" "$nextcloud_domain" "/etc/loolwsd/loolwsd.xml"
 #ynh_replace_string "__PASSWORD__" "$password" "/etc/loolwsd/loolwsd.xml"
 #systemctl restart loolwsd
-
-
 
 # If app is public, add url to SSOWat conf as skipped_uris
 #if [[ $is_public -eq 1 ]]; then
