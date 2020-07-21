@@ -1,4 +1,4 @@
-SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/stable/web/10.6.0/jellyfin-web_10.6.0-1_all.deb
+SOURCE_URL=https://github.com/YunoHost-Apps/jellyfin_ynh/releases/download/10.6.0/jellyfin-web_10.6.0-1_all.deb
 SOURCE_SUM=6c29032cee43bb2a2f6a41f824874ba7c43fa7055203f2099a6273f14922536e307b75ad67c4838a93b6a4c2c72e62f889f6da8944fda40ed0da22d98ad29aee
 SOURCE_SUM_PRG=sha512sum
 SOURCE_FORMAT=deb
