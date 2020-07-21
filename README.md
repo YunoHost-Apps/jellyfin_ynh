@@ -1,7 +1,7 @@
 # Jellyfin app for YunoHost
 Jellyfin Server
 
-**Shipped version:** 10.5.5
+**Shipped version:** 10.6.0
 
 - [Yunohost project](https://yunohost.org)
 - [Jellyfin website](https://github.com/jellyfin/jellyfin)
