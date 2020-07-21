@@ -110,7 +110,7 @@ case $(uname -m) in
     *) ynh_die "Unknown arch" ;;
 esac
 
-# Download, check integrity, uncompress and patch the source from jellyfin-[arch].src
+# Download, check integrity, uncompress and patch the source from jellyfin-server-[arch].src
 case $(uname -m) in
     x86_64) ynh_setup_source "$final_path" "jellyfin-server-amd64" ;;
     aarch64) ynh_setup_source "$final_path" "jellyfin-server-arm64" ;;
@@ -118,16 +118,13 @@ case $(uname -m) in
     *) ynh_die "Unknown arch" ;;
 esac
 
-# Download, check integrity, uncompress and patch the source from jellyfin-[arch].src
+# Download, check integrity, uncompress and patch the source from jellyfin-web-[arch].src
 case $(uname -m) in
     x86_64) ynh_setup_source "$final_path" "jellyfin-web-amd64" ;;
     aarch64) ynh_setup_source "$final_path" "jellyfin-web-arm64" ;;
     armv7l) ynh_setup_source "$final_path" "jellyfin-web-armhf" ;;
     *) ynh_die "Unknown arch" ;;
 esac
-
-# Download, check integrity, uncompress and patch the source from jellyfin-plugin-ldapauth.src
-#ynh_setup_source "$final_path" "jellyfin-plugin-ldapauth"
 
 #==============================================
 # INSTALL JELLYFIN
