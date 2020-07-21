@@ -47,9 +47,9 @@ esac
 # INSTALL JELLYFIN
 #==============================================
 
-apt-get install -y "$final_path"/jellyfin-ffmpeg.deb
-apt-get install -y "$final_path"/jellyfin-server.deb
-apt-get install -y "$final_path"/jellyfin-web.deb
+dpkg --install "$final_path"/jellyfin-ffmpeg.deb
+dpkg --install "$final_path"/jellyfin-server.deb
+dpkg --install "$final_path"/jellyfin-web.deb
 rm "$final_path"/*.deb
 
 #=================================================
