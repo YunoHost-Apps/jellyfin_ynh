@@ -35,11 +35,11 @@ case $(uname -m) in
     *) ynh_die "Unknown arch" ;;
 esac
 
-# Download, check integrity, uncompress and patch the source from jellyfin-web-[arch].src
+# Download, check integrity, uncompress and patch the source from jellyfin-web.src
 case $(uname -m) in
-    x86_64) ynh_setup_source "$final_path" "jellyfin-web-amd64" ;;
-    aarch64) ynh_setup_source "$final_path" "jellyfin-web-arm64" ;;
-    armv7l) ynh_setup_source "$final_path" "jellyfin-web-armhf" ;;
+    x86_64) ynh_setup_source "$final_path" "jellyfin-web" ;;
+    aarch64) ynh_setup_source "$final_path" "jellyfin-web" ;;
+    armv7l) ynh_setup_source "$final_path" "jellyfin-web" ;;
     *) ynh_die "Unknown arch" ;;
 esac
 
