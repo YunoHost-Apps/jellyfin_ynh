@@ -6,7 +6,7 @@
         "en": "Jellyfin package for YunoHost.",
         "fr": "Jellyfin pour YunoHost."
     },
-    "version": "10.5.5",
+    "version": "10.6.0",
     "url": "https://github.com/jellyfin/jellyfin",
     "license": "GPL-2.0",
     "maintainer": {

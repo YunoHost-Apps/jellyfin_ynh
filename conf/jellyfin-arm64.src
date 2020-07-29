@@ -1,7 +1,0 @@
-SOURCE_URL=https://github.com/jellyfin/jellyfin/releases/download/v10.5.5/jellyfin_10.5.5-1_debian-arm64.deb
-SOURCE_SUM=20b396e54f60acafd6d7c7130f8999b034dc93aeec3adc866e2dc5911c70edae1e55943e2f0dc6d20911fd44c9310bdd822a34f579fecb6810ed5ebb867f0f59
-SOURCE_SUM_PRG=sha512sum
-SOURCE_FORMAT=deb
-SOURCE_IN_SUBDIR=false
-SOURCE_EXTRACT=false
-SOURCE_FILENAME=jellyfin.deb
