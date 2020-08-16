@@ -48,7 +48,7 @@ ynh_print_info "Removing dependencies"
 
 # Remove metapackage and its dependencies
 ynh_remove_app_dependencies
-
+apt-get remove -y jellyfin-web jellyfin-server jellyfin-ffmpeg
 #=================================================
 # REMOVE APP MAIN DIR
 #=================================================
