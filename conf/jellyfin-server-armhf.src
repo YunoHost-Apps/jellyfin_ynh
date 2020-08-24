@@ -1,5 +1,5 @@
-SOURCE_URL=https://github.com/YunoHost-Apps/jellyfin_ynh/releases/download/10.6.2/jellyfin-server_10.6.2-1_armhf.deb
-SOURCE_SUM=fdec8fbd381dd37c7992432e2aa35eb67704e5fba42baefed734fd877b9e23c45db6050bb074e0cd13be4aaa6df33b74eb03caf6e2e9d5e94ddc6b470a311364
+SOURCE_URL=https://github.com/YunoHost-Apps/jellyfin_ynh/releases/download/10.6.3/jellyfin-server_10.6.3-1_armhf.deb
+SOURCE_SUM=6b0c0b8eb01e0ab2c6f092aa119cecd9fca09a6859b41c9f6c540db3941f6872a145f7b9326f1cb4653a3c5f59faba6b0da374fcd37be46c4968cb54c7a57073
 SOURCE_SUM_PRG=sha512sum
 SOURCE_FORMAT=deb
 SOURCE_IN_SUBDIR=false
