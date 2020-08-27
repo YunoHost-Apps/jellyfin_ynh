@@ -3,8 +3,8 @@
     "id": "jellyfin",
     "packaging_format": 1,
     "description": {
-        "en": "Jellyfin package for YunoHost.",
-        "fr": "Jellyfin pour YunoHost."
+        "en": "The free software media system that puts you in control of managing and streaming your media.",
+        "fr": "Le système multimédia libre qui vous donne le contrôle pour gérer et diffuser vos médias."
     },
     "version": "10.6.3",
     "url": "https://github.com/jellyfin/jellyfin",
