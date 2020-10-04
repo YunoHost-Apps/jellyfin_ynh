@@ -1,6 +1,6 @@
-SOURCE_URL=https://github.com/jellyfin/jellyfin-ffmpeg/releases/download/v4.2.1-7/jellyfin-ffmpeg_4.2.1-7-buster_amd64.deb
-SOURCE_SUM=da83f46fb772fa9397144fe206121854f59450a62315299b838d8c48a6384efd6bc161db31752e52b3583f89f91c16cbeba117741f43e07496afffe3e0df07f1
-SOURCE_SUM_PRG=sha512sum
+SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/4.3.1-1/jellyfin-ffmpeg_4.3.1-1-buster_amd64.deb
+SOURCE_SUM=4eb7d4486b9e729539c0721838a41f6d19f40698cbcd9425017c220909e4ee08
+SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=deb
 SOURCE_IN_SUBDIR=false
 SOURCE_EXTRACT=false
