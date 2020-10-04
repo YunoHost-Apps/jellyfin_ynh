@@ -79,7 +79,7 @@ ynh_print_info "Installing dependencies..."
 ###		- As well as the section "REINSTALL DEPENDENCIES" in the restore script
 ###		- And the section "UPGRADE DEPENDENCIES" in the upgrade script
 
-ynh_install_app_dependencies at libass9 libbluray2 libdrm2 libmp3lame0 libopus0 libtheora0 libva-drm2 libva-x11-2 libva2 libvdpau1 libvorbis0a libvorbisenc2 libx264-155 libx265-165 libzvbi0
+ynh_install_app_dependencies at libass9 libbluray2 libdrm2 libmp3lame0 libopus0 libtheora0 libva-drm2 libva-x11-2 libva2 libvdpau1 libvorbis0a libvorbisenc2 libx264-155 libx265-165 libzvbi0 ocl-icd-libopencl1
 
 #=================================================
 # FIND AND OPEN A PORT
