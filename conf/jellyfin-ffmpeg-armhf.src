@@ -1,7 +1,0 @@
-SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/4.2.1-2/jellyfin-ffmpeg_4.2.1-2-stretch_armhf.deb
-SOURCE_SUM=a08a4e0db96e05e4382c5c9bba435d658ba4a8a368dba9c06e816bf7ce4bbeee01481aa92919aceaf1f0c1a337356c8c1e1136c8f5b04e05edbe1a9e883df88c
-SOURCE_SUM_PRG=sha512sum
-SOURCE_FORMAT=deb
-SOURCE_IN_SUBDIR=false
-SOURCE_EXTRACT=false
-SOURCE_FILENAME=jellyfin-ffmpeg.deb

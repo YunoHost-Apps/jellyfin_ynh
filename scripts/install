@@ -24,7 +24,6 @@ ynh_abort_if_errors
 # RETRIEVE ARGUMENTS FROM THE MANIFEST
 #=================================================
 
-# Retrieve arguments
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 is_public=$YNH_APP_ARG_IS_PUBLIC
@@ -44,33 +43,54 @@ app=$YNH_APP_INSTANCE_NAME
 #=================================================
 # CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
 #=================================================
+### About --weight and --time
+### ynh_script_progression will show to your final users the progression of each scripts.
+### In order to do that, --weight will represent the relative time of execution compared to the other steps in the script.
+### --time is a packager option, it will show you the execution time since the previous call.
+### This option should be removed before releasing your app.
+### Use the execution time, given by --time, to estimate the weight of a step.
+### A common way to do it is to set a weight equal to the execution time in second +1.
+### The execution time is given for the duration since the previous call. So the weight should be applied to this previous call.
+ynh_script_progression --message="Validating installation parameters..." --time --weight=1
 
 ### If the app uses nginx as web server (written in HTML/PHP in most cases), the final path should be "/var/www/$app".
 ### If the app provides an internal web server (or uses another application server such as uwsgi), the final path should be "/opt/yunohost/$app"
-final_path=/opt/yunohost/$app
-test ! -e "$final_path" || ynh_die "This path already contains a folder"
+final_path=/etc/jellyfin
+test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
 
-# Normalize the url path syntax
-path_url=$(ynh_normalize_url_path "$path_url")
-
-# Check web path availability
-ynh_webpath_available "$domain" "$path_url"
 # Register (book) web path
-ynh_webpath_register "$app" "$domain" "$path_url"
+ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 
 #=================================================
 # STORE SETTINGS FROM MANIFEST
 #=================================================
+ynh_script_progression --message="Storing installation settings..." --time --weight=1
 
-ynh_app_setting_set "$app" domain "$domain"
-ynh_app_setting_set "$app" path "$path_url"
-ynh_app_setting_set "$app" is_public "$is_public"
+ynh_app_setting_set --app=$app --key=domain --value=$domain
+ynh_app_setting_set --app=$app --key=path --value=$path_url
+ynh_app_setting_set --app=$app --key=is_public --value=$is_public
+
+#=================================================
+# STANDARD MODIFICATIONS
+#=================================================
+# FIND AND OPEN A PORT
+#=================================================
+ynh_script_progression --message="Configuring firewall..." --time --weight=1
+
+### Use these lines if you have to open a port for the application
+### `ynh_find_port` will find the first available port starting from the given port.
+### If you're not using these lines:
+###		- Remove the section "CLOSE A PORT" in the remove script
+
+# Find an available port
+port=$(ynh_find_port --port=8095)
+ynh_app_setting_set --app=$app --key=port --value=$port
+
 
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
-
-ynh_print_info "Installing dependencies..."
+ynh_script_progression --message="Installing dependencies..." --time --weight=1
 
 ### `ynh_install_app_dependencies` allows you to add any "apt" dependencies to the package.
 ### Those deb packages will be installed as dependencies of this package.
@@ -79,75 +99,25 @@ ynh_print_info "Installing dependencies..."
 ###		- As well as the section "REINSTALL DEPENDENCIES" in the restore script
 ###		- And the section "UPGRADE DEPENDENCIES" in the upgrade script
 
-ynh_install_app_dependencies at libass5 libbluray1 libdrm2 libmp3lame0 libopus0 libtheora0 libva-drm1 libva-x11-1 libva1 libvdpau1 libvorbis0a libvorbisenc2 libx264-148 libx265-95 libzvbi0 libwebpmux2
-
-#=================================================
-# FIND AND OPEN A PORT
-#=================================================
-
-### Use these lines if you have to open a port for the application
-### `ynh_find_port` will find the first available port starting from the given port.
-### If you're not using these lines:
-###		- Remove the section "CLOSE A PORT" in the remove script
-
-# Find a free port
-port=$(ynh_find_port 8096)
-# Open this port
-yunohost firewall allow --no-upnp TCP "$port" 2>&1
-ynh_app_setting_set "$app" port "$port"
-
-#=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
-#=================================================
-
-ynh_app_setting_set "$app" final_path "$final_path"
-
-# Download, check integrity, uncompress and patch the source from jellyfin-ffmpeg-[arch].src
-case $(uname -m) in
-    x86_64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-amd64" ;;
-    aarch64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-arm64" ;;
-    armv7l) ynh_setup_source "$final_path" "jellyfin-ffmpeg-armhf" ;;
-    *) ynh_die "Unknown arch" ;;
-esac
-
-# Download, check integrity, uncompress and patch the source from jellyfin-server-[arch].src
-case $(uname -m) in
-    x86_64) ynh_setup_source "$final_path" "jellyfin-server-amd64" ;;
-    aarch64) ynh_setup_source "$final_path" "jellyfin-server-arm64" ;;
-    armv7l) ynh_setup_source "$final_path" "jellyfin-server-armhf" ;;
-    *) ynh_die "Unknown arch" ;;
-esac
-
-# Download, check integrity, uncompress and patch the source from jellyfin-web.src
-case $(uname -m) in
-    x86_64) ynh_setup_source "$final_path" "jellyfin-web" ;;
-    aarch64) ynh_setup_source "$final_path" "jellyfin-web" ;;
-    armv7l) ynh_setup_source "$final_path" "jellyfin-web" ;;
-    *) ynh_die "Unknown arch" ;;
-esac
-
-#==============================================
-# INSTALL JELLYFIN
-#==============================================
-
-dpkg --install "$final_path"/jellyfin-ffmpeg.deb
-dpkg --install "$final_path"/jellyfin-server.deb
-dpkg --install "$final_path"/jellyfin-web.deb
-rm "$final_path"/*.deb
+#ynh_add_app_dependencies --package="at libass5 libbluray1 libdrm2 libmp3lame0 libopus0 libtheora0 libva-drm1 libva-x11-1 libva1 libvdpau1 libvorbis0a libvorbisenc2 libx264-148 libx265-95 libzvbi0 libwebpmux2"
+ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" --package="jellyfin" --key="https://repo.jellyfin.org/debian/jellyfin_team.gpg.key"
 
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
+ynh_script_progression --message="Configuring nginx web server..." --time --weight=1
 
+### `ynh_add_nginx_config` will use the file conf/nginx.conf
 # Create a dedicated nginx config
 ynh_add_nginx_config
 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
+ynh_script_progression --message="Configuring system user..." --time --weight=1
 
 # Create a system user
-ynh_system_user_create "$app"
+ynh_system_user_create --username=$app
 
 #=================================================
 # MODIFY A CONFIG FILE
@@ -177,7 +147,7 @@ ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNum
 ### you can make a backup of this file before modifying it again if the admin had modified it.
 
 # Calculate and store the config file checksum into the app settings
-#ynh_store_file_checksum "$plugins_conf_file"
+#ynh_store_file_checksum "/etc/jellyfin/system.xml"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -190,18 +160,62 @@ ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNum
 ### that really need such authorization.
 
 # Set permissions to app files
-#chown -R root: /etc/loolwsd
+chown -R $app: $final_path
+chown -R $app: /var/lib/jellyfin
+
+#=================================================
+# INTEGRATE SERVICE IN YUNOHOST
+#=================================================
+ynh_script_progression --message="Integrating service in YunoHost..." --time --weight=1
+
+### `yunohost service add` integrates a service in YunoHost. It then gets 
+### displayed in the admin interface and through the others `yunohost service` commands.
+### (N.B. : this line only makes sense if the app adds a service to the system!)
+### If you're not using these lines:
+###		- You can remove these files in conf/.
+###		- Remove the section "REMOVE SERVICE INTEGRATION IN YUNOHOST" in the remove script
+###		- As well as the section "INTEGRATE SERVICE IN YUNOHOST" in the restore script
+###		- And the section "INTEGRATE SERVICE IN YUNOHOST" in the upgrade script
+
+yunohost service add $app --description "Jellyfin media center" --log "/var/log/$app/$app.log"
+
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Starting a systemd service..." --time --weight=1
+
+### `ynh_systemd_action` is used to start a systemd service for an app.
+### Only needed if you have configure a systemd service
+### If you're not using these lines:
+###		- Remove the section "STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the backup script
+###		- As well as the section "START SYSTEMD SERVICE" in the restore script
+###		- As well as the section"STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the upgrade script
+###		- And the section "STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the change_url script
+
+# Start a systemd service
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
 #=================================================
 # SETUP SSOWAT
 #=================================================
+ynh_script_progression --message="Configuring SSOwat..." --time --weight=1
 
-# If app is public, add url to SSOWat conf as skipped_uris
-if [ "$is_public" -eq 1 ]; then
-  # unprotected_uris allows SSO credentials to be passed anyway.
-  ynh_app_setting_set "$app" unprotected_uris "/"
+# Make app public if necessary
+if [ $is_public -eq 1 ]
+then
+	# unprotected_uris allows SSO credentials to be passed anyway.
+	ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
 fi
 
-# Reload services
-systemctl start jellyfin
-systemctl reload nginx
+#=================================================
+# RELOAD NGINX
+#=================================================
+ynh_script_progression --message="Reloading nginx web server..." --time --weight=1
+
+ynh_systemd_action --service_name=nginx --action=reload
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_script_progression --message="Installation of $app completed" --time --last

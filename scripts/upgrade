@@ -1,77 +1,154 @@
 #!/bin/bash
 
-# Exit on command errors and treat unset variables as an error
-set -eu
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# See comments in install script
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# LOAD SETTINGS
+#=================================================
+ynh_script_progression --message="Loading installation settings..." --time --weight=1
+
 app=$YNH_APP_INSTANCE_NAME
 final_path=/opt/yunohost/$app
 
-# Source YunoHost helpers
-source /usr/share/yunohost/helpers
-
-# Stop jellyfin service
-systemctl stop jellyfin
-
 #=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
+# CHECK VERSION
 #=================================================
 
-ynh_app_setting_set "$app" final_path "$final_path"
+### This helper will compare the version of the currently installed app and the version of the upstream package.
+### $upgrade_type can have 2 different values
+### - UPGRADE_APP if the upstream app version has changed
+### - UPGRADE_PACKAGE if only the YunoHost package has changed
+### ynh_check_app_version_changed will stop the upgrade if the app is up to date.
+### UPGRADE_APP should be used to upgrade the core app only if there's an upgrade to do.
+upgrade_type=$(ynh_check_app_version_changed)
 
-# Download, check integrity, uncompress and patch the source from jellyfin-ffmpeg-[arch].src
-case $(uname -m) in
-    x86_64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-amd64" ;;
-    aarch64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-arm64" ;;
-    armv7l) ynh_setup_source "$final_path" "jellyfin-ffmpeg-armhf" ;;
-    *) ynh_die "Unknown arch" ;;
-esac
+#=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --time --weight=1
 
-# Download, check integrity, uncompress and patch the source from jellyfin-server-[arch].src
-case $(uname -m) in
-    x86_64) ynh_setup_source "$final_path" "jellyfin-server-amd64" ;;
-    aarch64) ynh_setup_source "$final_path" "jellyfin-server-arm64" ;;
-    armv7l) ynh_setup_source "$final_path" "jellyfin-server-armhf" ;;
-    *) ynh_die "Unknown arch" ;;
-esac
+# Backup the current version of the app
+ynh_backup_before_upgrade
+ynh_clean_setup () {
+	# restore it if the upgrade fails
+	ynh_restore_upgradebackup
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
 
-# Download, check integrity, uncompress and patch the source from jellyfin-web.src
-case $(uname -m) in
-    x86_64) ynh_setup_source "$final_path" "jellyfin-web" ;;
-    aarch64) ynh_setup_source "$final_path" "jellyfin-web" ;;
-    armv7l) ynh_setup_source "$final_path" "jellyfin-web" ;;
-    *) ynh_die "Unknown arch" ;;
-esac
+#=================================================
+# STANDARD UPGRADE STEPS
+#=================================================
+# STOP SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Stopping a systemd service..." --time --weight=1
 
-#==============================================
-# INSTALL JELLYFIN
-#==============================================
-
-dpkg --install "$final_path"/jellyfin-ffmpeg.deb
-dpkg --install "$final_path"/jellyfin-server.deb
-dpkg --install "$final_path"/jellyfin-web.deb
-rm "$final_path"/*.deb
+ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
 
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
+ynh_script_progression --message="Upgrading nginx web server configuration..." --time --weight=1
 
 # Create a dedicated nginx config
-#ynh_add_nginx_config
+ynh_add_nginx_config
 
 #=================================================
-# UPGRADE CONFIG
+# UPGRADE DEPENDENCIES
 #=================================================
-#cp -a ../conf/loolwsd.xml /etc/loolwsd
-#ynh_replace_string "__NEXTCLOUDDOMAIN__" "$nextcloud_domain" "/etc/loolwsd/loolwsd.xml"
-#ynh_replace_string "__PASSWORD__" "$password" "/etc/loolwsd/loolwsd.xml"
-#systemctl restart loolwsd
+ynh_script_progression --message="Upgrading dependencies..." --time --weight=1
 
-# If app is public, add url to SSOWat conf as skipped_uris
-#if [[ $is_public -eq 1 ]]; then
-  # See install script
-#  ynh_app_setting_set "$app" unprotected_uris "/"
-#fi
+ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" --package="jellyfin" --key="https://repo.jellyfin.org/debian/jellyfin_team.gpg.key"
 
-# Start jellyfin service
-systemctl start jellyfin
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Making sure dedicated system user exists..." --time --weight=1
+
+# Create a dedicated user (if not existing)
+ynh_system_user_create --username=$app
+
+#=================================================
+# SETUP SYSTEMD
+#=================================================
+ynh_script_progression --message="Upgrading systemd configuration..." --time --weight=1
+
+# Create a dedicated systemd config
+ynh_add_systemd_config
+
+#=================================================
+# MODIFY A CONFIG FILE
+#=================================================
+
+### Verify the checksum of a file, stored by `ynh_store_file_checksum` in the install script.
+### And create a backup of this file if the checksum is different. So the file will be backed up if the admin had modified it.
+#ynh_backup_if_checksum_is_different --file="$final_path/CONFIG_FILE"
+
+#ynh_replace_string --match_string="match_string" --replace_string="replace_string" --target_file="$final_path/CONFIG_FILE"
+
+# Recalculate and store the checksum of the file for the next upgrade.
+#ynh_store_file_checksum --file="$final_path/CONFIG_FILE"
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# SECURE FILES AND DIRECTORIES
+#=================================================
+
+# Set permissions on app files
+chown -R $app: $final_path
+chown -R $app: /var/lib/jellyfin
+
+#=================================================
+# SETUP LOGROTATE
+#=================================================
+ynh_script_progression --message="Upgrading logrotate configuration..." --time --weight=1
+
+# Use logrotate to manage app-specific logfile(s)
+ynh_use_logrotate --non-append
+
+#=================================================
+# INTEGRATE SERVICE IN YUNOHOST
+#=================================================
+ynh_script_progression --message="Integrating service in YunoHost..." --time --weight=1
+
+yunohost service add $app --description "Jellyfin media center" --log "/var/log/$app/$app.log"
+
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Starting a systemd service..." --time --weight=1
+
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+
+#=================================================
+# SETUP SSOWAT
+#=================================================
+ynh_script_progression --message="Upgrading SSOwat configuration..." --time --weight=1
+
+# Make app public if necessary
+if [ $is_public -eq 1 ]
+then
+	# unprotected_uris allows SSO credentials to be passed anyway
+	ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
+fi
+
+#=================================================
+# RELOAD NGINX
+#=================================================
+ynh_script_progression --message="Reloading nginx web server..." --time --weight=1
+
+ynh_systemd_action --service_name=nginx --action=reload
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_script_progression --message="Upgrade of $app completed" --time --last
