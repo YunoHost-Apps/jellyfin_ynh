@@ -15,7 +15,7 @@ source /usr/share/yunohost/helpers
 ynh_script_progression --message="Loading installation settings..." --time --weight=1
 
 app=$YNH_APP_INSTANCE_NAME
-final_path=/opt/yunohost/$app
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 
 #=================================================
 # CHECK VERSION
