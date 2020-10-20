@@ -65,7 +65,7 @@ ynh_add_nginx_config
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..." --time --weight=1
 
-ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" --package="jellyfin" --key="https://repo.jellyfin.org/debian/jellyfin_team.gpg.key"
+ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/$( awk -F'=' '/^ID=/{ print $NF }' /etc/os-release ) $( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release ) main" --key="https://repo.jellyfin.org/jellyfin_team.gpg.key" --package="jellyfin=$pkg_version"
 
 #=================================================
 # CREATE DEDICATED USER

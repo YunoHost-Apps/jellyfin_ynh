@@ -99,8 +99,7 @@ ynh_script_progression --message="Installing dependencies..." --time --weight=1
 ###		- As well as the section "REINSTALL DEPENDENCIES" in the restore script
 ###		- And the section "UPGRADE DEPENDENCIES" in the upgrade script
 
-#ynh_add_app_dependencies --package="at libass5 libbluray1 libdrm2 libmp3lame0 libopus0 libtheora0 libva-drm1 libva-x11-1 libva1 libvdpau1 libvorbis0a libvorbisenc2 libx264-148 libx265-95 libzvbi0 libwebpmux2"
-ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" --package="jellyfin" --key="https://repo.jellyfin.org/debian/jellyfin_team.gpg.key"
+ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/$( awk -F'=' '/^ID=/{ print $NF }' /etc/os-release ) $( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release ) main" --key="https://repo.jellyfin.org/jellyfin_team.gpg.key" --package="jellyfin=$pkg_version"
 
 #=================================================
 # NGINX CONFIGURATION
