@@ -6,7 +6,7 @@
         "en": "The free software media system that puts you in control of managing and streaming your media.",
         "fr": "Le système multimédia libre qui vous donne le contrôle pour gérer et diffuser vos médias."
     },
-    "version": "10.6.4",
+    "version": "10.6.4~ynh1",
     "url": "https://github.com/jellyfin/jellyfin",
     "license": "GPL-2.0",
     "maintainer": {
@@ -14,7 +14,7 @@
         "email": "liberodark@gmail.com"
     },
     "requirements": {
-        "yunohost": ">= 2.7.2"
+        "yunohost": ">= 3.8.1"
     },
     "multi_instance": false,
     "services": [
@@ -30,7 +30,6 @@
                 },
                 "example": "example.com"
             },
-
             {
                 "name": "path",
                 "type": "path",
@@ -41,15 +40,14 @@
                 "example": "/jellyfin",
                 "default": "/jellyfin"
             },
-
             {
                 "name": "is_public",
                 "type": "boolean",
                 "ask": {
-                    "en": "Is it a public site ?",
+                    "en": "Is it a public site?",
                     "fr": "Est-ce un site public ?"
                 },
-                "default": "true"
+                "default": true
             }
         ]
     }
