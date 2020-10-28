@@ -209,6 +209,7 @@ ynh_script_progression --message="Starting a systemd service..." --time --weight
 
 # Start a systemd service
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+sleep 5
 
 #=================================================
 # SETUP SSOWAT
