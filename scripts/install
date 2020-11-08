@@ -92,9 +92,8 @@ ynh_system_user_create --username=$app
 
 # Load services once to generate system.xml
 systemctl enable jellyfin
-systemctl start jellyfin
-sleep 5
-systemctl stop jellyfin
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app$(date "+%Y%m%d").log" --line_match="Startup complete"
+ynh_systemd_action --service_name=$app --action="stop"
 
 # Port config
 ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/system.xml"
@@ -136,8 +135,7 @@ yunohost service add $app --description "Jellyfin media center" --log "/var/log/
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
 # Start a systemd service
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
-sleep 5
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app$(date "+%Y%m%d").log" --line_match="Startup complete"
 
 #=================================================
 # SETUP SSOWAT
