@@ -142,7 +142,7 @@ sleep 5
 #=================================================
 # SETUP SSOWAT
 #=================================================
-ynh_script_progression --message="Configuring SSOwat..." --time --weight=2
+ynh_script_progression --message="Configuring SSOwat..." --weight=2
 
 # Make app public if necessary
 if [ $is_public -eq 1 ]
