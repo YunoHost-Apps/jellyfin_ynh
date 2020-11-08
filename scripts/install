@@ -92,8 +92,9 @@ ynh_system_user_create --username=$app
 
 # Load services once to generate system.xml
 systemctl enable jellyfin
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Startup complete"
-ynh_systemd_action --service_name=$app --action="stop"
+systemctl start jellyfin
+sleep 5
+systemctl stop jellyfin
 
 # Port config
 ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/system.xml"
