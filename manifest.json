@@ -8,7 +8,7 @@
     },
     "version": "10.6.4~ynh1",
     "url": "https://github.com/jellyfin/jellyfin",
-    "license": "GPL-2.0",
+    "license": "GPL-2.0-only",
     "maintainer": {
         "name": "liberodark",
         "email": "liberodark@gmail.com"
