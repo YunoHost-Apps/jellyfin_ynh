@@ -105,8 +105,14 @@ fi
 #=================================================
 # SPECIFIC MODIFICATIONS
 #=================================================
-# ...
+# BASE URL
 #=================================================
+
+# Change the path in system.xml config file
+if [ $change_path -eq 1 ]
+then
+	ynh_replace_string --match_string="<BaseUrl>$old_path</BaseUrl>" --replace_string="<BaseUrl>$new_path</BaseUrl>" --target_file="/etc/jellyfin/system.xml"
+fi
 
 #=================================================
 # GENERIC FINALISATION
