@@ -102,9 +102,6 @@ ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNum
 # BaseUrl config
 ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="/etc/jellyfin/system.xml"
 
-# Port config
-ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/system.xml"
-
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
