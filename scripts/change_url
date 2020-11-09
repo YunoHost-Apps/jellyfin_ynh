@@ -21,6 +21,8 @@ new_path=$YNH_APP_NEW_PATH
 
 app=$YNH_APP_INSTANCE_NAME
 
+port=$(ynh_app_setting_get --app="$app" --key=port)
+
 #=================================================
 # LOAD SETTINGS
 #=================================================
