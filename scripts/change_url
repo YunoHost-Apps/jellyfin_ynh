@@ -111,8 +111,8 @@ fi
 # Change the path in system.xml config file
 if [ $change_path -eq 1 ]
 then
-	# If the Startup Wizard was not complete, <BaseUrl /> was reverted back to default when stopping the service
-	if grep -q "<IsStartupWizardCompleted>false</IsStartupWizardCompleted>" "/etc/jellyfin/system.xml"; then
+	# If somehow <BaseUrl /> was not replaced during install
+	if grep -q "<BaseUrl />" "/etc/jellyfin/system.xml"; then
 		ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$new_path</BaseUrl>" --target_file="/etc/jellyfin/system.xml"
 	else
 		ynh_replace_string --match_string="<BaseUrl>$old_path</BaseUrl>" --replace_string="<BaseUrl>$new_path</BaseUrl>" --target_file="/etc/jellyfin/system.xml"
