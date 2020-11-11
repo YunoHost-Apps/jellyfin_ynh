@@ -17,6 +17,7 @@ ynh_script_progression --message="Loading installation settings..." --weight=1
 app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
+admin=$(ynh_app_setting_get --app=$app --key=admin)
 is_public=$(ynh_app_setting_get --app=$app --key=is_public)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 port=$(ynh_app_setting_get --app=$app --key=port)
@@ -74,6 +75,19 @@ ynh_script_progression --message="Making sure dedicated system user exists..." -
 ynh_system_user_create --username=$app
 
 #=================================================
+# INSTALL LDAP PLUGIN
+#=================================================
+
+# Install it only if the plugin directory does not exist
+if [ ! -e "/var/lib/jellyfin/plugins/LDAP Authentication" ]; then
+	ynh_script_progression --message="Installing LDAP plugin..." --weight=2
+
+	ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
+	mkdir -p /var/lib/jellyfin/plugins/configurations/
+	cp ../conf/LDAP-Auth.xml /var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml
+fi
+
+#=================================================
 # GENERIC FINALIZATION
 #=================================================
 # SECURE FILES AND DIRECTORIES
@@ -90,6 +104,16 @@ ynh_script_progression --message="Upgrading logrotate configuration..." --weight
 
 # Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
+
+#=================================================
+# SETUP SSOWAT
+#=================================================
+ynh_script_progression --message="Upgrading permissions configuration..." --weight=1
+
+# Create the admin permission if needed
+if ! ynh_permission_exists --permission "admin"; then
+	ynh_permission_create --permission "admin" --allowed $admin
+fi
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
