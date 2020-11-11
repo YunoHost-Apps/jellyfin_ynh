@@ -1,7 +1,0 @@
-SOURCE_URL=https://github.com/YunoHost-Apps/jellyfin_ynh/releases/download/10.6.0/jellyfin-ffmpeg_4.3.1-1-stretch_arm64.deb
-SOURCE_SUM=17ca53a20ab0668f2d5762f0a183c6bcf192cc901e3223e670d7f5c9d7d0c6c7da432f0cdb2fe98108f84d4cb3ac775f84cf5816b8d43d2080a280dab8ba6c32
-SOURCE_SUM_PRG=sha512sum
-SOURCE_FORMAT=deb
-SOURCE_IN_SUBDIR=false
-SOURCE_EXTRACT=false
-SOURCE_FILENAME=jellyfin-ffmpeg.deb
