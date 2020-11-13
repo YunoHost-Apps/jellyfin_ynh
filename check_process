@@ -1,4 +1,4 @@
-# See here for more informations
+# See here for more information
 # https://github.com/YunoHost/package_check#syntax-check_process-file
 
 # Move this file from check_process.default to check_process when you have filled it.
@@ -6,37 +6,35 @@
 ;; Test complet
 	; Manifest
 		domain="domain.tld"	(DOMAIN)
-		path="/"	(PATH)	
+		path="/path"	(PATH)
+		admin="john"	(USER)
+#		language="fr"
 		is_public=1	(PUBLIC|public=1|private=0)
 #		password="pass"
-#		nextclouddomain="domain.tld"
-		port="9980"	(PORT)
+		port="666"	(PORT)
 	; Checks
 		pkg_linter=1
-		setup_sub_dir=0
+		setup_sub_dir=1
 		setup_root=1
 		setup_nourl=0
-		setup_private=0
+		setup_private=1
 		setup_public=1
 		upgrade=1
+		upgrade=1	from_commit=3e38d2ec954f6b333c3c2ed95e0e75c0df2fe966
 		backup_restore=1
-		multi_instance=1
-		incorrect_path=1
+		multi_instance=0
+		# This test is no longer necessary since the version 2.7 (PR: https://github.com/YunoHost/yunohost/pull/304), you can still do it if your app could be installed with this version.
+		# incorrect_path=1
 		port_already_use=0
-		change_url=0
+		change_url=1
 ;;; Levels
-	Level 1=auto
-	Level 2=auto
-	Level 3=auto
-# Level 4: 
-	Level 4=1 (This app supports the Nextcloud LDAP auth)
-# Level 5: 
+	# If the level 5 (Package linter) is forced to 1. Please add justifications here.
 	Level 5=auto
-	Level 6=auto
-	Level 7=auto
-	Level 8=0
-	Level 9=0
-	Level 10=0
 ;;; Options
 Email=
 Notification=none
+;;; Upgrade options
+	; commit=3e38d2ec954f6b333c3c2ed95e0e75c0df2fe966
+		name=2020-09-07 commit
+#		manifest_arg=domain=DOMAIN&path=PATH&admin=USER&language=fr&is_public=1&password=pass&port=666&
+		manifest_arg=domain=DOMAIN&path=PATH&admin=USER&is_public=1&port=666&
