@@ -73,18 +73,47 @@ ynh_system_user_create --username="$app"
 #=================================================
 
 # Restore permissions on app files
-chown -R $app: $final_path
-chown -R $app: /var/lib/jellyfin
+chown -R "$app": "$final_path"
+chown -R "$app": /var/lib/jellyfin
 
 #=================================================
-# SPECIFIC RESTORATION
+# DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-# REINSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Reinstalling dependencies..." --weight=7
 
-# Define and install dependencies
-ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" --package="jellyfin" --key="https://repo.jellyfin.org/debian/jellyfin_team.gpg.key"
+ynh_app_setting_set "$app" final_path "$final_path"
+
+# Download, check integrity, uncompress and patch the source from jellyfin-ffmpeg-[arch].src
+case $(uname -m) in
+    x86_64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-amd64" ;;
+    aarch64) ynh_setup_source "$final_path" "jellyfin-ffmpeg-arm64" ;;
+    armv7l) ynh_setup_source "$final_path" "jellyfin-ffmpeg-armhf" ;;
+    *) ynh_die "Unknown arch" ;;
+esac
+
+# Download, check integrity, uncompress and patch the source from jellyfin-server-[arch].src
+case $(uname -m) in
+    x86_64) ynh_setup_source "$final_path" "jellyfin-server-amd64" ;;
+    aarch64) ynh_setup_source "$final_path" "jellyfin-server-arm64" ;;
+    armv7l) ynh_setup_source "$final_path" "jellyfin-server-armhf" ;;
+    *) ynh_die "Unknown arch" ;;
+esac
+
+# Download, check integrity, uncompress and patch the source from jellyfin-web.src
+case $(uname -m) in
+    x86_64) ynh_setup_source "$final_path" "jellyfin-web" ;;
+    aarch64) ynh_setup_source "$final_path" "jellyfin-web" ;;
+    armv7l) ynh_setup_source "$final_path" "jellyfin-web" ;;
+    *) ynh_die "Unknown arch" ;;
+esac
+
+#==============================================
+# INSTALL JELLYFIN
+#==============================================
+
+dpkg --install "$final_path"/jellyfin-ffmpeg.deb
+dpkg --install "$final_path"/jellyfin-server.deb
+dpkg --install "$final_path"/jellyfin-web.deb
+rm "$final_path"/*.deb
 
 #=================================================
 # RESTORE SYSTEMD
@@ -93,21 +122,21 @@ ynh_script_progression --message="Restoring the systemd configuration..." --weig
 
 ynh_restore_file --origin_path="/lib/systemd/system/jellyfin.service" 2>/dev/null
 ynh_restore_file --origin_path="/etc/systemd/system/jellyfin.service.d" 2>/dev/null
-systemctl enable $app.service
+systemctl enable "$app".service
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description "Jellyfin media center" --log "/var/log/$app/$app.log"
+yunohost service add "$app" --description "Jellyfin media center" --log "/var/log/$app/$app.log"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Startup complete"
+ynh_systemd_action --service_name="$app" --action="restart" --log_path="systemd" --line_match="Startup complete"
 
 #=================================================
 # RESTORE THE LOGROTATE CONFIGURATION
