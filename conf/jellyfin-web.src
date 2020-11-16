@@ -1,0 +1,7 @@
+SOURCE_URL=https://github.com/YunoHost-Apps/jellyfin_ynh/releases/download/10.6.4/jellyfin-web_10.6.4-1_all.deb
+SOURCE_SUM=834368480c942f32171967b0895972f75aa3d77c2a2fb131f67b81fd8dee438b8a00c48dd0901aa3e12d0fa369176e06f9a8662046086f43b94ff6c7ef41a591
+SOURCE_SUM_PRG=sha512sum
+SOURCE_FORMAT=deb
+SOURCE_IN_SUBDIR=false
+SOURCE_EXTRACT=false
+SOURCE_FILENAME=jellyfin-web.deb

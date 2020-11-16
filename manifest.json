@@ -3,18 +3,18 @@
     "id": "jellyfin",
     "packaging_format": 1,
     "description": {
-        "en": "Media System that manage and stream your media.",
-        "fr": "Système multimédia qui gère et diffuse vos médias."
+        "en": "The free software media system that puts you in control of managing and streaming your media.",
+        "fr": "Le système multimédia libre qui vous donne le contrôle pour gérer et diffuser vos médias."
     },
-    "version": "10.6.4~ynh1",
+    "version": "10.6.4",
     "url": "https://github.com/jellyfin/jellyfin",
-    "license": "GPL-2.0-only",
+    "license": "GPL-2.0",
     "maintainer": {
         "name": "liberodark",
         "email": "liberodark@gmail.com"
     },
     "requirements": {
-        "yunohost": ">= 3.8.1"
+        "yunohost": ">= 2.7.2"
     },
     "multi_instance": false,
     "services": [
@@ -30,28 +30,26 @@
                 },
                 "example": "example.com"
             },
+
             {
                 "name": "path",
                 "type": "path",
                 "ask": {
-                    "en": "Choose a path for Jellyfin",
-                    "fr": "Choisissez un chemin pour Jellyfin"
+                    "en": "Choose a path for Jellyfin /jellyfin is accepted",
+                    "fr": "Choisissez un chemin pour Jellyfin /jellyfin est accepté"
                 },
                 "example": "/jellyfin",
                 "default": "/jellyfin"
             },
+
             {
                 "name": "is_public",
                 "type": "boolean",
                 "ask": {
-                    "en": "Is it a public application?",
-                    "fr": "Est-ce une application publique ?"
+                    "en": "Is it a public site ?",
+                    "fr": "Est-ce un site public ?"
                 },
-                "default": true,
-                "help": {
-                    "en": "Jellyfin has its own login system, you should make it public to let external clients access it (mobile app, etc.).",
-                    "fr": "Jellyfin a son propre système de connexion, vous devriez la laisser publique pour permettre la connexion de clients externes (app mobile, etc.)."
-                }
+                "default": "true"
             }
         ]
     }
