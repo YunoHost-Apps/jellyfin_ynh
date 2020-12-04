@@ -125,7 +125,7 @@ ynh_use_logrotate
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description "Jellyfin media center" --log "/var/log/$app/$app.log"
+yunohost service add $app --description="Jellyfin media center" --log="/var/log/$app/$app.log"
 
 #=================================================
 # START SYSTEMD SERVICE
