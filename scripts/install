@@ -91,7 +91,7 @@ ynh_system_user_create --username=$app
 #=================================================
 
 # Load services once to generate system.xml
-systemctl enable jellyfin
+systemctl enable jellyfin --quiet
 systemctl start jellyfin
 sleep 5
 systemctl stop jellyfin
