@@ -57,7 +57,7 @@ ynh_app_setting_set --app=$app --key=is_public --value=$is_public
 #=================================================
 # FIND AND OPEN A PORT
 #=================================================
-ynh_script_progression --message="Configuring firewall..." --weight=1
+ynh_script_progression --message="Finding an available port..." --weight=1
 
 # Find an available port
 port=$(ynh_find_port --port=8095)
@@ -125,7 +125,7 @@ ynh_use_logrotate
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description "Jellyfin media center" --log "/var/log/$app/$app.log"
+yunohost service add $app --description="Jellyfin media center" --log="/var/log/$app/$app.log"
 
 #=================================================
 # START SYSTEMD SERVICE
