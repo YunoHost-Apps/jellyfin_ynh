@@ -20,7 +20,8 @@
 		setup_private=1
 		setup_public=1
 		upgrade=1
-		upgrade=1	from_commit=3e38d2ec954f6b333c3c2ed95e0e75c0df2fe966
+# Disabled because Jellyfin's team decided to remove old package...
+#		upgrade=1	from_commit=3e38d2ec954f6b333c3c2ed95e0e75c0df2fe966
 		backup_restore=1
 		multi_instance=0
 		port_already_use=0
@@ -31,5 +32,4 @@ Notification=none
 ;;; Upgrade options
 	; commit=3e38d2ec954f6b333c3c2ed95e0e75c0df2fe966
 		name=2020-09-07 commit
-#		manifest_arg=domain=DOMAIN&path=PATH&admin=USER&language=fr&is_public=1&password=pass&port=666&
 		manifest_arg=domain=DOMAIN&path=PATH&admin=USER&is_public=1&port=666&
