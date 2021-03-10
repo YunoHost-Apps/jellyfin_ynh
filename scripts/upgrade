@@ -17,6 +17,7 @@ ynh_script_progression --message="Loading installation settings..." --weight=1
 app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
+admin=$(ynh_app_setting_get --app=$app --key=admin)
 is_public=$(ynh_app_setting_get --app=$app --key=is_public)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 port=$(ynh_app_setting_get --app=$app --key=port)
@@ -74,6 +75,41 @@ ynh_script_progression --message="Making sure dedicated system user exists..." -
 ynh_system_user_create --username=$app
 
 #=================================================
+# MODIFY A CONFIG FILE
+#=================================================
+
+# Check if network.xml exists (introduced in v10.7)
+if [ -z "/etc/jellyfin/network.xml" ]; then
+	ynh_script_progression --message="Configuring the settings..." --weight=1
+
+	# Load services once to generate network.xml
+	systemctl enable jellyfin
+	systemctl start jellyfin
+	sleep 5
+	systemctl stop jellyfin
+
+	# Port config
+	ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="/etc/jellyfin/network.xml"
+	ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/network.xml"
+
+	# BaseUrl config
+	ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="/etc/jellyfin/network.xml"
+fi
+
+#=================================================
+# INSTALL LDAP PLUGIN
+#=================================================
+
+# Install it only if the plugin directory does not exist
+if [ ! -e "/var/lib/jellyfin/plugins/LDAP Authentication" ]; then
+	ynh_script_progression --message="Installing LDAP plugin..." --weight=2
+
+	ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
+	mkdir -p /var/lib/jellyfin/plugins/configurations/
+	cp ../conf/LDAP-Auth.xml /var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml
+fi
+
+#=================================================
 # GENERIC FINALIZATION
 #=================================================
 # SECURE FILES AND DIRECTORIES
@@ -90,6 +126,16 @@ ynh_script_progression --message="Upgrading logrotate configuration..." --weight
 
 # Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
+
+#=================================================
+# SETUP SSOWAT
+#=================================================
+ynh_script_progression --message="Upgrading permissions configuration..." --weight=1
+
+# Create the admin permission if needed
+if ! ynh_permission_exists --permission "admin"; then
+	ynh_permission_create --permission "admin" --allowed $admin
+fi
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
