@@ -99,10 +99,11 @@ sleep 5
 systemctl stop jellyfin
 
 # Port config
-ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/system.xml"
+ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="/etc/jellyfin/network.xml"
+ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/network.xml"
 
 # BaseUrl config
-ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="/etc/jellyfin/system.xml"
+ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="/etc/jellyfin/network.xml"
 
 # Disable Setup Wizard
 ynh_replace_string --match_string="<IsStartupWizardCompleted>false</IsStartupWizardCompleted>" --replace_string="<IsStartupWizardCompleted>true</IsStartupWizardCompleted>" --target_file="/etc/jellyfin/system.xml"

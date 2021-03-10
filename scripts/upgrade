@@ -75,6 +75,28 @@ ynh_script_progression --message="Making sure dedicated system user exists..." -
 ynh_system_user_create --username=$app
 
 #=================================================
+# MODIFY A CONFIG FILE
+#=================================================
+
+# Check if network.xml exists (introduced in v10.7)
+if [ -z "/etc/jellyfin/network.xml" ]; then
+	ynh_script_progression --message="Configuring the settings..." --weight=1
+
+	# Load services once to generate network.xml
+	systemctl enable jellyfin
+	systemctl start jellyfin
+	sleep 5
+	systemctl stop jellyfin
+
+	# Port config
+	ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="/etc/jellyfin/network.xml"
+	ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/network.xml"
+
+	# BaseUrl config
+	ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="/etc/jellyfin/network.xml"
+fi
+
+#=================================================
 # INSTALL LDAP PLUGIN
 #=================================================
 
