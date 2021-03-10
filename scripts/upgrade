@@ -47,6 +47,12 @@ if [ -z "$config_path" ]; then
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 fi
 
+# If jellyfin doesn't belong to render group, add it
+if [ ! $(grep "jellyfin:x:[0-9]*:render" /etc/group) ]
+then
+    adduser $app render
+fi
+
 # Cleaning legacy permissions
 if ynh_legacy_permissions_exists; then
 	ynh_legacy_permissions_delete_all
@@ -58,7 +64,10 @@ if ! ynh_permission_exists --permission="admin"; then
 	# Create the required permissions
 	ynh_permission_create --permission="admin" --allowed=$admin
 fi
+<<<<<<< HEAD
 
+=======
+>>>>>>> Add jellyfin to render group
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
