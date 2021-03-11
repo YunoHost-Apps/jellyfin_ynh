@@ -3,6 +3,8 @@
 [![Integration level](https://dash.yunohost.org/integration/jellyfin.svg)](https://dash.yunohost.org/appci/app/jellyfin) ![](https://ci-apps.yunohost.org/ci/badges/jellyfin.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/jellyfin.maintain.svg)  
 [![Install Jellyfin with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jellyfin)
 
+*[Lire ce readme en français.](./README_fr.md)*
+
 > *This package allows you to install Jellyfin quickly and simply on a YunoHost server.  
 If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/install) to learn how to install it.*
 
@@ -17,22 +19,22 @@ Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin
 
 ## Demo
 
-* [Official demo](Link to a demo site for this app.)
+* [Official demo](https://demo.jellyfin.org/)
 
 ## Configuration
 
-How to configure this app: From an admin panel, a plain file with SSH, or any other way.
+ * How to configure this app: From an admin panel.
 
 ## Documentation
 
- * Official documentation: Link to the official documentation of this app
+ * Official documentation: https://jellyfin.org/docs/
  * YunoHost documentation: If specific documentation is needed, feel free to contribute.
 
 ## YunoHost specific features
 
 #### Multi-user support
 
- * Are LDAP and HTTP auth supported? **No**
+ * Are LDAP and HTTP auth supported? **Yes**
  * Can the app be used by multiple users? **Yes**
 
 #### Supported architectures
