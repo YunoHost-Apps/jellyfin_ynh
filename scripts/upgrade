@@ -51,6 +51,8 @@ fi
 if [ ! $(grep "jellyfin:x:[0-9]*:render" /etc/group) ]
 then
     adduser $app render
+else
+	echo "render group does not exist"
 fi
 
 # Cleaning legacy permissions

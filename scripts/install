@@ -114,7 +114,7 @@ if grep -q render /etc/group
 		# Add user to render group
 		adduser $app render
     else
-		echo "render does not exist"
+		echo "render group does not exist"
 fi
 
 #=================================================
