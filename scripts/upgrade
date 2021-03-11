@@ -18,7 +18,6 @@ app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
 admin=$(ynh_app_setting_get --app=$app --key=admin)
-is_public=$(ynh_app_setting_get --app=$app --key=is_public)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 port=$(ynh_app_setting_get --app=$app --key=port)
 
@@ -27,6 +26,23 @@ port=$(ynh_app_setting_get --app=$app --key=port)
 #=================================================
 
 upgrade_type=$(ynh_check_app_version_changed)
+
+#=================================================
+# ENSURE DOWNWARD COMPATIBILITY
+#=================================================
+ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
+
+# Cleaning legacy permissions
+if ynh_legacy_permissions_exists; then
+	ynh_legacy_permissions_delete_all
+
+	ynh_app_setting_delete --app=$app --key=is_public
+fi
+
+if ! ynh_permission_exists --permission="admin"; then
+	# Create the required permissions
+	ynh_permission_create --permission="admin" --allowed=$admin
+fi
 
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
@@ -83,7 +99,7 @@ if [ -z "/etc/jellyfin/network.xml" ]; then
 	ynh_script_progression --message="Configuring the settings..." --weight=1
 
 	# Load services once to generate network.xml
-	systemctl enable jellyfin
+	systemctl enable jellyfin --quiet
 	systemctl start jellyfin
 	sleep 5
 	systemctl stop jellyfin
@@ -126,16 +142,6 @@ ynh_script_progression --message="Upgrading logrotate configuration..." --weight
 
 # Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
-
-#=================================================
-# SETUP SSOWAT
-#=================================================
-ynh_script_progression --message="Upgrading permissions configuration..." --weight=1
-
-# Create the admin permission if needed
-if ! ynh_permission_exists --permission "admin"; then
-	ynh_permission_create --permission "admin" --allowed $admin
-fi
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
