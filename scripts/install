@@ -26,6 +26,7 @@ ynh_abort_if_errors
 
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
+admin=$YNH_APP_ARG_ADMIN
 is_public=$YNH_APP_ARG_IS_PUBLIC
 
 app=$YNH_APP_INSTANCE_NAME
@@ -49,8 +50,8 @@ ynh_script_progression --message="Storing installation settings..." --weight=2
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
+ynh_app_setting_set --app=$app --key=admin --value=$admin
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-ynh_app_setting_set --app=$app --key=is_public --value=$is_public
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -89,6 +90,7 @@ ynh_system_user_create --username=$app
 #=================================================
 # MODIFY A CONFIG FILE
 #=================================================
+ynh_script_progression --message="Configuring the settings..." --weight=1
 
 # Load services once to generate system.xml
 systemctl enable jellyfin --quiet
@@ -97,10 +99,23 @@ sleep 5
 systemctl stop jellyfin
 
 # Port config
-ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/system.xml"
+ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="/etc/jellyfin/network.xml"
+ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/network.xml"
 
 # BaseUrl config
-ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="/etc/jellyfin/system.xml"
+ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="/etc/jellyfin/network.xml"
+
+# Disable Setup Wizard
+ynh_replace_string --match_string="<IsStartupWizardCompleted>false</IsStartupWizardCompleted>" --replace_string="<IsStartupWizardCompleted>true</IsStartupWizardCompleted>" --target_file="/etc/jellyfin/system.xml"
+
+#=================================================
+# INSTALL LDAP PLUGIN
+#=================================================
+ynh_script_progression --message="Installing LDAP plugin..." --weight=2
+
+ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
+mkdir -p /var/lib/jellyfin/plugins/configurations/
+cp ../conf/LDAP-Auth.xml /var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml
 
 #=================================================
 # GENERIC FINALIZATION
@@ -138,15 +153,18 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --l
 #=================================================
 # SETUP SSOWAT
 #=================================================
-ynh_script_progression --message="Configuring SSOwat..." --weight=2
+ynh_script_progression --message="Configuring permissions..." --weight=1
 
-# Make app public if necessary or protect it
+# Make app public if necessary
 if [ $is_public -eq 1 ]
 then
 	# Everyone can access the app.
 	# The "main" permission is automatically created before the install script.
-	 ynh_permission_update --permission "main" --add "visitors"
+	ynh_permission_update --permission="main" --add="visitors"
 fi
+
+# Only the admin can access the admin panel of the app (if the app has an admin panel)
+ynh_permission_create --permission="admin" --allowed=$admin
 
 #=================================================
 # RELOAD NGINX
