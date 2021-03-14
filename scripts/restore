@@ -91,7 +91,8 @@ ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/debian $( l
 #=================================================
 ynh_script_progression --message="Restoring the systemd configuration..." --weight=2
 
-ynh_restore_file --origin_path="/lib/systemd/system/jellyfin.service" 2>/dev/null
+ynh_restore_file --origin_path="/lib/systemd/system/jellyfin.service" --not_mandatory 2>/dev/null
+ynh_restore_file --origin_path="/usr/lib/systemd/system/jellyfin.service" --not_mandatory 2>/dev/null
 ynh_restore_file --origin_path="/etc/systemd/system/jellyfin.service.d" 2>/dev/null
 systemctl enable $app.service --quiet
 
