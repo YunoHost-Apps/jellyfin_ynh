@@ -14,7 +14,6 @@ source /usr/share/yunohost/helpers
 #=================================================
 
 ynh_clean_setup () {
-	### Remove this function if there's nothing to clean before calling the remove script.
 	ynh_clean_check_starting
 }
 # Exit if an error occurs during the execution of the script
@@ -36,9 +35,10 @@ app=$YNH_APP_INSTANCE_NAME
 #=================================================
 ynh_script_progression --message="Validating installation parameters..." --weight=1
 
-final_path=/etc/jellyfin
+final_path=/var/lib/jellyfin
+config_path=/etc/jellyfin
 test ! -e "$final_path" || ynh_die --message="There is already a directory: $final_path "
-test ! -e "/var/lib/jellyfin" || ynh_die --message="There is already a directory: /var/lib/jellyfin "
+test ! -e "$config_path" || ynh_die --message="There is already a directory: $config_path "
 
 # Register (book) web path
 ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
@@ -93,20 +93,21 @@ ynh_system_user_create --username=$app
 ynh_script_progression --message="Configuring the settings..." --weight=1
 
 # Load services once to generate system.xml
-systemctl enable jellyfin --quiet
-systemctl start jellyfin
-sleep 5
-systemctl stop jellyfin
+ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Startup complete"
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server"
 
 # Port config
-ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="/etc/jellyfin/network.xml"
-ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="/etc/jellyfin/network.xml"
+ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="$config_path/network.xml"
+ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="$config_path/network.xml"
 
 # BaseUrl config
-ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="/etc/jellyfin/network.xml"
+ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="$config_path/network.xml"
 
 # Disable Setup Wizard
-ynh_replace_string --match_string="<IsStartupWizardCompleted>false</IsStartupWizardCompleted>" --replace_string="<IsStartupWizardCompleted>true</IsStartupWizardCompleted>" --target_file="/etc/jellyfin/system.xml"
+ynh_replace_string --match_string="<IsStartupWizardCompleted>false</IsStartupWizardCompleted>" --replace_string="<IsStartupWizardCompleted>true</IsStartupWizardCompleted>" --target_file="$config_path/system.xml"
+
+ynh_store_file_checksum --file="$config_path/network.xml"
+ynh_store_file_checksum --file="$config_path/system.xml"
 
 #=================================================
 # INSTALL LDAP PLUGIN
@@ -115,32 +116,24 @@ ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
 ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
 mkdir -p /var/lib/jellyfin/plugins/configurations/
-cp ../conf/LDAP-Auth.xml /var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml
+ynh_add_config --template="../conf/LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
+ynh_script_progression --message="Securing files and directories..."
 
 # Set permissions to app files
 chown -R $app: $final_path
-chown -R $app: /var/lib/jellyfin
-
-#=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Configuring log rotation..." --weight=2
-
-# Use logrotate to manage application logfile(s)
-ynh_use_logrotate
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description="Jellyfin media center" --log="/var/log/$app/$app.log"
+yunohost service add $app --description="Jellyfin media center" --log_type="systemd"
 
 #=================================================
 # START SYSTEMD SERVICE
