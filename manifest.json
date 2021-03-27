@@ -14,14 +14,15 @@
         "email": "liberodark@gmail.com"
     },
     "requirements": {
-        "yunohost": ">= 4.1.0"
+        "yunohost": ">= 4.1.3"
     },
     "multi_instance": false,
     "services": [
         "nginx"
     ],
     "arguments": {
-        "install": [{
+        "install" : [
+            {
                 "name": "domain",
                 "type": "domain",
                 "example": "example.com"

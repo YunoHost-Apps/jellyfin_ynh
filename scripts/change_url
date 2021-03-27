@@ -22,6 +22,7 @@ new_path=$YNH_APP_NEW_PATH
 app=$YNH_APP_INSTANCE_NAME
 
 port=$(ynh_app_setting_get --app="$app" --key=port)
+config_path=$(ynh_app_setting_get --app="$app" --key=config_path)
 
 #=================================================
 # LOAD SETTINGS
@@ -42,7 +43,7 @@ ynh_clean_setup () {
 	# Remove the new domain config file, the remove script won't do it as it doesn't know yet its location.
 	ynh_secure_remove --file="/etc/nginx/conf.d/$new_domain.d/$app.conf"
 
-	# restore it if the upgrade fails
+	# Restore it if the upgrade fails
 	ynh_restore_upgradebackup
 }
 # Exit if an error occurs during the execution of the script
@@ -71,7 +72,7 @@ fi
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..." --weight=2
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server"
 
 #=================================================
 # MODIFY URL IN NGINX CONF
@@ -112,10 +113,10 @@ fi
 if [ $change_path -eq 1 ]
 then
 	# If somehow <BaseUrl /> was not replaced during install
-	if grep -q "<BaseUrl />" "/etc/jellyfin/network.xml"; then
-		ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$new_path</BaseUrl>" --target_file="/etc/jellyfin/network.xml"
+	if grep -q "<BaseUrl />" "$config_path/network.xml"; then
+		ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$new_path</BaseUrl>" --target_file="$config_path/network.xml"
 	else
-		ynh_replace_string --match_string="<BaseUrl>$old_path</BaseUrl>" --replace_string="<BaseUrl>$new_path</BaseUrl>" --target_file="/etc/jellyfin/network.xml"
+		ynh_replace_string --match_string="<BaseUrl>$old_path</BaseUrl>" --replace_string="<BaseUrl>$new_path</BaseUrl>" --target_file="$config_path/network.xml"
 	fi
 fi
 
