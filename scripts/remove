@@ -46,6 +46,10 @@ ynh_remove_systemd_config
 #=================================================
 ynh_script_progression --message="Removing dependencies..." --weight=1
 
+apt remove jellyfin-web
+apt remove jellyfin-server
+apt remove jellyfin-ffmpeg
+
 # Remove metapackage and its dependencies
 ynh_remove_app_dependencies
 

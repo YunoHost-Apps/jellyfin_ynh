@@ -40,6 +40,11 @@ final_path=/etc/jellyfin
 test ! -e "$final_path" || ynh_die --message="There is already a directory: $final_path "
 test ! -e "/var/lib/jellyfin" || ynh_die --message="There is already a directory: /var/lib/jellyfin "
 
+architecture=$(dpkg --print-architecture)
+if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
+    ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
+fi
+
 # Register (book) web path
 ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
 
@@ -69,7 +74,23 @@ ynh_app_setting_set --app=$app --key=port --value=$port
 #=================================================
 ynh_script_progression --message="Installing dependencies..." --weight=1
 
-ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/$( awk -F'=' '/^ID=/{ print $NF }' /etc/os-release ) $( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release ) main" --key="https://repo.jellyfin.org/jellyfin_team.gpg.key" --package="jellyfin=$pkg_version jellyfin-server=$pkg_version jellyfin-web=$pkg_version"
+# Prepare the source files (replace the placeholders with version, architecture, etc.
+ynh_add_config --template="../conf/ffmpeg.src.default" --destination="../conf/ffmpeg.src"
+ynh_add_config --template="../conf/server.src.default" --destination="../conf/server.src"
+ynh_add_config --template="../conf/web.src.default" --destination="../conf/web.src"
+
+# Create the temporary directory
+tempdir="$(mktemp -d)"
+
+# Download the deb files
+ynh_setup_source_2 --dest_dir=$tempdir --source_id=ffmpeg
+ynh_setup_source_2 --dest_dir=$tempdir --source_id=server
+ynh_setup_source_2 --dest_dir=$tempdir --source_id=web
+
+# Install the packages
+ynh_exec_warn_less apt install $tempdir/jellyfin-ffmpeg.deb
+ynh_exec_warn_less apt install $tempdir/jellyfin-server.deb
+ynh_exec_warn_less apt install $tempdir/jellyfin-web.deb
 
 #=================================================
 # NGINX CONFIGURATION

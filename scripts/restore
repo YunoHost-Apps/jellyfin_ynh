@@ -44,6 +44,11 @@ test ! -d "$final_path" \
 test ! -d "/var/lib/jellyfin" \
          || ynh_die --message="There is already a directory: /var/lib/jellyfin "
 
+architecture=$(dpkg --print-architecture)
+if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
+    ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
+fi
+
 #=================================================
 # STANDARD RESTORATION STEPS
 #=================================================
@@ -83,17 +88,32 @@ chown -R $app: /var/lib/jellyfin
 #=================================================
 ynh_script_progression --message="Reinstalling dependencies..." --weight=7
 
-# Define and install dependencies
-ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/debian $( lsb_release -c -s ) main" --package="jellyfin=$pkg_version jellyfin-server=$pkg_version jellyfin-web=$pkg_version" --key="https://repo.jellyfin.org/debian/jellyfin_team.gpg.key"
+# Prepare the source files (replace the placeholders with version, architecture, etc.
+ynh_add_config --template="../conf/ffmpeg.src.default" --destination="../conf/ffmpeg.src"
+ynh_add_config --template="../conf/server.src.default" --destination="../conf/server.src"
+ynh_add_config --template="../conf/web.src.default" --destination="../conf/web.src"
+
+# Create the temporary directory
+tempdir="$(mktemp -d)"
+
+# Download the deb files
+ynh_setup_source_2 --dest_dir=$tempdir --source_id=ffmpeg
+ynh_setup_source_2 --dest_dir=$tempdir --source_id=server
+ynh_setup_source_2 --dest_dir=$tempdir --source_id=web
+
+# Install the packages
+ynh_exec_warn_less apt install $tempdir/jellyfin-ffmpeg.deb
+ynh_exec_warn_less apt install $tempdir/jellyfin-server.deb
+ynh_exec_warn_less apt install $tempdir/jellyfin-web.deb
 
 #=================================================
 # RESTORE SYSTEMD
 #=================================================
 ynh_script_progression --message="Restoring the systemd configuration..." --weight=2
 
-ynh_restore_file --origin_path="/lib/systemd/system/jellyfin.service" --not_mandatory 2>/dev/null
-ynh_restore_file --origin_path="/usr/lib/systemd/system/jellyfin.service" --not_mandatory 2>/dev/null
-ynh_restore_file --origin_path="/etc/systemd/system/jellyfin.service.d" 2>/dev/null
+ynh_restore_file --origin_path="/lib/systemd/system/jellyfin.service" --not_mandatory
+ynh_restore_file --origin_path="/usr/lib/systemd/system/jellyfin.service" --not_mandatory
+ynh_restore_file --origin_path="/etc/systemd/system/jellyfin.service.d"
 systemctl enable $app.service --quiet
 
 #=================================================
