@@ -39,12 +39,19 @@ if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
     ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
 fi
 
-# If db_name doesn't exist, create it
+# If path keys do not exist, create it
 if [ -z "$config_path" ]; then
 	config_path=/var/lib/jellyfin
 	ynh_app_setting_set --app=$app --key=config_path --value=$config_path
 	final_path=/etc/jellyfin
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+fi
+
+
+# If logging config does not exist, lower logging verbosity
+if ! [ -e "$config_path/logging.json" ]; then
+	cp "$config_path/logging.default.json" "$config_path/logging.json"
+	ynh_replace_string --match_string="\"Default\": \"Information\"" --replace_string="\"Default\": \"Error\""
 fi
 
 # Cleaning legacy permissions
@@ -168,6 +175,14 @@ fi
 
 # Set permissions on app files
 chown -R $app: $final_path
+
+#=================================================
+# SETUP LOGROTATE
+#=================================================
+ynh_script_progression --message="Configuring log rotation..." --time --weight=1
+
+# Use logrotate to manage application logfile(s)
+ynh_use_logrotate --non-append
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
