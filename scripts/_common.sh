@@ -10,6 +10,8 @@ version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
 ffmpeg_pkg_version="4.3.1-4"
 
+architecture=$(dpkg --print-architecture)
+
 #=================================================
 # PERSONAL HELPERS
 #=================================================
