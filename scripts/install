@@ -130,7 +130,7 @@ ynh_replace_string --match_string="<IsStartupWizardCompleted>false</IsStartupWiz
 
 # Lower logging verbosity
 cp "$config_path/logging.default.json" "$config_path/logging.json"
-ynh_replace_string --match_string="\"Default\": \"Information\"" --replace_string="\"Default\": \"Error\""
+ynh_replace_string --match_string="\"Default\": \"Information\"" --replace_string="\"Default\": \"Error\"" --target_file="$config_path/logging.json"
 
 ynh_store_file_checksum --file="$config_path/network.xml"
 ynh_store_file_checksum --file="$config_path/system.xml"
