@@ -38,12 +38,9 @@ fi
 #=================================================
 ynh_script_progression --message="Removing dependencies..." --weight=1
 
-apt remove jellyfin-web -y
-apt remove jellyfin-server -y
-apt remove jellyfin-ffmpeg -y
-
-# Remove metapackage and its dependencies
-ynh_remove_app_dependencies
+apt-get remove jellyfin-web -y
+apt-get remove jellyfin-server -y
+apt-get remove jellyfin-ffmpeg -y
 
 #=================================================
 # REMOVE APP DIRECTORIES

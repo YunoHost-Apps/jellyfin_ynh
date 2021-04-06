@@ -103,9 +103,9 @@ ynh_setup_source_2 --dest_dir=$tempdir --source_id=server
 ynh_setup_source_2 --dest_dir=$tempdir --source_id=web
 
 # Install the packages
-ynh_exec_warn_less apt install $tempdir/jellyfin-ffmpeg.deb -y
-ynh_exec_warn_less apt install $tempdir/jellyfin-server.deb -y
-ynh_exec_warn_less apt install $tempdir/jellyfin-web.deb -y
+ynh_exec_warn_less apt-get install $tempdir/jellyfin-ffmpeg.deb -y
+ynh_exec_warn_less apt-get install $tempdir/jellyfin-server.deb -y
+ynh_exec_warn_less apt-get install $tempdir/jellyfin-web.deb -y
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
