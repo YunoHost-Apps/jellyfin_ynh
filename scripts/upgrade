@@ -47,13 +47,6 @@ if [ -z "$config_path" ]; then
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 fi
 
-
-# If logging config does not exist, lower logging verbosity
-if ! [ -e "$config_path/logging.json" ]; then
-	cp "$config_path/logging.default.json" "$config_path/logging.json"
-	ynh_replace_string --match_string="\"Default\": \"Information\"" --replace_string="\"Default\": \"Error\"" --target_file="$config_path/logging.json"
-fi
-
 # Cleaning legacy permissions
 if ynh_legacy_permissions_exists; then
 	ynh_legacy_permissions_delete_all
@@ -116,9 +109,9 @@ ynh_setup_source_2 --dest_dir=$tempdir --source_id=server
 ynh_setup_source_2 --dest_dir=$tempdir --source_id=web
 
 # Install the packages
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-ffmpeg.deb -y
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-server.deb -y
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-web.deb -y
+ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-ffmpeg.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew
+ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-server.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew
+ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-web.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew
 
 #=================================================
 # CREATE DEDICATED USER
@@ -153,6 +146,10 @@ if [ -z "/etc/jellyfin/network.xml" ]; then
 	ynh_store_file_checksum --file="$config_path/network.xml"
 	ynh_store_file_checksum --file="$config_path/system.xml"
 fi
+
+# Lower logging verbosity
+cp "$config_path/logging.default.json" "$config_path/logging.json"
+ynh_replace_string --match_string="\"Default\": \"Information\"" --replace_string="\"Default\": \"Error\"" --target_file="$config_path/logging.json"
 
 #=================================================
 # INSTALL LDAP PLUGIN
