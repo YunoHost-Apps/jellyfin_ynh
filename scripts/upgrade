@@ -80,7 +80,7 @@ ynh_abort_if_errors
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server"
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
 #=================================================
 # NGINX CONFIGURATION
@@ -133,8 +133,8 @@ if [ -z "/etc/jellyfin/network.xml" ]; then
 	ynh_backup_if_checksum_is_different --file="$config_path/system.xml"
 
 	# Load services once to generate network.xml
-	ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server"
-	ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server"
+	ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
+	ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
 	# Port config
 	ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="$config_path/network.xml"
@@ -193,7 +193,7 @@ yunohost service add $app --description="Jellyfin media center" --log_type="syst
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started Jellyfin Media Server"
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
 
 #=================================================
 # RELOAD NGINX

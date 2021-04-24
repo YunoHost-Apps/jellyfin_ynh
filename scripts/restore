@@ -119,7 +119,7 @@ yunohost service add $app --description="Jellyfin media center" --log_type="syst
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server"
+ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
 
 #=================================================
 # RESTORE THE LOGROTATE CONFIGURATION
