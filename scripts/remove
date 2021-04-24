@@ -45,7 +45,7 @@ apt-get remove jellyfin-ffmpeg -y
 #=================================================
 # REMOVE APP DIRECTORIES
 #=================================================
-ynh_script_progression --message="Removing app directories..." --time --weight=1
+ynh_script_progression --message="Removing app directories..." --weight=1
 
 # Remove the app directory securely
 ynh_secure_remove --file="$final_path"
@@ -63,7 +63,7 @@ ynh_remove_nginx_config
 #=================================================
 # REMOVE LOGROTATE CONFIGURATION
 #=================================================
-ynh_script_progression --message="Removing logrotate configuration..." --time --weight=1
+ynh_script_progression --message="Removing logrotate configuration..." --weight=1
 
 # Remove the app-specific logrotate config
 ynh_remove_logrotate
