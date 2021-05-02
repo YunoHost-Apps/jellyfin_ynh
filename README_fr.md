@@ -11,7 +11,7 @@ Si vous n'avez pas YunoHost, consultez [le guide](https://yunohost.org/#/install
 ## Vue d'ensemble
 Jellyfin vous permet de collecter, gérer et diffuser vos médias. Exécutez le serveur Jellyfin sur votre système et accédez au principal système de divertissement à logiciel libre.
 
-**Version incluse :** 10.7.0
+**Version incluse :** 10.7.2
 
 ## Captures d'écran
 
