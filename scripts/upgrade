@@ -48,11 +48,8 @@ if [ -z "$config_path" ]; then
 fi
 
 # If jellyfin doesn't belong to render group, add it
-if [ ! $(grep "jellyfin:x:[0-9]*:render" /etc/group) ]
-then
-    adduser $app render
-else
-	echo "render group does not exist"
+if [ ! $(id -Gn $app | grep -q '\brender\b') ]; then
+	adduser $app render
 fi
 
 # Cleaning legacy permissions

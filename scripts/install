@@ -109,12 +109,9 @@ ynh_script_progression --message="Configuring system user..." --weight=2
 # Create a system user
 ynh_system_user_create --username=$app
 
-if grep -q render /etc/group
-    then
-		# Add user to render group
-		adduser $app render
-    else
-		echo "render group does not exist"
+if [ $(grep -q "^render:" /etc/group) ]; then
+	# Add user to render group
+	adduser $app render
 fi
 
 #=================================================
