@@ -63,10 +63,7 @@ if ! ynh_permission_exists --permission="admin"; then
 	# Create the required permissions
 	ynh_permission_create --permission="admin" --allowed=$admin
 fi
-<<<<<<< HEAD
 
-=======
->>>>>>> Add jellyfin to render group
 #=================================================
 # BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
 #=================================================
