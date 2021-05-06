@@ -98,9 +98,9 @@ ynh_add_config --template="../conf/web.src.default" --destination="../settings/c
 tempdir="$(mktemp -d)"
 
 # Download the deb files
-ynh_setup_source_2 --dest_dir=$tempdir --source_id=ffmpeg
-ynh_setup_source_2 --dest_dir=$tempdir --source_id=server
-ynh_setup_source_2 --dest_dir=$tempdir --source_id=web
+ynh_setup_source --dest_dir=$tempdir --source_id="ffmpeg.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="server.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="web.$architecture"
 
 # Install the packages
 ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-ffmpeg.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold
