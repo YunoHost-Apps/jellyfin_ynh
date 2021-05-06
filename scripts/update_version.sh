@@ -13,10 +13,11 @@ source /usr/share/yunohost/helpers
 
 prepare_source () {
     # Declare an array to define the options of this helper.
-    local legacy_args=tdv
-    local -A args_array=( [t]=template= [d]=destination= )
+    local legacy_args=tda
+    local -A args_array=( [t]=template= [d]=destination= [a]=architecture= )
     local template
     local destination
+    local architecture
     # Manage arguments with getopts
     ynh_handle_getopts_args "$@"
     local template_path
@@ -66,12 +67,16 @@ prepare_source () {
     fi
 }
 
-prepare_source --template="../conf/ffmpeg.src.default" --destination="../conf/ffmpeg.src"
-prepare_source --template="../conf/web.src.default" --destination="../conf/web.src"
-prepare_source --template="../conf/server.src.default" --destination="../conf/server.src"
+architectures=("amd64" "arm64" "armhf")
+for architecture in "${architectures[@]}"; do
+	prepare_source --template="../conf/ffmpeg.src.default" --destination="../conf/ffmpeg.$architecture.src" --architecture="$architecture"
+	prepare_source --template="../conf/web.src.default" --destination="../conf/web.$architecture.src" --architecture="$architecture"
+	prepare_source --template="../conf/server.src.default" --destination="../conf/server.$architecture.src" --architecture="$architecture"
+done
 
 sed -i "s#\*\*Shipped version:\*\*.*#\*\*Shipped version:\*\* ${version}#" ../README.md
 sed -i "s#\*\*Version incluse :\*\*.*#\*\*Version incluse :\*\* ${version}#" ../README_fr.md
 sed -i "s#    \"version\": \".*#    \"version\": \"${version}\~ynh1\",#" ../manifest.json
 
-git commit ../README.md ../README_fr.md ../manifest.json ../conf/ffmpeg.src ../conf/web.src ../conf/server.src -m "Upgrade to v$version"
+git add .
+git commit ../README.md ../README_fr.md ../manifest.json ../conf/ffmpeg.*.src ../conf/web.*.src ../conf/server.*.src -m "Upgrade to v$version"

@@ -1,0 +1,7 @@
+SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/stable/web/10.7.5/jellyfin-web_10.7.5-1_all.deb
+SOURCE_SUM=294a00e7a63c1a7f826e4da798663e872d2f2d227061b60253ac9cecd8642301
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=deb
+SOURCE_IN_SUBDIR=false
+SOURCE_EXTRACT=false
+SOURCE_FILENAME=jellyfin-web.deb
