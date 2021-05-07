@@ -100,11 +100,6 @@ ynh_add_nginx_config
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..." --weight=3
 
-# Prepare the source files (replace the placeholders with version, architecture, etc.
-ynh_add_config --template="../conf/ffmpeg.src.default" --destination="../conf/ffmpeg.src"
-ynh_add_config --template="../conf/server.src.default" --destination="../conf/server.src"
-ynh_add_config --template="../conf/web.src.default" --destination="../conf/web.src"
-
 # Create the temporary directory
 tempdir="$(mktemp -d)"
 

@@ -89,11 +89,6 @@ chown -R $app: $final_path
 #=================================================
 ynh_script_progression --message="Reinstalling dependencies..." --weight=7
 
-# Prepare the source files (replace the placeholders with version, architecture, etc.
-ynh_add_config --template="../conf/ffmpeg.src.default" --destination="../settings/conf/ffmpeg.src"
-ynh_add_config --template="../conf/server.src.default" --destination="../settings/conf/server.src"
-ynh_add_config --template="../conf/web.src.default" --destination="../settings/conf/web.src"
-
 # Create the temporary directory
 tempdir="$(mktemp -d)"
 
