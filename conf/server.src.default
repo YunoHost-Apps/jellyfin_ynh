@@ -1,0 +1,7 @@
+SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/stable/server/__VERSION__/jellyfin-server___PKG_VERSION_____ARCHITECTURE__.deb
+SOURCE_SUM=https://repo.jellyfin.org/releases/server/debian/versions/stable/server/__VERSION__/jellyfin-server___PKG_VERSION_____ARCHITECTURE__.deb.sha256sum
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=deb
+SOURCE_IN_SUBDIR=false
+SOURCE_EXTRACT=false
+SOURCE_FILENAME=jellyfin-server.deb

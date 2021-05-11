@@ -54,6 +54,12 @@ ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 # BACKUP VARIOUS FILES
 #=================================================
 
+ynh_backup --src_path="/etc/logrotate.d/$app"
+
+#=================================================
+# BACKUP VARIOUS FILES
+#=================================================
+
 ynh_backup --src_path="$config_path"
 
 #=================================================

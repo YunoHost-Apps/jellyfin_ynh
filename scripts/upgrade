@@ -34,12 +34,22 @@ upgrade_type=$(ynh_check_app_version_changed)
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
-# If db_name doesn't exist, create it
+architecture=$(dpkg --print-architecture)
+if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
+    ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
+fi
+
+# If path keys do not exist, create it
 if [ -z "$config_path" ]; then
 	config_path=/var/lib/jellyfin
 	ynh_app_setting_set --app=$app --key=config_path --value=$config_path
 	final_path=/etc/jellyfin
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+fi
+
+# If render group exists, and system user doesn't belong to it, add it
+if [ $(grep -q "^render:" /etc/group) ] && [ ! $(id -Gn $app | grep -q '\brender\b') ]; then
+	adduser $app render
 fi
 
 # Cleaning legacy permissions
@@ -75,7 +85,7 @@ ynh_abort_if_errors
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server"
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
 #=================================================
 # NGINX CONFIGURATION
@@ -90,7 +100,18 @@ ynh_add_nginx_config
 #=================================================
 ynh_script_progression --message="Upgrading dependencies..." --weight=3
 
-ynh_install_extra_app_dependencies --repo="https://repo.jellyfin.org/$( awk -F'=' '/^ID=/{ print $NF }' /etc/os-release ) $( awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release ) main" --key="https://repo.jellyfin.org/jellyfin_team.gpg.key" --package="jellyfin=$pkg_version"
+# Create the temporary directory
+tempdir="$(mktemp -d)"
+
+# Download the deb files
+ynh_setup_source --dest_dir=$tempdir --source_id="ffmpeg.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="server.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="web.$architecture"
+
+# Install the packages
+ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-ffmpeg.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew
+ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-server.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew
+ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-web.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew
 
 #=================================================
 # CREATE DEDICATED USER
@@ -112,8 +133,8 @@ if [ -z "/etc/jellyfin/network.xml" ]; then
 	ynh_backup_if_checksum_is_different --file="$config_path/system.xml"
 
 	# Load services once to generate network.xml
-	ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Startup complete"
-	ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server"
+	ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
+	ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
 	# Port config
 	ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="$config_path/network.xml"
@@ -125,6 +146,9 @@ if [ -z "/etc/jellyfin/network.xml" ]; then
 	ynh_store_file_checksum --file="$config_path/network.xml"
 	ynh_store_file_checksum --file="$config_path/system.xml"
 fi
+
+# Lower logging verbosity
+ynh_replace_string --match_string="\"Default\": \"Information\"" --replace_string="\"Default\": \"Error\"" --target_file="$config_path/logging.json"
 
 #=================================================
 # INSTALL LDAP PLUGIN
@@ -149,6 +173,14 @@ fi
 chown -R $app: $final_path
 
 #=================================================
+# SETUP LOGROTATE
+#=================================================
+ynh_script_progression --message="Configuring log rotation..." --weight=1
+
+# Use logrotate to manage application logfile(s)
+ynh_use_logrotate --non-append
+
+#=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
@@ -160,7 +192,7 @@ yunohost service add $app --description="Jellyfin media center" --log_type="syst
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Startup complete"
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
 
 #=================================================
 # RELOAD NGINX

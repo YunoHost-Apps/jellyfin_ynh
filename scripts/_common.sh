@@ -4,7 +4,13 @@
 # COMMON VARIABLES
 #=================================================
 
-pkg_version="10.7.0-1"
+debian=$(lsb_release --codename --short)
+pkg_version="10.7.5-1"
+version=$(echo "$pkg_version" | cut -d '-' -f 1)
+
+ffmpeg_pkg_version="4.3.2-1"
+
+architecture=$(dpkg --print-architecture)
 
 #=================================================
 # PERSONAL HELPERS

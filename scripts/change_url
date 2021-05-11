@@ -72,7 +72,7 @@ fi
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..." --weight=2
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server"
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
 #=================================================
 # MODIFY URL IN NGINX CONF
@@ -127,7 +127,7 @@ fi
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=2
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Startup complete"
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Startup complete" --timeout=15
 
 #=================================================
 # RELOAD NGINX
