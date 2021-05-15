@@ -132,6 +132,9 @@ if [ -f "/etc/jellyfin/network.xml" ]; then
 	ynh_backup_if_checksum_is_different --file="$config_path/network.xml"
 	ynh_backup_if_checksum_is_different --file="$config_path/system.xml"
 
+	# Set permissions to app files
+	chown -R $app: $final_path
+
 	# Load services once to generate network.xml
 	ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
 	ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
