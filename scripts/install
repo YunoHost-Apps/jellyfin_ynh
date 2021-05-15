@@ -122,6 +122,9 @@ ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --li
 ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="$config_path/network.xml"
 ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="$config_path/network.xml"
 
+# Enable IPv6
+ynh_replace_string --match_string="<EnableIPV6>false</EnableIPV6>" --replace_string="<EnableIPV6>true</EnableIPV6>" --target_file="$config_path/network.xml"
+
 # BaseUrl config
 ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="$config_path/network.xml"
 
