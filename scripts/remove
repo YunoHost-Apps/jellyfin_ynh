@@ -74,13 +74,13 @@ ynh_remove_logrotate
 # CLOSE A PORT
 #=================================================
 
-if [ $discovery_server -eq 1 ] && [ yunohost firewall list | grep -q "\- 1900$" ]
+if [[ $discovery_server -eq 1 ]] && yunohost firewall list | grep -q "\- 1900$"
 then
 	ynh_script_progression --message="Closing port 1900..." --time --weight=1
 	ynh_exec_warn_less yunohost firewall disallow UDP 1900
 fi
 
-if [ $discovery_client -eq 1 ] && [ yunohost firewall list | grep -q "\- 7359$" ]
+if [[ $discovery_client -eq 1 ]] && yunohost firewall list | grep -q "\- 7359$"
 then
 	ynh_script_progression --message="Closing port 7359..." --time --weight=1
 	ynh_exec_warn_less yunohost firewall disallow UDP 7359

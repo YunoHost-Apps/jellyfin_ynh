@@ -76,7 +76,7 @@ if [ $discovery -eq 1 ]; then
 	ynh_script_progression --message="Configuring firewall..." --time --weight=1
 
 	# Open port 1900 for service auto-discovery
-	if [ ynh_port_available --port=1900 ]; then
+	if [[ $(ynh_port_available --port=1900) -eq 1 ]]; then
 		ynh_exec_warn_less yunohost firewall allow UDP 1900
 		ynh_app_setting_set --app=$app --key=discovery_service --value=1
 	else
@@ -85,7 +85,7 @@ if [ $discovery -eq 1 ]; then
 	fi
 
 	# Open port 7359 for client auto-discovery
-	if [ ynh_port_available --port=7359 ]; then
+	if [[ $(ynh_port_available --port=7359) -eq 1 ]]; then
 		ynh_exec_warn_less yunohost firewall allow UDP 7359
 		ynh_app_setting_set --app=$app --key=discovery_client --value=1
 	else
