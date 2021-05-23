@@ -9,6 +9,7 @@
 		path="/path"	(PATH)
 		admin="john"	(USER)
 		is_public=1	(PUBLIC|public=1|private=0)
+		discovery=1
 	; Checks
 		pkg_linter=1
 		setup_sub_dir=1

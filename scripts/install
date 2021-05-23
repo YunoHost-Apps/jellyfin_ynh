@@ -27,6 +27,7 @@ domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 admin=$YNH_APP_ARG_ADMIN
 is_public=$YNH_APP_ARG_IS_PUBLIC
+discovery=$YNH_APP_ARG_DISCOVERY
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -56,6 +57,7 @@ ynh_script_progression --message="Storing installation settings..." --weight=2
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
 ynh_app_setting_set --app=$app --key=admin --value=$admin
+ynh_app_setting_set --app=$app --key=discovery --value=$discovery
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 ynh_app_setting_set --app=$app --key=config_path --value=$config_path
 
@@ -69,6 +71,28 @@ ynh_script_progression --message="Finding an available port..." --weight=1
 # Find an available port
 port=$(ynh_find_port --port=8095)
 ynh_app_setting_set --app=$app --key=port --value=$port
+
+if [ $discovery -eq 1 ]; then
+	ynh_script_progression --message="Configuring firewall..." --time --weight=1
+
+	# Open port 1900 for service auto-discovery
+	if [ ynh_port_available --port=1900 ]; then
+		ynh_exec_warn_less yunohost firewall allow UDP 1900
+		ynh_app_setting_set --app=$app --key=discovery_service --value=1
+	else
+		ynh_print_warn --message="Port 1900 (for service auto-discovery) is not available. Continuing nonetheless."
+		ynh_app_setting_set --app=$app --key=discovery_service --value=0
+	fi
+
+	# Open port 7359 for client auto-discovery
+	if [ ynh_port_available --port=7359 ]; then
+		ynh_exec_warn_less yunohost firewall allow UDP 7359
+		ynh_app_setting_set --app=$app --key=discovery_client --value=1
+	else
+		ynh_print_warn --message="Port 7359 (for client auto-discovery) is not available. Continuing nonetheless."
+		ynh_app_setting_set --app=$app --key=discovery_client --value=0
+	fi
+fi
 
 #=================================================
 # INSTALL DEPENDENCIES

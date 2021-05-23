@@ -39,7 +39,7 @@ if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
     ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
 fi
 
-# If path keys do not exist, create it
+# If path keys do not exist, create them
 if [ -z "$config_path" ]; then
 	config_path=/var/lib/jellyfin
 	ynh_app_setting_set --app=$app --key=config_path --value=$config_path
@@ -62,6 +62,12 @@ fi
 if ! ynh_permission_exists --permission="admin"; then
 	# Create the required permissions
 	ynh_permission_create --permission="admin" --allowed=$admin
+fi
+
+# If discovery key does not exist, create it
+if [ -z "$discovery" ]; then
+	discovery=0
+	ynh_app_setting_set --app=$app --key=discovery --value=$discovery
 fi
 
 #=================================================
