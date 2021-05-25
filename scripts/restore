@@ -65,7 +65,8 @@ ynh_script_progression --message="Restoring the app main directory..." --weight=
 
 ynh_restore_file --origin_path="$final_path"
 ynh_restore_file --origin_path="$config_path"
-ynh_restore_file --origin_path="/etc/default/jellyfin"
+ynh_restore_file --origin_path="/etc/default/jellyfin" --not_mandatory
+ynh_restore_file --origin_path="/etc/systemd/system/jellyfin.service.d" --not_mandatory
 
 #=================================================
 # RECREATE THE DEDICATED USER

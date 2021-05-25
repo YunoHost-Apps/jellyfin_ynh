@@ -60,7 +60,7 @@ ynh_backup --src_path="/etc/logrotate.d/$app"
 # BACKUP SYSTEMD
 #=================================================
 
-ynh_backup --src_path="/etc/systemd/system/jellyfin.service.d"
+ynh_backup --src_path="/etc/systemd/system/jellyfin.service.d" --not_mandatory
 ynh_backup --src_path="/lib/systemd/system/jellyfin.service"
 
 #=================================================
@@ -68,7 +68,7 @@ ynh_backup --src_path="/lib/systemd/system/jellyfin.service"
 #=================================================
 
 ynh_backup --src_path="$config_path"
-ynh_backup --src_path="/etc/default/jellyfin"
+ynh_backup --src_path="/etc/default/jellyfin" --not_mandatory
 
 #=================================================
 # END OF SCRIPT
