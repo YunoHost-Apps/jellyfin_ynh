@@ -40,10 +40,11 @@ if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
 fi
 
 # If path keys do not exist, create them
-if [ -z "$config_path" ]; then
-	config_path=/var/lib/jellyfin
+# If config_path is mixed up with final_path, fix them
+if [ -z "$config_path" ] || [[ $config_path = "/var/lib/jellyfin" ]]; then
+	config_path=/etc/jellyfin
+	final_path=/var/lib/jellyfin
 	ynh_app_setting_set --app=$app --key=config_path --value=$config_path
-	final_path=/etc/jellyfin
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 fi
 
