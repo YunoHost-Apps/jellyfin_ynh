@@ -188,6 +188,7 @@ fi
 
 # Set permissions on app files
 chown -R $app: $final_path
+chown -R $app: $config_path
 
 #=================================================
 # SETUP LOGROTATE
