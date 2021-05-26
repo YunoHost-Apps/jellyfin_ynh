@@ -6,13 +6,26 @@
         "en": "Media System that manage and stream your media.",
         "fr": "Système multimédia qui gère et diffuse vos médias."
     },
-    "version": "10.7.5~ynh1",
-    "url": "https://github.com/jellyfin/jellyfin",
-    "license": "GPL-2.0-only",
-    "maintainer": {
-        "name": "liberodark",
-        "email": "liberodark@gmail.com"
+    "version": "10.7.5~ynh2",
+    "url": "https://jellyfin.org",
+    "upstream": {
+        "license": "GPL-2.0-only",
+        "website": "https://jellyfin.org",
+        "demo": "https://demo.jellyfin.org/stable/web/index.html",
+        "userdoc": "https://jellyfin.org/docs/",
+        "code": "https://github.com/jellyfin/jellyfin"
     },
+    "license": "GPL-3.0-only",
+    "maintainer": {
+            "name": "tituspijean",
+            "email": "tituspijean@outlook.com"
+    },
+    "previous_maintainers": [
+        {
+            "name": "liberodark",
+            "email": "liberodark@gmail.com"
+        }
+    ],
     "requirements": {
         "yunohost": ">= 4.1.3"
     },
