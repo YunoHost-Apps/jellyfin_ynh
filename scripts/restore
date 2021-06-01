@@ -56,25 +56,27 @@ fi
 #=================================================
 
 if [ $discovery -eq 1 ]; then
-	ynh_script_progression --message="Configuring firewall..." --time --weight=1
+        ynh_script_progression --message="Configuring firewall..." --weight=1
 
-	# Open port 1900 for service auto-discovery
-	if ynh_port_available --port=1900; then
-		ynh_exec_warn_less yunohost firewall allow UDP 1900
-		ynh_app_setting_set --app=$app --key=discovery_service --value=1
-	else
-		ynh_print_warn --message="Port 1900 (for service auto-discovery) is not available. Continuing nonetheless."
-		ynh_app_setting_set --app=$app --key=discovery_service --value=0
-	fi
+        # Open port 1900 for service auto-discovery
+        if ynh_port_available --port=$discovery_service_port; then
+                discovery_service=1
+                ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
+        else
+                discovery_service=0
+                ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
+        fi
+        ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
 
-	# Open port 7359 for client auto-discovery
-	if ynh_port_available --port=7359; then
-		ynh_exec_warn_less yunohost firewall allow UDP 7359
-		ynh_app_setting_set --app=$app --key=discovery_client --value=1
-	else
-		ynh_print_warn --message="Port 7359 (for client auto-discovery) is not available. Continuing nonetheless."
-		ynh_app_setting_set --app=$app --key=discovery_client --value=0
-	fi
+        # Open port 7359 for client auto-discovery
+        if ynh_port_available --port=$discovery_client_port; then
+                discovery_client=1
+                ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
+        else
+                discovery_client=0
+                ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
+        fi
+        ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_client
 fi
 
 #=================================================
@@ -101,15 +103,6 @@ ynh_script_progression --message="Recreating the dedicated system user..." --wei
 
 # Create the dedicated user (if not existing)
 ynh_system_user_create --username=$app
-
-#=================================================
-# RESTORE USER RIGHTS
-#=================================================
-ynh_script_progression --message="Restoring user rights..."
-
-# Restore permissions on app files
-chown -R $app: $final_path
-chown -R $app: $config_path
 
 #=================================================
 # SPECIFIC RESTORATION
@@ -145,7 +138,26 @@ systemctl enable jellyfin.service --quiet
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description="Jellyfin media center" --log_type="systemd"
+# Build the ports list
+needed_ports=()
+(( $discovery_server == 1 )) && needed_ports+=( "$discovery_server_port" )
+(( $discovery_client == 1 )) && needed_ports+=( "$discovery_client_port" )
+
+# Integrate service and require to expose the ports if needed
+if [ -z ${needed_ports[@]} ]; then
+        yunohost service add $app --description="Jellyfin media center" --log_type="systemd"
+else
+        yunohost service add $app --description="Jellyfin media center" --log_type="systemd" --needs_exposed_ports=${needed_ports[@]}
+fi
+
+#=================================================
+# RESTORE USER RIGHTS
+#=================================================
+ynh_script_progression --message="Restoring user rights..."
+
+# Restore permissions on app files
+chown -R $app: $final_path
+chown -R $app: $config_path
 
 #=================================================
 # START SYSTEMD SERVICE
