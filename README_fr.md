@@ -6,16 +6,16 @@
 *[Read this readme in english.](./README.md)*
 *[Lire ce readme en français.](./README_fr.md)*
 
-> *This package allows you to install Jellyfin quickly and simply on a YunoHost server.
-If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/install) to learn how to install it.*
+> *Ce package vous permet d'installer Jellyfin rapidement et simplement sur un serveur YunoHost.
+Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
 
 ## Vue d'ensemble
 
 Système multimédia qui gère et diffuse vos médias.
 
-**Version incluse:** 10.7.5~ynh2
+**Version incluse :** 10.7.5~ynh2
 
-**Démo :** https://demo.jellyfin.org/stable/web/index.html
+**Démo :** https://demo.jellyfin.org/stable/web/index.html
 
 ## Captures d'écran
 
@@ -34,11 +34,11 @@ si vous voulez que la mise à jour les ouvre pour vous.
 
 ## Documentations et ressources
 
-* Site officiel de l'app : https://jellyfin.org
-* Documentation officielle utilisateur : https://jellyfin.org/docs/
-* Dépôt de code officiel de l'app :  https://github.com/jellyfin/jellyfin
-* Documentation YunoHost pour cette app : https://yunohost.org/app_jellyfin
-* Signaler un bug: https://github.com/YunoHost-Apps/jellyfin_ynh/issues
+* Site officiel de l'app : https://jellyfin.org
+* Documentation officielle utilisateur : https://jellyfin.org/docs/
+* Dépôt de code officiel de l'app : https://github.com/jellyfin/jellyfin
+* Documentation YunoHost pour cette app : https://yunohost.org/app_jellyfin
+* Signaler un bug : https://github.com/YunoHost-Apps/jellyfin_ynh/issues
 
 ## Informations pour les développeurs
 
@@ -47,8 +47,8 @@ Merci de faire vos pull request sur la [branche testing](https://github.com/Yuno
 Pour essayer la branche testing, procédez comme suit.
 ```
 sudo yunohost app install https://github.com/YunoHost-Apps/jellyfin_ynh/tree/testing --debug
-or
+ou
 sudo yunohost app upgrade jellyfin -u https://github.com/YunoHost-Apps/jellyfin_ynh/tree/testing --debug
 ```
 
-**Plus d'infos sur le packaging d'applications:** https://yunohost.org/packaging_apps
+**Plus d'infos sur le packaging d'applications :** https://yunohost.org/packaging_apps
