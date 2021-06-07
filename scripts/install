@@ -206,10 +206,10 @@ needed_ports=()
 (( $discovery_client == 1 )) && needed_ports+=( "$discovery_client_port" )
 
 # Integrate service and require to expose the ports if needed
-if [ -z ${needed_ports[@]} ]; then
+if [[ -z ${needed_ports[@]} ]]; then
 	yunohost service add $app --description="Jellyfin media center" --log_type="systemd"
 else
-	yunohost service add $app --description="Jellyfin media center" --log_type="systemd" --needs_exposed_ports=${needed_ports[@]}
+	yunohost service add $app --description="Jellyfin media center" --log_type="systemd" --needs_exposed_ports ${needed_ports[@]}
 fi
 
 #=================================================
