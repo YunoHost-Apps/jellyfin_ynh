@@ -18,7 +18,7 @@ app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 discovery_client=$(ynh_app_setting_get --app=$app --key=discovery_client)
-discovery_server=$(ynh_app_setting_get --app=$app --key=discovery_server)
+discovery_service=$(ynh_app_setting_get --app=$app --key=discovery_service)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 config_path=$(ynh_app_setting_get --app=$app --key=config_path)
 
@@ -74,7 +74,7 @@ ynh_remove_logrotate
 # CLOSE A PORT
 #=================================================
 
-if [[ $discovery_server -eq 1 ]] && yunohost firewall list | grep -q "\- 1900$"
+if [[ $discovery_service -eq 1 ]] && yunohost firewall list | grep -q "\- 1900$"
 then
 	ynh_script_progression --message="Closing port 1900..." --time --weight=1
 	ynh_exec_warn_less yunohost firewall disallow UDP 1900

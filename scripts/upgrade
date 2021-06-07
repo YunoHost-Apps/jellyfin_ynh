@@ -112,7 +112,7 @@ if [ $discovery -eq 1 ]; then
                 discovery_client=0
                 ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
         fi
-        ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_client
+        ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
 fi
 
 #=================================================
@@ -233,7 +233,7 @@ ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
 # Build the ports list
 needed_ports=()
-(( $discovery_server == 1 )) && needed_ports+=( "$discovery_server_port" )
+(( $discovery_service == 1 )) && needed_ports+=( "$discovery_service_port" )
 (( $discovery_client == 1 )) && needed_ports+=( "$discovery_client_port" )
 
 # Integrate service and require to expose the ports if needed
