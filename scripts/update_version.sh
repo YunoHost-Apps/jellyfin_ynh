@@ -77,4 +77,4 @@ done
 sed -i "s#    \"version\": \".*#    \"version\": \"${version}\~ynh1\",#" ../manifest.json
 
 git add .
-git commit ../manifest.json ../conf/ffmpeg.*.src ../conf/web.*.src ../conf/server.*.src -m "Upgrade to v$version"
+git commit _common.sh ../manifest.json ../conf/ffmpeg.*.src ../conf/web.*.src ../conf/server.*.src -m "Upgrade to v$version"
