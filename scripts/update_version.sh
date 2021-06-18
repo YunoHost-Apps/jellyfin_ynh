@@ -74,9 +74,7 @@ for architecture in "${architectures[@]}"; do
 	prepare_source --template="../conf/server.src.default" --destination="../conf/server.$architecture.src" --architecture="$architecture"
 done
 
-sed -i "s#\*\*Shipped version:\*\*.*#\*\*Shipped version:\*\* ${version}#" ../README.md
-sed -i "s#\*\*Version incluse :\*\*.*#\*\*Version incluse :\*\* ${version}#" ../README_fr.md
 sed -i "s#    \"version\": \".*#    \"version\": \"${version}\~ynh1\",#" ../manifest.json
 
 git add .
-git commit ../README.md ../README_fr.md ../manifest.json ../conf/ffmpeg.*.src ../conf/web.*.src ../conf/server.*.src -m "Upgrade to v$version"
+git commit ../manifest.json ../conf/ffmpeg.*.src ../conf/web.*.src ../conf/server.*.src -m "Upgrade to v$version"
