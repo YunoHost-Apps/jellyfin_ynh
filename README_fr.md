@@ -4,60 +4,41 @@
 [![Installer Jellyfin avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jellyfin)
 
 *[Read this readme in english.](./README.md)*
+*[Lire ce readme en français.](./README_fr.md)*
 
-> *Ce package vous permet d'installer Jellyfin rapidement et simplement sur un serveur YunoHost.  
-Si vous n'avez pas YunoHost, consultez [le guide](https://yunohost.org/#/install) pour apprendre comment l'installer.*
+> *Ce package vous permet d'installer Jellyfin rapidement et simplement sur un serveur YunoHost.
+Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
 
 ## Vue d'ensemble
-Jellyfin vous permet de collecter, gérer et diffuser vos médias. Exécutez le serveur Jellyfin sur votre système et accédez au principal système de divertissement à logiciel libre.
 
-**Version incluse :** 10.7.5
+Système multimédia qui gère et diffuse vos médias.
+
+**Version incluse :** 10.7.6~ynh1
+
+**Démo :** https://demo.jellyfin.org/stable/web/index.html
 
 ## Captures d'écran
 
-![](https://jellyfin.org/images/screenshots/movie_full.png)
+![](./doc/screenshots/jellyfin.png)
 
-## Démo
+## Avertissements / informations importantes
 
-* [Démo officielle](https://demo.jellyfin.org/)
+* L'app repose sur le serveur LDAP de YunoHost pour gérer les connexions:
+  * Les utilisateurs standards doivent avoir la permission `main` ;
+  * Les utilisateurs doivent avoir la permission `admin` pour pouvoir accéder au panneau d'administration.
 
-## Configuration
+* À partir de la version 10.7.5~ynh2, vous pouvez demander l'ouverture des ports de découverte (1900 et 7359).
+Ils facilitent la mise en place de votre système multimédia entre les clients et le serveur.
+  * Si vous mettez à jour vers cette version et les suivantes, mettez `discovery: '1'` dans `/etc/yunohost/apps/jellyfin/settings.yml`
+si vous voulez que la mise à jour les ouvre pour vous.
 
-Comment configurer cette application : via le panneau d'administration.
+## Documentations et ressources
 
-## Documentation
-
- * Documentation officielle : https://jellyfin.org/docs/
- * Documentation YunoHost : Si une documentation spécifique est nécessaire, n'hésitez pas à contribuer.
-
-## Caractéristiques spécifiques YunoHost
-
-#### Support multi-utilisateur
-
-* L'authentification LDAP et HTTP est-elle prise en charge ? **Oui**
-* L'application peut-elle être utilisée par plusieurs utilisateurs ? **Oui**
-
-#### Architectures supportées
-
-* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/jellyfin%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/jellyfin/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/jellyfin%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/jellyfin/)
-
-## Limitations
-
-* Limitations connues.
-
-## Informations additionnelles
-
-* Autres informations que vous souhaitez ajouter sur cette application.
-
-## Liens
-
- * Signaler un bug : https://github.com/YunoHost-Apps/jellyfin_ynh/issues
- * Site de l'application : https://jellyfin.org/
- * Dépôt de l'application principale : https://github.com/jellyfin/jellyfin
- * Site web YunoHost : https://yunohost.org/
-
----
+* Site officiel de l'app : https://jellyfin.org
+* Documentation officielle utilisateur : https://jellyfin.org/docs/
+* Dépôt de code officiel de l'app : https://github.com/jellyfin/jellyfin
+* Documentation YunoHost pour cette app : https://yunohost.org/app_jellyfin
+* Signaler un bug : https://github.com/YunoHost-Apps/jellyfin_ynh/issues
 
 ## Informations pour les développeurs
 
@@ -69,3 +50,5 @@ sudo yunohost app install https://github.com/YunoHost-Apps/jellyfin_ynh/tree/tes
 ou
 sudo yunohost app upgrade jellyfin -u https://github.com/YunoHost-Apps/jellyfin_ynh/tree/testing --debug
 ```
+
+**Plus d'infos sur le packaging d'applications :** https://yunohost.org/packaging_apps

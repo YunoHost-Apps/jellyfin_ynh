@@ -6,13 +6,26 @@
         "en": "Media System that manage and stream your media.",
         "fr": "Système multimédia qui gère et diffuse vos médias."
     },
-    "version": "10.7.5~ynh1",
-    "url": "https://github.com/jellyfin/jellyfin",
+    "version": "10.7.6~ynh1",
+    "url": "https://jellyfin.org",
+    "upstream": {
+        "license": "GPL-2.0-only",
+        "website": "https://jellyfin.org",
+        "demo": "https://demo.jellyfin.org/stable/web/index.html",
+        "userdoc": "https://jellyfin.org/docs/",
+        "code": "https://github.com/jellyfin/jellyfin"
+    },
     "license": "GPL-2.0-only",
     "maintainer": {
-        "name": "liberodark",
-        "email": "liberodark@gmail.com"
+            "name": "tituspijean",
+            "email": "tituspijean@outlook.com"
     },
+    "previous_maintainers": [
+        {
+            "name": "liberodark",
+            "email": "liberodark@gmail.com"
+        }
+    ],
     "requirements": {
         "yunohost": ">= 4.1.3"
     },
@@ -45,6 +58,19 @@
                 "help": {
                     "en": "Jellyfin has its own login system, you should make it public to let external clients access it (mobile app, etc.).",
                     "fr": "Jellyfin a son propre système de connexion, vous devriez la laisser publique pour permettre la connexion de clients externes (app mobile, etc.)."
+                }
+            },
+            {
+                "name": "discovery",
+                "type": "boolean",
+                "default": true,
+                "ask": {
+                    "en": "Should the ports for client and server discovery be opened?",
+                    "fr": "Est-ce que les ports pour la découverte entre clients et serveur doivent être ouverts ?"
+                },
+                "help": {
+                    "en": "Enable discovery if you use Jellyfin on your local network or through a VPN to smoothen detection between clients and server. If it is installed on a VPS and only accessed via its web interface, you should disable discovery.",
+                    "fr": "Activez la découverte si vous utilisez Jellyfin sur votre réseau local ou via un VPN pour simplifier la détection entre clients et serveur. S'il est installé sur un VPS et utilisé uniquement via son interface web, vous devriez désactiver la découverte."
                 }
             }
         ]

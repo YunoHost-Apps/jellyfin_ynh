@@ -27,6 +27,7 @@ domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
 admin=$YNH_APP_ARG_ADMIN
 is_public=$YNH_APP_ARG_IS_PUBLIC
+discovery=$YNH_APP_ARG_DISCOVERY
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -56,6 +57,7 @@ ynh_script_progression --message="Storing installation settings..." --weight=2
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
 ynh_app_setting_set --app=$app --key=admin --value=$admin
+ynh_app_setting_set --app=$app --key=discovery --value=$discovery
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 ynh_app_setting_set --app=$app --key=config_path --value=$config_path
 
@@ -69,6 +71,32 @@ ynh_script_progression --message="Finding an available port..." --weight=1
 # Find an available port
 port=$(ynh_find_port --port=8095)
 ynh_app_setting_set --app=$app --key=port --value=$port
+
+discovery_service=$discovery
+discovery_client=$discovery
+
+if [ $discovery -eq 1 ]; then
+        ynh_script_progression --message="Configuring firewall..." --weight=1
+
+        # Open port 1900 for service auto-discovery
+        if ynh_port_available --port=$discovery_service_port; then
+                ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
+        else
+                discovery_service=0
+                ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
+        fi
+
+        # Open port 7359 for client auto-discovery
+        if ynh_port_available --port=$discovery_client_port; then
+                ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
+        else
+                discovery_client=0
+                ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
+        fi
+fi
+
+ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
+ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
 
 #=================================================
 # INSTALL DEPENDENCIES
@@ -114,6 +142,9 @@ fi
 #=================================================
 ynh_script_progression --message="Configuring the settings..." --weight=1
 
+# Set permissions to app files
+chown -R $app: $final_path
+
 # Load services once to generate system.xml
 ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
 ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
@@ -121,6 +152,9 @@ ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --li
 # Port config
 ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="$config_path/network.xml"
 ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="$config_path/network.xml"
+
+# Enable IPv6
+ynh_replace_string --match_string="<EnableIPV6>false</EnableIPV6>" --replace_string="<EnableIPV6>true</EnableIPV6>" --target_file="$config_path/network.xml"
 
 # BaseUrl config
 ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="$config_path/network.xml"
@@ -153,6 +187,7 @@ ynh_script_progression --message="Securing files and directories..."
 
 # Set permissions to app files
 chown -R $app: $final_path
+chown -R $app: $config_path
 
 #=================================================
 # SETUP LOGROTATE
@@ -167,7 +202,17 @@ ynh_use_logrotate
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description="Jellyfin media center" --log_type="systemd"
+# Build the ports list
+needed_ports=()
+(( $discovery_service == 1 )) && needed_ports+=( "$discovery_service_port" )
+(( $discovery_client == 1 )) && needed_ports+=( "$discovery_client_port" )
+
+# Integrate service and require to expose the ports if needed
+if [[ -z ${needed_ports[@]} ]]; then
+	yunohost service add $app --description="Jellyfin media center" --log_type="systemd"
+else
+	yunohost service add $app --description="Jellyfin media center" --log_type="systemd" --needs_exposed_ports ${needed_ports[@]}
+fi
 
 #=================================================
 # START SYSTEMD SERVICE

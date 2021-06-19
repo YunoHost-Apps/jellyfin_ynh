@@ -51,16 +51,24 @@ ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 #=================================================
 # SPECIFIC BACKUP
 #=================================================
-# BACKUP VARIOUS FILES
+# BACKUP LOGROTATE
 #=================================================
 
 ynh_backup --src_path="/etc/logrotate.d/$app"
+
+#=================================================
+# BACKUP SYSTEMD
+#=================================================
+
+ynh_backup --src_path="/etc/systemd/system/jellyfin.service.d" --not_mandatory
+ynh_backup --src_path="/lib/systemd/system/jellyfin.service"
 
 #=================================================
 # BACKUP VARIOUS FILES
 #=================================================
 
 ynh_backup --src_path="$config_path"
+ynh_backup --src_path="/etc/default/jellyfin" --not_mandatory
 
 #=================================================
 # END OF SCRIPT
