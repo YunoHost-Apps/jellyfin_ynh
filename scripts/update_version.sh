@@ -45,10 +45,6 @@ prepare_source () {
     # Create the temporary directory
     tempdir="$(mktemp -d)"
 
-    official_checksum_url=$(grep "SOURCE_SUM=" "$destination" | cut -d "=" -f 2)
-    official_checksum=$(curl -L -s "${official_checksum_url}" | cut -d ' ' -f 1)
-    echo $official_checksum
-
     url=$(grep "SOURCE_URL=" "$destination" | cut -d "=" -f 2)
     echo $url
     filename=${url##*/}
@@ -58,7 +54,13 @@ prepare_source () {
 
     ynh_secure_remove $tempdir
 
-    if [[ "$official_checksum" != "$checksum" ]]; then
+    official_checksum_url=$(grep "SOURCE_SUM=" "$destination" | cut -d "=" -f 2)
+    if [[ "$official_checksum_url" != "none" ]]; then
+      official_checksum=$(curl -L -s "${official_checksum_url}" | cut -d ' ' -f 1)
+      echo $official_checksum
+    fi
+
+    if [[ "$official_checksum_url" != "none" && "$official_checksum" != "$checksum" ]]; then
       echo "Downloaded file checksum ($checksum) does not match official checksum ($official_checksum)"
       exit 1
     else
@@ -74,7 +76,9 @@ for architecture in "${architectures[@]}"; do
 	prepare_source --template="../conf/server.src.default" --destination="../conf/server.$architecture.src" --architecture="$architecture"
 done
 
+prepare_source --template="../conf/ldap.src.default" --destination="../conf/ldap.src"
+
 sed -i "s#    \"version\": \".*#    \"version\": \"${version}\~ynh1\",#" ../manifest.json
 
-git add .
-git commit _common.sh ../manifest.json ../conf/ffmpeg.*.src ../conf/web.*.src ../conf/server.*.src -m "Upgrade to v$version"
+git add _common.sh ../manifest.json ../conf/ffmpeg.*.src ../conf/web.*.src ../conf/server.*.src ../conf/ldap.src
+git commit -m "Upgrade to v$version"
