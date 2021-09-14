@@ -202,15 +202,11 @@ ynh_exec_fully_quiet ynh_replace_string --match_string="\"Default\": \"Informati
 #=================================================
 # INSTALL LDAP PLUGIN
 #=================================================
+ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
-# Install it only if the plugin directory does not exist
-if [ ! -e "/var/lib/jellyfin/plugins/LDAP Authentication" ]; then
-	ynh_script_progression --message="Installing LDAP plugin..." --weight=2
-
-	ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
-	mkdir -p /var/lib/jellyfin/plugins/configurations/
-	ynh_add_config --template="../conf/LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
-fi
+ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
+mkdir -p /var/lib/jellyfin/plugins/configurations/
+ynh_add_config --template="../conf/LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
 #=================================================
 # GENERIC FINALIZATION
