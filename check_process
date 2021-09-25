@@ -26,7 +26,10 @@
 		#upgrade=1	from_commit=5478712c0ca7683503bc1b50cfafe81ea508065e
 		# 10.7.0~ynh1
 		#upgrade=1	from_commit=63ab03ab79cc088a52b8a36fb4fdf5918bf0e14b
-		upgrade=1	from_commit=8ed403b30a8d3e61e2d3bf5bc8d3f4cae1ed80b6
+                # 10.7.5~ynh1
+		#upgrade=1	from_commit=8ed403b30a8d3e61e2d3bf5bc8d3f4cae1ed80b6
+                # 10.7.6~ynh1
+		upgrade=1	from_commit=227b2cb8661b59ba391802637d0893976ffb6dd4
 		backup_restore=1
 		multi_instance=0
 		port_already_use=0
@@ -45,3 +48,5 @@ Notification=none
 		name=10.7.0~ynh1
 	; commit=8ed403b30a8d3e61e2d3bf5bc8d3f4cae1ed80b6
 		name=10.7.5~ynh1
+	; commit=227b2cb8661b59ba391802637d0893976ffb6dd4
+		name=10.7.6~ynh1

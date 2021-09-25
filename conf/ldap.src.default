@@ -1,0 +1,7 @@
+SOURCE_URL=https://repo.jellyfin.org/releases/plugin/ldap-authentication/ldap-authentication___LDAP_PKG_VERSION__.zip
+SOURCE_SUM=none
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=zip
+SOURCE_IN_SUBDIR=false
+SOURCE_FILENAME=
+SOURCE_EXTRACT=true
