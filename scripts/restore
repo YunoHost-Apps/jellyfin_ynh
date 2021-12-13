@@ -109,7 +109,15 @@ ynh_system_user_create --username=$app
 #=================================================
 # REINSTALL DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Reinstalling dependencies..." --weight=7
+ynh_script_progression --message="Reinstalling dependencies..." --weight=5
+
+# Define and install dependencies
+ynh_install_app_dependencies $pkg_dependencies
+
+#=================================================
+# REINSTALL PACKAGES
+#=================================================
+ynh_script_progression --message="Reinstalling packages..." --weight=7
 
 # Create the temporary directory
 tempdir="$(mktemp -d)"
@@ -131,9 +139,9 @@ fi
 ynh_setup_source --dest_dir=$tempdir --source_id="web.$architecture"
 
 # Install the packages
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-ffmpeg.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-server.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-web.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold
+ynh_exec_warn_less dpkg -i $tempdir/jellyfin-ffmpeg.deb --force-confdef --force-confold
+ynh_exec_warn_less dpkg -i $tempdir/jellyfin-server.deb --force-confdef --force-confold
+ynh_exec_warn_less dpkg -i $tempdir/jellyfin-web.deb --force-confdef --force-confold
 
 #=================================================
 # RESTORE SYSTEMD

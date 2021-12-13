@@ -101,7 +101,14 @@ ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Installing dependencies..." --weight=1
+ynh_script_progression --message="Installing dependencies..." --weight=5
+
+ynh_install_app_dependencies $pkg_dependencies
+
+#=================================================
+# INSTALL PACKAGES
+#=================================================
+ynh_script_progression --message="Installing packages..." --weight=1
 
 # Create the temporary directory
 tempdir="$(mktemp -d)"
@@ -123,9 +130,9 @@ fi
 ynh_setup_source --dest_dir=$tempdir --source_id="web.$architecture"
 
 # Install the packages
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-ffmpeg.deb -y
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-server.deb -y
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-web.deb -y
+ynh_exec_warn_less dpkg -i $tempdir/jellyfin-ffmpeg.deb
+ynh_exec_warn_less dpkg -i $tempdir/jellyfin-server.deb
+ynh_exec_warn_less dpkg -i $tempdir/jellyfin-web.deb
 
 #=================================================
 # NGINX CONFIGURATION
