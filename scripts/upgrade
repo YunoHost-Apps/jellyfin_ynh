@@ -166,9 +166,9 @@ fi
 ynh_setup_source --dest_dir=$tempdir --source_id="web.$architecture"
 
 # Install the packages
-ynh_exec_warn_less dpkg -i $tempdir/jellyfin-ffmpeg.deb --force-confdef --force-confnew
-ynh_exec_warn_less dpkg -i $tempdir/jellyfin-server.deb --force-confdef --force-confnew
-ynh_exec_warn_less dpkg -i $tempdir/jellyfin-web.deb --force-confdef --force-confnew
+ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg.deb
+ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-server.deb
+ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-web.deb
 
 #=================================================
 # CREATE DEDICATED USER
