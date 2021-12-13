@@ -38,7 +38,7 @@ fi
 #=================================================
 # REMOVE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Removing dependencies" --weight=3
+ynh_script_progression --message="Removing dependencies..." --weight=3
 
 ynh_remove_app_dependencies
 
