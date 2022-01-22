@@ -149,7 +149,6 @@ ynh_exec_warn_less dpkg --force-confdef --force-confold -i $tempdir/jellyfin-web
 ynh_script_progression --message="Restoring the systemd configuration..." --weight=1
 
 ynh_restore_file --origin_path="/etc/systemd/system/jellyfin.service.d" --not_mandatory
-ynh_restore_file --origin_path="/lib/systemd/system/jellyfin.service"
 systemctl enable jellyfin.service --quiet
 
 #=================================================
