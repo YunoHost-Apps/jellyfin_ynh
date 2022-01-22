@@ -160,32 +160,11 @@ fi
 #=================================================
 ynh_script_progression --message="Configuring the settings..." --weight=1
 
-# Set permissions to app files
-chown -R $app: $final_path
-
-# Load services once to generate system.xml
-ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
 ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
-# Port config
-ynh_replace_string --match_string="<PublicPort>8096</PublicPort>" --replace_string="<PublicPort>$port</PublicPort>" --target_file="$config_path/network.xml"
-ynh_replace_string --match_string="<HttpServerPortNumber>8096</HttpServerPortNumber>" --replace_string="<HttpServerPortNumber>$port</HttpServerPortNumber>" --target_file="$config_path/network.xml"
-
-# Enable IPv6
-ynh_replace_string --match_string="<EnableIPV6>false</EnableIPV6>" --replace_string="<EnableIPV6>true</EnableIPV6>" --target_file="$config_path/network.xml"
-
-# BaseUrl config
-ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$path_url</BaseUrl>" --target_file="$config_path/network.xml"
-
-# Disable Setup Wizard
-ynh_replace_string --match_string="<IsStartupWizardCompleted>false</IsStartupWizardCompleted>" --replace_string="<IsStartupWizardCompleted>true</IsStartupWizardCompleted>" --target_file="$config_path/system.xml"
-
-# Lower logging verbosity
-cp "$config_path/logging.default.json" "$config_path/logging.json"
-ynh_replace_string --match_string="\"Default\": \"Information\"" --replace_string="\"Default\": \"Error\"" --target_file="$config_path/logging.json"
-
-ynh_store_file_checksum --file="$config_path/network.xml"
-ynh_store_file_checksum --file="$config_path/system.xml"
+ynh_add_config --template="system.xml" --destination="$config_path/system.xml"
+ynh_add_config --template="network.xml" --destination="$config_path/network.xml"
+ynh_add_config --template="logging.json" --destination="$config_path/logging.json"
 
 #=================================================
 # INSTALL LDAP PLUGIN
@@ -194,7 +173,7 @@ ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
 ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
 mkdir -p /var/lib/jellyfin/plugins/configurations/
-ynh_add_config --template="../conf/LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
+ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
 #=================================================
 # GENERIC FINALIZATION
