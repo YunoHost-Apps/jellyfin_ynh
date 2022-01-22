@@ -1,14 +1,12 @@
 # See here for more information
 # https://github.com/YunoHost/package_check#syntax-check_process-file
 
-# Move this file from check_process.default to check_process when you have filled it.
-
 ;; Test complet
 	; Manifest
-		domain="domain.tld"	(DOMAIN)
-		path="/path"	(PATH)
-		admin="john"	(USER)
-		is_public=1	(PUBLIC|public=1|private=0)
+		domain="domain.tld"
+		path="/path"
+		admin="john"
+		is_public=1
 		discovery=1
 	; Checks
 		pkg_linter=1
@@ -18,18 +16,6 @@
 		setup_private=1
 		setup_public=1
 		upgrade=1
-		# 10.6.4~ynh1
-		#upgrade=1	from_commit=dc5ab412fe599ce6d558c2f55fe53d2c21956c08
-		# 10.6.4~ynh2
-		#upgrade=1	from_commit=2aab8003d64ffabe65bd11ebe5933cfef519b061
-		# 10.6.4~ynh3
-		#upgrade=1	from_commit=5478712c0ca7683503bc1b50cfafe81ea508065e
-		# 10.7.0~ynh1
-		#upgrade=1	from_commit=63ab03ab79cc088a52b8a36fb4fdf5918bf0e14b
-                # 10.7.5~ynh1
-		#upgrade=1	from_commit=8ed403b30a8d3e61e2d3bf5bc8d3f4cae1ed80b6
-                # 10.7.6~ynh1
-		upgrade=1	from_commit=227b2cb8661b59ba391802637d0893976ffb6dd4
 		backup_restore=1
 		multi_instance=0
 		port_already_use=0
@@ -38,15 +24,5 @@
 Email=
 Notification=none
 ;;; Upgrade options
-	; commit=dc5ab412fe599ce6d558c2f55fe53d2c21956c08
-		name=10.6.4~ynh1
-	; commit=2aab8003d64ffabe65bd11ebe5933cfef519b061
-		name=10.6.4~ynh2
-	; commit=5478712c0ca7683503bc1b50cfafe81ea508065e
-		name=10.6.4~ynh3
-	; commit=63ab03ab79cc088a52b8a36fb4fdf5918bf0e14b
-		name=10.7.0~ynh1
-	; commit=8ed403b30a8d3e61e2d3bf5bc8d3f4cae1ed80b6
-		name=10.7.5~ynh1
-	; commit=227b2cb8661b59ba391802637d0893976ffb6dd4
-		name=10.7.6~ynh1
+#	; commit=
+#		name=

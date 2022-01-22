@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServerConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <LogFileRetentionDays>3</LogFileRetentionDays>
+  <IsStartupWizardCompleted>true</IsStartupWizardCompleted>
+  <EnableUPnP>true</EnableUPnP>
+  <EnableMetrics>false</EnableMetrics>
+  <PublicPort>__PORT__</PublicPort>
+  <UPnPCreateHttpPortMap>false</UPnPCreateHttpPortMap>
+  <UDPPortRange />
+  <EnableIPV6>true</EnableIPV6>
+  <EnableIPV4>true</EnableIPV4>
+  <EnableSSDPTracing>false</EnableSSDPTracing>
+  <SSDPTracingFilter />
+  <UDPSendCount>2</UDPSendCount>
+  <UDPSendDelay>100</UDPSendDelay>
+  <IgnoreVirtualInterfaces>true</IgnoreVirtualInterfaces>
+  <VirtualInterfaceNames>vEthernet*</VirtualInterfaceNames>
+  <GatewayMonitorPeriod>60</GatewayMonitorPeriod>
+  <TrustAllIP6Interfaces>false</TrustAllIP6Interfaces>
+  <HDHomerunPortRange />
+  <PublishedServerUriBySubnet />
+  <AutoDiscoveryTracing>false</AutoDiscoveryTracing>
+  <AutoDiscovery>true</AutoDiscovery>
+  <PublicHttpsPort>8920</PublicHttpsPort>
+  <HttpServerPortNumber>__PORT__</HttpServerPortNumber>
+  <HttpsPortNumber>8920</HttpsPortNumber>
+  <EnableHttps>false</EnableHttps>
+  <EnableNormalizedItemByNameIds>true</EnableNormalizedItemByNameIds>
+  <CertificatePath />
+  <CertificatePassword />
+  <IsPortAuthorized>true</IsPortAuthorized>
+  <QuickConnectAvailable>false</QuickConnectAvailable>
+  <EnableRemoteAccess>true</EnableRemoteAccess>
+  <EnableCaseSensitiveItemIds>true</EnableCaseSensitiveItemIds>
+  <DisableLiveTvChannelUserDataName>true</DisableLiveTvChannelUserDataName>
+  <MetadataPath />
+  <MetadataNetworkPath />
+  <PreferredMetadataLanguage>en</PreferredMetadataLanguage>
+  <MetadataCountryCode>US</MetadataCountryCode>
+  <SortReplaceCharacters>
+    <string>.</string>
+    <string>+</string>
+    <string>%</string>
+  </SortReplaceCharacters>
+  <SortRemoveCharacters>
+    <string>,</string>
+    <string>&amp;</string>
+    <string>-</string>
+    <string>{</string>
+    <string>}</string>
+    <string>'</string>
+  </SortRemoveCharacters>
+  <SortRemoveWords>
+    <string>the</string>
+    <string>a</string>
+    <string>an</string>
+  </SortRemoveWords>
+  <MinResumePct>5</MinResumePct>
+  <MaxResumePct>90</MaxResumePct>
+  <MinResumeDurationSeconds>300</MinResumeDurationSeconds>
+  <MinAudiobookResume>5</MinAudiobookResume>
+  <MaxAudiobookResume>5</MaxAudiobookResume>
+  <LibraryMonitorDelay>60</LibraryMonitorDelay>
+  <EnableDashboardResponseCaching>true</EnableDashboardResponseCaching>
+  <ImageSavingConvention>Legacy</ImageSavingConvention>
+  <MetadataOptions>
+    <MetadataOptions>
+      <ItemType>Book</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
+    </MetadataOptions>
+    <MetadataOptions>
+      <ItemType>Movie</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
+    </MetadataOptions>
+    <MetadataOptions>
+      <ItemType>MusicVideo</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers>
+        <string>The Open Movie Database</string>
+      </DisabledMetadataFetchers>
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers>
+        <string>The Open Movie Database</string>
+      </DisabledImageFetchers>
+      <ImageFetcherOrder />
+    </MetadataOptions>
+    <MetadataOptions>
+      <ItemType>Series</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
+    </MetadataOptions>
+    <MetadataOptions>
+      <ItemType>MusicAlbum</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers>
+        <string>TheAudioDB</string>
+      </DisabledMetadataFetchers>
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
+    </MetadataOptions>
+    <MetadataOptions>
+      <ItemType>MusicArtist</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers>
+        <string>TheAudioDB</string>
+      </DisabledMetadataFetchers>
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
+    </MetadataOptions>
+    <MetadataOptions>
+      <ItemType>BoxSet</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
+    </MetadataOptions>
+    <MetadataOptions>
+      <ItemType>Season</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
+    </MetadataOptions>
+    <MetadataOptions>
+      <ItemType>Episode</ItemType>
+      <DisabledMetadataSavers />
+      <LocalMetadataReaderOrder />
+      <DisabledMetadataFetchers />
+      <MetadataFetcherOrder />
+      <DisabledImageFetchers />
+      <ImageFetcherOrder />
+    </MetadataOptions>
+  </MetadataOptions>
+  <SkipDeserializationForBasicTypes>true</SkipDeserializationForBasicTypes>
+  <ServerName />
+  <BaseUrl />
+  <UICulture>en-US</UICulture>
+  <SaveMetadataHidden>false</SaveMetadataHidden>
+  <ContentTypes />
+  <RemoteClientBitrateLimit>0</RemoteClientBitrateLimit>
+  <EnableFolderView>false</EnableFolderView>
+  <EnableGroupingIntoCollections>false</EnableGroupingIntoCollections>
+  <DisplaySpecialsWithinSeasons>true</DisplaySpecialsWithinSeasons>
+  <LocalNetworkSubnets />
+  <LocalNetworkAddresses />
+  <CodecsUsed />
+  <PluginRepositories>
+    <RepositoryInfo>
+      <Name>Jellyfin Stable</Name>
+      <Url>https://repo.jellyfin.org/releases/plugin/manifest-stable.json</Url>
+      <Enabled>true</Enabled>
+    </RepositoryInfo>
+  </PluginRepositories>
+  <EnableExternalContentInSuggestions>true</EnableExternalContentInSuggestions>
+  <RequireHttps>false</RequireHttps>
+  <EnableNewOmdbSupport>true</EnableNewOmdbSupport>
+  <RemoteIPFilter />
+  <IsRemoteIPFilterBlacklist>false</IsRemoteIPFilterBlacklist>
+  <ImageExtractionTimeoutMs>0</ImageExtractionTimeoutMs>
+  <PathSubstitutions />
+  <UninstalledPlugins />
+  <EnableSlowResponseWarning>true</EnableSlowResponseWarning>
+  <SlowResponseThresholdMs>500</SlowResponseThresholdMs>
+  <CorsHosts>
+    <string>*</string>
+  </CorsHosts>
+  <KnownProxies />
+  <ActivityLogRetentionDays>30</ActivityLogRetentionDays>
+  <LibraryScanFanoutConcurrency>0</LibraryScanFanoutConcurrency>
+  <LibraryMetadataRefreshConcurrency>0</LibraryMetadataRefreshConcurrency>
+  <RemoveOldPlugins>false</RemoveOldPlugins>
+</ServerConfiguration>
