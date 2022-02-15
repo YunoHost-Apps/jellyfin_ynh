@@ -183,7 +183,8 @@ ynh_system_user_create --username=$app
 #=================================================
 ynh_script_progression --message="Setting up configuration files..." --weight=2
 
-ynh_add_config --template="system.xml" --destination="$config_path/system.xml"
+# TODO: investigate if we can avoid overriding system.xml
+#ynh_add_config --template="system.xml" --destination="$config_path/system.xml"
 ynh_add_config --template="network.xml" --destination="$config_path/network.xml"
 ynh_add_config --template="logging.json" --destination="$config_path/logging.json"
 
