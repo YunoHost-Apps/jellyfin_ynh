@@ -158,6 +158,9 @@ fi
 #=================================================
 # MODIFY A CONFIG FILE
 #=================================================
+ynh_print_info --message="Waiting 30s to let Jellyfin fully start a first time..."
+sleep 30
+
 ynh_script_progression --message="Configuring the settings..." --weight=1
 
 ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
