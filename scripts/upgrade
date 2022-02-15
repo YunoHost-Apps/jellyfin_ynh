@@ -150,20 +150,20 @@ ynh_script_progression --message="Upgrading packages..." --weight=3
 tempdir="$(mktemp -d)"
 
 # Download the deb files
-ynh_setup_source --dest_dir=$tempdir --source_id="ffmpeg.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="ffmpeg.$debian.$architecture"
 # In case of a new version, the url change from https://repo.jellyfin.org/releases/server/debian/versions/stable/server/X.X.X/jellyfin-server_X.X.X-1_$architecture.deb to https://repo.jellyfin.org/archive/debian/stable/X.X.X/server/jellyfin-server_X.X.X-1_$architecture.deb
 src_url=$(grep 'SOURCE_URL=' "../conf/server.$debian.$architecture.src" | cut -d= -f2-)
 if ! curl --output /dev/null --silent --head --fail "$src_url"; then
 	ynh_replace_string --match_string="releases/server/debian/versions/stable/server/$version/jellyfin-server_$version-1_$architecture.deb" --replace_string="archive/debian/stable/$version/server/jellyfin-server_$version-1_$architecture.deb" --target_file="../conf/server.$debian.$architecture.src"
 fi
-ynh_setup_source --dest_dir=$tempdir --source_id="server.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="server.$debian.$architecture"
 
 # Same for web
 src_url=$(grep 'SOURCE_URL=' "../conf/web.$debian.$architecture.src" | cut -d= -f2-)
 if ! curl --output /dev/null --silent --head --fail "$src_url"; then
 	ynh_replace_string --match_string="releases/server/debian/versions/stable/web/$version/jellyfin-web_$version-1_all.deb" --replace_string="archive/debian/stable/$version/web/jellyfin-web_$version-1_all.deb" --target_file="../conf/web.$debian.$architecture.src"
 fi
-ynh_setup_source --dest_dir=$tempdir --source_id="web.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="web.$debian.$architecture"
 
 # Install the packages
 ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg.deb
