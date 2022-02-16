@@ -114,20 +114,20 @@ ynh_script_progression --message="Installing packages..." --weight=1
 tempdir="$(mktemp -d)"
 
 # Download the deb files
-ynh_setup_source --dest_dir=$tempdir --source_id="ffmpeg.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="ffmpeg.$debian.$architecture"
 # In case of a new version, the url change from https://repo.jellyfin.org/releases/server/debian/versions/stable/server/X.X.X/jellyfin-server_X.X.X-1_$architecture.deb to https://repo.jellyfin.org/archive/debian/stable/X.X.X/server/jellyfin-server_X.X.X-1_$architecture.deb
-src_url=$(grep 'SOURCE_URL=' "../conf/server.$architecture.src" | cut -d= -f2-)
+src_url=$(grep 'SOURCE_URL=' "../conf/server.$debian.$architecture.src" | cut -d= -f2-)
 if ! curl --output /dev/null --silent --head --fail "$src_url"; then
-	ynh_replace_string --match_string="releases/server/debian/versions/stable/server/$version/jellyfin-server_$version-1_$architecture.deb" --replace_string="archive/debian/stable/$version/server/jellyfin-server_$version-1_$architecture.deb" --target_file="../conf/server.$architecture.src"
+	ynh_replace_string --match_string="releases/server/debian/versions/stable/server/$version/jellyfin-server_$version-1_$architecture.deb" --replace_string="archive/debian/stable/$version/server/jellyfin-server_$version-1_$architecture.deb" --target_file="../conf/server.$debian.$architecture.src"
 fi
-ynh_setup_source --dest_dir=$tempdir --source_id="server.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="server.$debian.$architecture"
 
 # Same for web
-src_url=$(grep 'SOURCE_URL=' "../conf/web.$architecture.src" | cut -d= -f2-)
+src_url=$(grep 'SOURCE_URL=' "../conf/web.$debian.$architecture.src" | cut -d= -f2-)
 if ! curl --output /dev/null --silent --head --fail "$src_url"; then
-	ynh_replace_string --match_string="releases/server/debian/versions/stable/web/$version/jellyfin-web_$version-1_all.deb" --replace_string="archive/debian/stable/$version/web/jellyfin-web_$version-1_all.deb" --target_file="../conf/web.$architecture.src"
+	ynh_replace_string --match_string="releases/server/debian/versions/stable/web/$version/jellyfin-web_$version-1_all.deb" --replace_string="archive/debian/stable/$version/web/jellyfin-web_$version-1_all.deb" --target_file="../conf/web.$debian.$architecture.src"
 fi
-ynh_setup_source --dest_dir=$tempdir --source_id="web.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="web.$debian.$architecture"
 
 # Install the packages
 ynh_exec_warn_less dpkg -i $tempdir/jellyfin-ffmpeg.deb
@@ -158,6 +158,9 @@ fi
 #=================================================
 # MODIFY A CONFIG FILE
 #=================================================
+ynh_print_info --message="Waiting 30s to let Jellyfin fully start a first time..."
+sleep 30
+
 ynh_script_progression --message="Configuring the settings..." --weight=1
 
 ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
@@ -206,9 +209,9 @@ needed_ports=()
 
 # Integrate service and require to expose the ports if needed
 if [[ -z ${needed_ports[@]} ]]; then
-	yunohost service add $app --description="Jellyfin media center" --log_type="systemd"
+	yunohost service add $app --description="Jellyfin media center"
 else
-	yunohost service add $app --description="Jellyfin media center" --log_type="systemd" --needs_exposed_ports ${needed_ports[@]}
+	yunohost service add $app --description="Jellyfin media center" --needs_exposed_ports ${needed_ports[@]}
 fi
 
 #=================================================
