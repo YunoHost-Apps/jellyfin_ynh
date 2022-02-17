@@ -185,7 +185,7 @@ ynh_script_progression --message="Adding multimedia directories..." --weight=2
 
 # Build YunoHost multimedia directories
 ynh_multimedia_build_main_dir
-# Allow nextcloud to write into these directories
+# Allow Jellyfin to write into these directories
 ynh_multimedia_addaccess $app
 
 #=================================================
