@@ -38,11 +38,18 @@ fi
 #=================================================
 # REMOVE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Removing dependencies..." --weight=1
+ynh_script_progression --message="Removing dependencies..." --weight=3
 
-apt-get remove jellyfin-web -y
-apt-get remove jellyfin-server -y
-apt-get remove jellyfin-ffmpeg -y
+ynh_remove_app_dependencies
+
+#=================================================
+# REMOVE PACKAGES
+#=================================================
+ynh_script_progression --message="Removing packages..." --weight=1
+
+dpkg --remove jellyfin-web
+dpkg --remove jellyfin-server
+dpkg --remove jellyfin-ffmpeg
 
 #=================================================
 # REMOVE APP DIRECTORIES

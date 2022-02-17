@@ -17,7 +17,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 Media System that manage and stream your media.
 
-**Shipped version:** 10.7.7~ynh1
+**Shipped version:** 10.7.7~ynh2
 
 **Demo:** https://demo.jellyfin.org/stable/web/index.html
 
@@ -30,6 +30,9 @@ Media System that manage and stream your media.
 * The app relies on YunoHost's LDAP server for users to log in:
   * Standard users need the `main` permission;
   * Users with the `admin` permission will have access to the administration panel.
+
+* The app can access YunoHost's multimedia directories:
+choose one of the folders in `/home/yunohost.multimedia/share` upon configuration of your libraries.
 
 * Starting version 10.7.5~ynh2, you can ask for the discovery ports (1900 and 7359) to be opened.
 They ease the setting up of your media center between clients and server.

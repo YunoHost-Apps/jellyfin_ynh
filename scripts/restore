@@ -109,20 +109,39 @@ ynh_system_user_create --username=$app
 #=================================================
 # REINSTALL DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Reinstalling dependencies..." --weight=7
+ynh_script_progression --message="Reinstalling dependencies..." --weight=5
+
+# Define and install dependencies
+ynh_install_app_dependencies $pkg_dependencies
+
+#=================================================
+# REINSTALL PACKAGES
+#=================================================
+ynh_script_progression --message="Reinstalling packages..." --weight=7
 
 # Create the temporary directory
 tempdir="$(mktemp -d)"
 
 # Download the deb files
-ynh_setup_source --dest_dir=$tempdir --source_id="ffmpeg.$architecture"
-ynh_setup_source --dest_dir=$tempdir --source_id="server.$architecture"
-ynh_setup_source --dest_dir=$tempdir --source_id="web.$architecture"
+ynh_setup_source --dest_dir=$tempdir --source_id="ffmpeg.$debian.$architecture"
+# In case of a new version, the url change from https://repo.jellyfin.org/releases/server/debian/versions/stable/server/X.X.X/jellyfin-server_X.X.X-1_$architecture.deb to https://repo.jellyfin.org/archive/debian/stable/X.X.X/server/jellyfin-server_X.X.X-1_$architecture.deb
+src_url=$(grep 'SOURCE_URL=' "../settings/conf/server.$debian.$architecture.src" | cut -d= -f2-)
+if ! curl --output /dev/null --silent --head --fail "$src_url"; then
+	ynh_replace_string --match_string="releases/server/debian/versions/stable/server/$version/jellyfin-server_$version-1_$architecture.deb" --replace_string="archive/debian/stable/$version/server/jellyfin-server_$version-1_$architecture.deb" --target_file="../settings/conf/server.$debian.$architecture.src"
+fi
+ynh_setup_source --dest_dir=$tempdir --source_id="server.$debian.$architecture"
+
+# Same for web
+src_url=$(grep 'SOURCE_URL=' "../settings/conf/web.$debian.$architecture.src" | cut -d= -f2-)
+if ! curl --output /dev/null --silent --head --fail "$src_url"; then
+	ynh_replace_string --match_string="releases/server/debian/versions/stable/web/$version/jellyfin-web_$version-1_all.deb" --replace_string="archive/debian/stable/$version/web/jellyfin-web_$version-1_all.deb" --target_file="../settings/conf/web.$debian.$architecture.src"
+fi
+ynh_setup_source --dest_dir=$tempdir --source_id="web.$debian.$architecture"
 
 # Install the packages
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-ffmpeg.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-server.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold
-ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-web.deb -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold
+ynh_exec_warn_less dpkg --force-confdef --force-confold -i $tempdir/jellyfin-ffmpeg.deb
+ynh_exec_warn_less dpkg --force-confdef --force-confold -i $tempdir/jellyfin-server.deb
+ynh_exec_warn_less dpkg --force-confdef --force-confold -i $tempdir/jellyfin-web.deb
 
 #=================================================
 # RESTORE SYSTEMD
@@ -130,7 +149,6 @@ ynh_exec_warn_less apt-get -f install $tempdir/jellyfin-web.deb -y -o Dpkg::Opti
 ynh_script_progression --message="Restoring the systemd configuration..." --weight=1
 
 ynh_restore_file --origin_path="/etc/systemd/system/jellyfin.service.d" --not_mandatory
-ynh_restore_file --origin_path="/lib/systemd/system/jellyfin.service"
 systemctl enable jellyfin.service --quiet
 
 #=================================================
@@ -145,9 +163,9 @@ needed_ports=()
 
 # Integrate service and require to expose the ports if needed
 if [[ -z ${needed_ports[@]} ]]; then
-        yunohost service add $app --description="Jellyfin media center" --log_type="systemd"
+        yunohost service add $app --description="Jellyfin media center"
 else
-        yunohost service add $app --description="Jellyfin media center" --log_type="systemd" --needs_exposed_ports ${needed_ports[@]}
+        yunohost service add $app --description="Jellyfin media center" --needs_exposed_ports ${needed_ports[@]}
 fi
 
 #=================================================
@@ -165,6 +183,16 @@ chown -R $app: $config_path
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
 ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
+
+#=================================================
+# YUNOHOST MULTIMEDIA INTEGRATION
+#=================================================
+ynh_script_progression --message="Adding multimedia directories..." --weight=2
+
+# Build YunoHost multimedia directories
+ynh_multimedia_build_main_dir
+# Allow Jellyfin to write into these directories
+ynh_multimedia_addaccess $app
 
 #=================================================
 # GENERIC FINALIZATION
