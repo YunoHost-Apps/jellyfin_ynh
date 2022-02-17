@@ -185,6 +185,16 @@ ynh_script_progression --message="Starting a systemd service..." --weight=1
 ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
 
 #=================================================
+# YUNOHOST MULTIMEDIA INTEGRATION
+#=================================================
+ynh_script_progression --message="Adding multimedia directories..." --weight=2
+
+# Build YunoHost multimedia directories
+ynh_multimedia_build_main_dir
+# Allow Jellyfin to write into these directories
+ynh_multimedia_addaccess $app
+
+#=================================================
 # GENERIC FINALIZATION
 #=================================================
 # RELOAD NGINX AND PHP-FPM
