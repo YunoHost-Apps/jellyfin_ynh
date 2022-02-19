@@ -49,7 +49,7 @@ ynh_script_progression --message="Removing packages..." --weight=1
 
 dpkg --remove jellyfin-web
 dpkg --remove jellyfin-server
-dpkg --remove jellyfin-ffmpeg
+dpkg --remove jellyfin-ffmpeg5
 
 #=================================================
 # REMOVE APP DIRECTORIES
