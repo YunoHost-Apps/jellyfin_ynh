@@ -13,7 +13,7 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 Système multimédia qui gère et diffuse vos médias.
 
-**Version incluse :** 10.7.7~ynh2
+**Version incluse :** 10.7.7~ynh3
 
 **Démo :** https://demo.jellyfin.org/stable/web/index.html
 
