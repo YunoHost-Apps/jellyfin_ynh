@@ -169,6 +169,13 @@ else
 fi
 
 #=================================================
+# RESTORE THE LOGROTATE CONFIGURATION
+#=================================================
+ynh_script_progression --message="Restoring the logrotate configuration..." --time --weight=1
+
+ynh_restore_file --origin_path="/etc/logrotate.d/$app"
+
+#=================================================
 # RESTORE USER RIGHTS
 #=================================================
 ynh_script_progression --message="Restoring user rights..."
