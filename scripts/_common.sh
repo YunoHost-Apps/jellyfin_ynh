@@ -60,6 +60,41 @@ pkg_dependencies="${ffmpeg_deps[*]} ${jellyfin_deps[*]}"
 # PERSONAL HELPERS
 #=================================================
 
+install_jellyfin_packages() {
+    # In case of a new version, the url change from
+    # https://repo.jellyfin.org/releases/server/debian/versions/stable/server/X.X.X/jellyfin-server_X.X.X-1_$architecture.deb to
+    # https://repo.jellyfin.org/archive/debian/stable/X.X.X/server/jellyfin-server_X.X.X-1_$architecture.deb
+    src_url=$(grep 'SOURCE_URL=' "../conf/server.$debian.$architecture.src" | cut -d= -f2-)
+    if ! curl --output /dev/null --silent --head --fail "$src_url"; then
+        ynh_replace_string \
+            --match_string="releases/server/debian/versions/stable/server/$version/" \
+            --replace_string="archive/debian/stable/$version/server/" \
+            --target_file="../conf/server.$debian.$architecture.src"
+    fi
+
+    # Same for web
+    src_url=$(grep 'SOURCE_URL=' "../conf/web.$debian.$architecture.src" | cut -d= -f2-)
+    if ! curl --output /dev/null --silent --head --fail "$src_url"; then
+        ynh_replace_string \
+            --match_string="releases/server/debian/versions/stable/web/$version/" \
+            --replace_string="archive/debian/stable/$version/web/" \
+            --target_file="../conf/web.$debian.$architecture.src"
+    fi
+
+    # Create the temporary directory
+    tempdir="$(mktemp -d)"
+
+    # Download the deb files
+    ynh_setup_source --dest_dir=$tempdir --source_id="ffmpeg.$debian.$architecture"
+    ynh_setup_source --dest_dir=$tempdir --source_id="server.$debian.$architecture"
+    ynh_setup_source --dest_dir=$tempdir --source_id="web.$debian.$architecture"
+
+    # Install the packages
+    ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg.deb
+    ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-server.deb
+    ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-web.deb
+}
+
 #=================================================
 # EXPERIMENTAL HELPERS
 #=================================================
