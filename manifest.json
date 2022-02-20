@@ -38,7 +38,6 @@
             {
                 "name": "domain",
                 "type": "domain",
-                "example": "example.com"
             },
             {
                 "name": "path",
@@ -49,7 +48,6 @@
             {
                 "name": "admin",
                 "type": "user",
-                "example": "johndoe"
             },
             {
                 "name": "is_public",
