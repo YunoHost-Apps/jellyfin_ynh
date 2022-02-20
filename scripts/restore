@@ -58,23 +58,23 @@ discovery_service=$discovery
 discovery_client=$discovery
 
 if [ $discovery -eq 1 ]; then
-        ynh_script_progression --message="Configuring firewall..." --weight=1
+    ynh_script_progression --message="Configuring firewall..." --weight=1
 
-        # Open port 1900 for service auto-discovery
-        if ynh_port_available --port=$discovery_service_port; then
-                ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
-        else
-                discovery_service=0
-                ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
-        fi
+    # Open port 1900 for service auto-discovery
+    if ynh_port_available --port=$discovery_service_port; then
+        ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
+    else
+        discovery_service=0
+        ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
+    fi
 
-        # Open port 7359 for client auto-discovery
-        if ynh_port_available --port=$discovery_client_port; then
-                ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
-        else
-                discovery_client=0
-                ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
-        fi
+    # Open port 7359 for client auto-discovery
+    if ynh_port_available --port=$discovery_client_port; then
+        ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
+    else
+        discovery_client=0
+        ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
+    fi
 fi
 
 ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
