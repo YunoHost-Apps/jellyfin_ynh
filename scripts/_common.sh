@@ -93,6 +93,14 @@ install_jellyfin_packages() {
     ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg.deb
     ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-server.deb
     ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-web.deb
+
+    # The doc says it should be called only once,
+    # but the code says multiple calls are supported.
+    # Also, they're already installed so that should be quasi instantaneous.
+    ynh_install_app_dependencies \
+        jellyfin-ffmpeg="$ffmpeg_pkg_version" \
+        jellyfin-server="$pkg_version" \
+        jellyfin-web="$pkg_version"
 }
 
 #=================================================
