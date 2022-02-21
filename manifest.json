@@ -37,7 +37,7 @@
         "install" : [
             {
                 "name": "domain",
-                "type": "domain",
+                "type": "domain"
             },
             {
                 "name": "path",
@@ -47,7 +47,7 @@
             },
             {
                 "name": "admin",
-                "type": "user",
+                "type": "user"
             },
             {
                 "name": "is_public",
