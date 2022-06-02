@@ -98,7 +98,7 @@ install_jellyfin_packages() {
     # but the code says multiple calls are supported.
     # Also, they're already installed so that should be quasi instantaneous.
     ynh_install_app_dependencies \
-        jellyfin-ffmpeg="$ffmpeg_pkg_version" \
+        jellyfin-ffmpeg="$ffmpeg_pkg_version-$debian" \
         jellyfin-server="$pkg_version" \
         jellyfin-web="$pkg_version"
 }
