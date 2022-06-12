@@ -5,12 +5,11 @@
 #=================================================
 
 debian=$(lsb_release --codename --short)
-pkg_version="10.8.0~beta2"
-version=10.8.0-beta2
-# version=$(echo "$pkg_version" | cut -d '-' -f 1)
+pkg_version="10.8.0-1"
+version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
-ffmpeg_pkg_version="5.0.1-3"
-ldap_pkg_version="14.0.0.0"
+ffmpeg_pkg_version="5.0.1-5"
+ldap_pkg_version="15.0.0.0"
 
 architecture=$(dpkg --print-architecture)
 
