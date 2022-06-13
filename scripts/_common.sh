@@ -66,22 +66,15 @@ install_jellyfin_packages() {
     # In case of a new version, the url change from
     # https://repo.jellyfin.org/releases/server/debian/versions/stable/server/X.X.X/jellyfin-server_X.X.X-1_$architecture.deb to
     # https://repo.jellyfin.org/archive/debian/stable/X.X.X/server/jellyfin-server_X.X.X-1_$architecture.deb
-    src_url=$(grep 'SOURCE_URL=' "../conf/server.$debian.$architecture.src" | cut -d= -f2-)
-    if ! curl --output /dev/null --silent --head --fail "$src_url"; then
-        ynh_replace_string \
-            --match_string="releases/server/debian/versions/stable/server/$version/" \
-            --replace_string="archive/debian/stable/$version/server/" \
-            --target_file="../conf/server.$debian.$architecture.src"
-    fi
-
-    # Same for web
-    src_url=$(grep 'SOURCE_URL=' "../conf/web.$debian.$architecture.src" | cut -d= -f2-)
-    if ! curl --output /dev/null --silent --head --fail "$src_url"; then
-        ynh_replace_string \
-            --match_string="releases/server/debian/versions/stable/web/$version/" \
-            --replace_string="archive/debian/stable/$version/web/" \
-            --target_file="../conf/web.$debian.$architecture.src"
-    fi
+    for pkg in web server; do
+        src_url=$(grep 'SOURCE_URL=' "$YNH_APP_BASEDIR/conf/$pkg.$debian.$architecture.src" | cut -d= -f2-)
+        if ! curl --output /dev/null --silent --head --fail "$src_url"; then
+            ynh_replace_string \
+                --match_string="releases/server/debian/versions/stable/$pkg/$version/" \
+                --replace_string="archive/debian/stable/$version/$pkg/" \
+                --target_file="$YNH_APP_BASEDIR/conf/$pkg.$debian.$architecture.src"
+        fi
+    done
 
     # Create the temporary directory
     tempdir="$(mktemp -d)"
@@ -95,6 +88,8 @@ install_jellyfin_packages() {
     ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg5.deb
     ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-server.deb
     ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-web.deb
+
+    rm -rf "$tempdir"
 
     # The doc says it should be called only once,
     # but the code says multiple calls are supported.
