@@ -15,6 +15,7 @@ source /usr/share/yunohost/helpers
 ynh_script_progression --message="Loading installation settings..." --weight=1
 
 app=$YNH_APP_INSTANCE_NAME
+
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
 admin=$(ynh_app_setting_get --app=$app --key=admin)
@@ -31,13 +32,36 @@ ynh_script_progression --message="Checking version..."
 upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=3
+
+# Backup the current version of the app
+ynh_backup_before_upgrade
+ynh_clean_setup () {
+	ynh_clean_check_starting
+	# Restore it if the upgrade fails
+	ynh_restore_upgradebackup
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# STANDARD UPGRADE STEPS
+#=================================================
+# STOP SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Stopping a systemd service..." --weight=1
+
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
+
+#=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
-architecture=$(dpkg --print-architecture)
-if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
-    ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
+if [[ ! "$YNH_ARCH" =~ ^(amd64|arm64|armhf)$ ]]; then
+    ynh_die "Jellyfin is not compatible with your architecture, $YNH_ARCH, which is neither amd64, arm64, or armhf." 1
 fi
 
 # If path keys do not exist, create them
@@ -77,26 +101,6 @@ if [ ! -f "/etc/logrotate.d/$app" ]; then
     ynh_use_logrotate
 fi
 
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=3
-
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	# Restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# STANDARD UPGRADE STEPS
-#=================================================
-# OPEN PORTS
-#=================================================
-
 discovery_service=$discovery
 discovery_client=$discovery
 
@@ -123,13 +127,26 @@ fi
 ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
 ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
 
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
+
+# Create a dedicated user (if not existing)
+ynh_system_user_create --username=$app
+
+if grep -q "^render:" /etc/group; then
+    # Add user to render group
+    adduser $app render
+fi
 
 #=================================================
-# STOP SYSTEMD SERVICE
+# UPGRADE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..." --weight=1
+ynh_script_progression --message="Upgrading dependencies..." --weight=5
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
+ynh_install_app_dependencies $pkg_dependencies
+install_jellyfin_packages
 
 #=================================================
 # NGINX CONFIGURATION
@@ -140,45 +157,30 @@ ynh_script_progression --message="Upgrading NGINX web server configuration..." -
 ynh_add_nginx_config
 
 #=================================================
-# UPGRADE DEPENDENCIES
+# SPECIFIC UPGRADE
 #=================================================
-ynh_script_progression --message="Upgrading dependencies..." --weight=5
+# UPDATE A CONFIG FILE
+#=================================================
+ynh_script_progression --message="Updating a configuration file..." --weight=2
 
-ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# UPGRADE packages
-#=================================================
-ynh_script_progression --message="Upgrading packages..." --weight=3
-
-install_jellyfin_packages
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
-
-# Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app
-
-#=================================================
-# MODIFY A CONFIG FILE
-#=================================================
-ynh_script_progression --message="Setting up configuration files..." --weight=2
+ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=30
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
 # TODO: investigate if we can avoid overriding system.xml
 #ynh_add_config --template="system.xml" --destination="$config_path/system.xml"
 ynh_add_config --template="network.xml" --destination="$config_path/network.xml"
 ynh_add_config --template="logging.json" --destination="$config_path/logging.json"
+chown -R $app: $config_path
 
 #=================================================
 # INSTALL LDAP PLUGIN
 #=================================================
 ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
-ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
-mkdir -p /var/lib/jellyfin/plugins/configurations/
-ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
+ynh_setup_source --dest_dir="$final_path/plugins/LDAP Authentication" --source_id=ldap
+mkdir -p $final_path/plugins/configurations/
+ynh_add_config --template="LDAP-Auth.xml" --destination="$final_path/plugins/configurations/LDAP-Auth.xml"
+chown -R $app: $final_path
 
 #=================================================
 # YUNOHOST MULTIMEDIA INTEGRATION
@@ -193,19 +195,11 @@ ynh_multimedia_addaccess $app
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-# Set permissions on app files
-chown -R $app: $final_path
-chown -R $app: $config_path
-
-#=================================================
 # SETUP LOGROTATE
 #=================================================
-ynh_script_progression --message="Configuring log rotation..." --weight=1
+ynh_script_progression --message="Upgrading logrotate configuration..." --weight=1
 
-# Use logrotate to manage application logfile(s)
+# Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
 
 #=================================================

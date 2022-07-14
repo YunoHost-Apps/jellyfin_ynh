@@ -25,8 +25,8 @@ ynh_abort_if_errors
 
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
-admin=$YNH_APP_ARG_ADMIN
 is_public=$YNH_APP_ARG_IS_PUBLIC
+admin=$YNH_APP_ARG_ADMIN
 discovery=$YNH_APP_ARG_DISCOVERY
 
 app=$YNH_APP_INSTANCE_NAME
@@ -41,9 +41,8 @@ config_path=/etc/jellyfin
 test ! -e "$final_path" || ynh_die --message="There is already a directory: $final_path "
 test ! -e "$config_path" || ynh_die --message="There is already a directory: $config_path "
 
-architecture=$(dpkg --print-architecture)
-if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
-    ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
+if [[ ! "$YNH_ARCH" =~ ^(amd64|arm64|armhf)$ ]]; then
+	ynh_die "Jellyfin is not compatible with your architecture, $YNH_ARCH, which is neither amd64, arm64, or armhf." 1
 fi
 
 # Register (book) web path
@@ -76,23 +75,23 @@ discovery_service=$discovery
 discovery_client=$discovery
 
 if [ $discovery -eq 1 ]; then
-    ynh_script_progression --message="Configuring firewall..." --weight=1
+	ynh_script_progression --message="Configuring firewall..." --weight=1
 
-    # Open port 1900 for service auto-discovery
-    if ynh_port_available --port=$discovery_service_port; then
-        ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
-    else
-        discovery_service=0
-        ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
-    fi
+	# Open port 1900 for service auto-discovery
+	if ynh_port_available --port=$discovery_service_port; then
+		ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
+	else
+		discovery_service=0
+		ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
+	fi
 
-    # Open port 7359 for client auto-discovery
-    if ynh_port_available --port=$discovery_client_port; then
-        ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
-    else
-        discovery_client=0
-        ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
-    fi
+	# Open port 7359 for client auto-discovery
+	if ynh_port_available --port=$discovery_client_port; then
+		ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
+	else
+		discovery_client=0
+		ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
+	fi
 fi
 
 ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
@@ -104,13 +103,20 @@ ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
 ynh_script_progression --message="Installing dependencies..." --weight=5
 
 ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# INSTALL PACKAGES
-#=================================================
-ynh_script_progression --message="Installing packages..." --weight=1
-
 install_jellyfin_packages
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Configuring system user..." --weight=2
+
+# Create a system user
+ynh_system_user_create --username=$app --home_dir="$final_path"
+
+if grep -q "^render:" /etc/group; then
+	# Add user to render group
+	adduser $app render
+fi
 
 #=================================================
 # NGINX CONFIGURATION
@@ -121,40 +127,29 @@ ynh_script_progression --message="Configuring NGINX web server..." --weight=6
 ynh_add_nginx_config
 
 #=================================================
-# CREATE DEDICATED USER
+# SPECIFIC SETUP
 #=================================================
-ynh_script_progression --message="Configuring system user..." --weight=2
-
-# Create a system user
-ynh_system_user_create --username=$app
-
-if grep -q "^render:" /etc/group; then
-	# Add user to render group
-	adduser $app render
-fi
-
+# ADD A CONFIGURATION
 #=================================================
-# MODIFY A CONFIG FILE
-#=================================================
-ynh_print_info --message="Waiting 30s to let Jellyfin fully start a first time..."
-sleep 30
+ynh_script_progression --message="Adding a configuration file..." --weight=1
 
-ynh_script_progression --message="Configuring the settings..." --weight=1
-
+ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=30
 ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
 ynh_add_config --template="system.xml" --destination="$config_path/system.xml"
 ynh_add_config --template="network.xml" --destination="$config_path/network.xml"
 ynh_add_config --template="logging.json" --destination="$config_path/logging.json"
+chown -R $app: $config_path
 
 #=================================================
 # INSTALL LDAP PLUGIN
 #=================================================
 ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
-ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
-mkdir -p /var/lib/jellyfin/plugins/configurations/
-ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
+ynh_setup_source --dest_dir="$final_path/plugins/LDAP Authentication" --source_id=ldap
+mkdir -p $final_path/plugins/configurations/
+ynh_add_config --template="LDAP-Auth.xml" --destination="$final_path/plugins/configurations/LDAP-Auth.xml"
+chown -R $app: $final_path
 
 #=================================================
 # YUNOHOST MULTIMEDIA INTEGRATION
@@ -168,15 +163,6 @@ ynh_multimedia_addaccess $app
 
 #=================================================
 # GENERIC FINALIZATION
-#=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-ynh_script_progression --message="Securing files and directories..."
-
-# Set permissions to app files
-chown -R $app: $final_path
-chown -R $app: $config_path
-
 #=================================================
 # SETUP LOGROTATE
 #=================================================
