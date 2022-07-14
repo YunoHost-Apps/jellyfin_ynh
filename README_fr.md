@@ -15,7 +15,8 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 
 ## Vue d'ensemble
 
-Système multimédia qui gère et diffuse vos médias.
+Jellyfin vous permet de collecter, gérer et diffuser vos médias. Exécutez le serveur Jellyfin sur votre système et accédez au principal système de divertissement à logiciel libre.
+
 
 **Version incluse :** 10.8.0~ynh1
 
