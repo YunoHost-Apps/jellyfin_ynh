@@ -17,7 +17,8 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 Media System that manage and stream your media.
 
-**Shipped version:** 10.8.0~ynh1
+
+**Shipped version:** 10.8.0~ynh2
 
 **Demo:** https://demo.jellyfin.org/stable/web/index.html
 
