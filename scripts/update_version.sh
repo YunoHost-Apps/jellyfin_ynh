@@ -73,9 +73,9 @@ debians=("buster" "bullseye")
 architectures=("amd64" "arm64" "armhf")
 for debian in "${debians[@]}"; do
   for architecture in "${architectures[@]}"; do
-    prepare_source --template="../conf/ffmpeg.src.default" --destination="../conf/ffmpeg.$debian.$architecture.src" --architecture="$architecture"
-    prepare_source --template="../conf/web.src.default" --destination="../conf/web.$debian.$architecture.src" --architecture="$architecture"
-    prepare_source --template="../conf/server.src.default" --destination="../conf/server.$debian.$architecture.src" --architecture="$architecture"
+    prepare_source --template="../conf/ffmpeg.src.default" --destination="../conf/ffmpeg.$(lsb_release --codename --short).$YNH_ARCH.src" --architecture="$YNH_ARCH"
+    prepare_source --template="../conf/web.src.default" --destination="../conf/web.$(lsb_release --codename --short).$YNH_ARCH.src" --architecture="$YNH_ARCH"
+    prepare_source --template="../conf/server.src.default" --destination="../conf/server.$(lsb_release --codename --short).$YNH_ARCH.src" --architecture="$YNH_ARCH"
   done
 done
 

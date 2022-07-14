@@ -25,8 +25,8 @@ ynh_abort_if_errors
 
 domain=$YNH_APP_ARG_DOMAIN
 path_url=$YNH_APP_ARG_PATH
-admin=$YNH_APP_ARG_ADMIN
 is_public=$YNH_APP_ARG_IS_PUBLIC
+admin=$YNH_APP_ARG_ADMIN
 discovery=$YNH_APP_ARG_DISCOVERY
 
 app=$YNH_APP_INSTANCE_NAME
@@ -41,9 +41,8 @@ config_path=/etc/jellyfin
 test ! -e "$final_path" || ynh_die --message="There is already a directory: $final_path "
 test ! -e "$config_path" || ynh_die --message="There is already a directory: $config_path "
 
-architecture=$(dpkg --print-architecture)
-if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
-    ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
+if [[ ! "$YNH_ARCH" =~ ^(amd64|arm64|armhf)$ ]]; then
+    ynh_die "Jellyfin is not compatible with your architecture, $YNH_ARCH, which is neither amd64, arm64, or armhf." 1
 fi
 
 # Register (book) web path
@@ -106,21 +105,6 @@ ynh_script_progression --message="Installing dependencies..." --weight=5
 ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
-# INSTALL PACKAGES
-#=================================================
-ynh_script_progression --message="Installing packages..." --weight=1
-
-install_jellyfin_packages
-
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Configuring NGINX web server..." --weight=6
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
-
-#=================================================
 # CREATE DEDICATED USER
 #=================================================
 ynh_script_progression --message="Configuring system user..." --weight=2
@@ -134,12 +118,28 @@ if grep -q "^render:" /etc/group; then
 fi
 
 #=================================================
-# MODIFY A CONFIG FILE
+# NGINX CONFIGURATION
 #=================================================
-ynh_print_info --message="Waiting 30s to let Jellyfin fully start a first time..."
-sleep 30
+ynh_script_progression --message="Configuring NGINX web server..." --weight=6
 
-ynh_script_progression --message="Configuring the settings..." --weight=1
+# Create a dedicated NGINX config
+ynh_add_nginx_config
+
+#=================================================
+# SPECIFIC SETUP
+#=================================================
+# INSTALL PACKAGES
+#=================================================
+ynh_script_progression --message="Installing packages..." --weight=1
+
+install_jellyfin_packages
+
+#=================================================
+# ADD A CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding a configuration file..."
+
+sleep 30
 
 ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
@@ -167,8 +167,6 @@ ynh_multimedia_build_main_dir
 ynh_multimedia_addaccess $app
 
 #=================================================
-# GENERIC FINALIZATION
-#=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
 ynh_script_progression --message="Securing files and directories..."
@@ -177,6 +175,8 @@ ynh_script_progression --message="Securing files and directories..."
 chown -R $app: $final_path
 chown -R $app: $config_path
 
+#=================================================
+# GENERIC FINALIZATION
 #=================================================
 # SETUP LOGROTATE
 #=================================================

@@ -17,9 +17,9 @@ ynh_script_progression --message="Loading installation settings..." --weight=1
 app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 discovery_client=$(ynh_app_setting_get --app=$app --key=discovery_client)
 discovery_service=$(ynh_app_setting_get --app=$app --key=discovery_service)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 config_path=$(ynh_app_setting_get --app=$app --key=config_path)
 
 #=================================================
@@ -34,6 +34,22 @@ then
 	ynh_script_progression --message="Removing $app service integration..." --weight=3
 	yunohost service remove $app
 fi
+
+#=================================================
+# REMOVE LOGROTATE CONFIGURATION
+#=================================================
+ynh_script_progression --message="Removing logrotate configuration..." --weight=1
+
+# Remove the app-specific logrotate config
+ynh_remove_logrotate
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Removing NGINX web server configuration..." --weight=1
+
+# Remove the dedicated NGINX config
+ynh_remove_nginx_config
 
 #=================================================
 # REMOVE DEPENDENCIES
@@ -52,32 +68,6 @@ dpkg --remove jellyfin-server
 dpkg --remove jellyfin-ffmpeg5
 
 #=================================================
-# REMOVE APP DIRECTORIES
-#=================================================
-ynh_script_progression --message="Removing app directories..." --weight=1
-
-# Remove the app directory securely
-ynh_secure_remove --file="$final_path"
-ynh_secure_remove --file="$config_path"
-ynh_secure_remove --file="/etc/systemd/system/jellyfin.service.d"
-
-#=================================================
-# REMOVE NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Removing NGINX web server configuration..." --weight=1
-
-# Remove the dedicated NGINX config
-ynh_remove_nginx_config
-
-#=================================================
-# REMOVE LOGROTATE CONFIGURATION
-#=================================================
-ynh_script_progression --message="Removing logrotate configuration..." --weight=1
-
-# Remove the app-specific logrotate config
-ynh_remove_logrotate
-
-#=================================================
 # CLOSE A PORT
 #=================================================
 
@@ -92,6 +82,18 @@ then
 	ynh_script_progression --message="Closing port 7359..." --weight=1
 	ynh_exec_warn_less yunohost firewall disallow UDP 7359
 fi
+
+#=================================================
+# SPECIFIC REMOVE
+#=================================================
+# REMOVE VARIOUS FILES
+#=================================================
+ynh_script_progression --message="Removing various files..." --weight=1
+
+# Remove the app directory securely
+ynh_secure_remove --file="$final_path"
+ynh_secure_remove --file="$config_path"
+ynh_secure_remove --file="/etc/systemd/system/jellyfin.service.d"
 
 #=================================================
 # GENERIC FINALIZATION
