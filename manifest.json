@@ -6,7 +6,6 @@
         "en": "Media System that manage and stream your media.",
         "fr": "Système multimédia qui gère et diffuse vos médias."
     },
-
     "version": "10.8.1~ynh2",
     "url": "https://jellyfin.org",
     "upstream": {
