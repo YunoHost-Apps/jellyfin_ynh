@@ -145,7 +145,7 @@ yunohost service add $app --description="Jellyfin media center" ${needed_ports:+
 #=================================================
 # RESTORE THE LOGROTATE CONFIGURATION
 #=================================================
-ynh_script_progression --message="Restoring the logrotate configuration..." --weight=1
+ynh_script_progression --message="Restoring the logrotate configuration..." --time --weight=1
 
 ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 
