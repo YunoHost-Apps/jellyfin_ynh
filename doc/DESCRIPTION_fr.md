@@ -1,1 +1,1 @@
-Jellyfin vous permet de collecter, gérer et diffuser vos médias. Exécutez le serveur Jellyfin sur votre système et accédez au principal système de divertissement à logiciel libre.
+Jellyfin vous permet de collecter, gÃ©rer et diffuser vos mÃ©dias. ExÃ©cutez le serveur Jellyfin sur votre systÃ¨me et accÃ©dez au principal systÃ¨me de divertissement Ã  logiciel libre.
