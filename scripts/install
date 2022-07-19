@@ -136,8 +136,8 @@ fi
 #=================================================
 # MODIFY A CONFIG FILE
 #=================================================
-ynh_print_info --message="Waiting 30s to let Jellyfin fully start a first time..."
-sleep 30
+ynh_print_info --message="Waiting ${wait_time}s to let Jellyfin fully start a first time..."
+sleep $wait_time
 
 ynh_script_progression --message="Configuring the settings..." --weight=1
 

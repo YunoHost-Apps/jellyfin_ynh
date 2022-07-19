@@ -58,6 +58,12 @@ jellyfin_deps=(at libsqlite3-0 libfontconfig1 libfreetype6 libssl1.1)
 
 pkg_dependencies="${ffmpeg_deps[*]} ${jellyfin_deps[*]}"
 
+if [ ${PACKAGE_CHECK_EXEC:-0} -eq 1 ]; then
+    wait_time=60
+else
+    wait_time=30
+fi
+
 #=================================================
 # PERSONAL HELPERS
 #=================================================
