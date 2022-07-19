@@ -87,7 +87,7 @@ install_jellyfin_packages() {
 	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-server.deb
 	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-web.deb
 
-	rm -rf "$tempdir"
+	ynh_secure_remove --file="$tempdir"
 
 	# The doc says it should be called only once,
 	# but the code says multiple calls are supported.
