@@ -52,6 +52,14 @@ ynh_script_progression --message="Removing NGINX web server configuration..." --
 ynh_remove_nginx_config
 
 #=================================================
+# REMOVE DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Removing dependencies..." --weight=3
+
+# Remove metapackage and its dependencies
+ynh_remove_app_dependencies
+
+#=================================================
 # REMOVE PACKAGES
 #=================================================
 ynh_script_progression --message="Removing packages..." --weight=1
@@ -59,14 +67,6 @@ ynh_script_progression --message="Removing packages..." --weight=1
 dpkg --remove jellyfin-web
 dpkg --remove jellyfin-server
 dpkg --remove jellyfin-ffmpeg5
-
-#=================================================
-# REMOVE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Removing dependencies..." --weight=3
-
-# Remove metapackage and its dependencies
-ynh_remove_app_dependencies
 
 #=================================================
 # CLOSE A PORT
