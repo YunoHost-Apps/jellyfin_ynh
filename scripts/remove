@@ -36,10 +36,27 @@ then
 fi
 
 #=================================================
+# REMOVE LOGROTATE CONFIGURATION
+#=================================================
+ynh_script_progression --message="Removing logrotate configuration..." --weight=1
+
+# Remove the app-specific logrotate config
+ynh_remove_logrotate
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Removing NGINX web server configuration..." --weight=1
+
+# Remove the dedicated NGINX config
+ynh_remove_nginx_config
+
+#=================================================
 # REMOVE DEPENDENCIES
 #=================================================
 ynh_script_progression --message="Removing dependencies..." --weight=3
 
+# Remove metapackage and its dependencies
 ynh_remove_app_dependencies
 
 #=================================================
@@ -52,46 +69,34 @@ dpkg --remove jellyfin-server
 dpkg --remove jellyfin-ffmpeg5
 
 #=================================================
-# REMOVE APP DIRECTORIES
+# CLOSE A PORT
 #=================================================
-ynh_script_progression --message="Removing app directories..." --weight=1
 
-# Remove the app directory securely
+if [[ $discovery_service -eq 1 ]] && yunohost firewall list | grep -q "\- $discovery_service_port$"
+then
+	ynh_script_progression --message="Closing port $discovery_service_port..." --weight=1
+	ynh_exec_warn_less yunohost firewall disallow UDP $discovery_service_port
+fi
+
+if [[ $discovery_client -eq 1 ]] && yunohost firewall list | grep -q "\- $discovery_client_port$"
+then
+	ynh_script_progression --message="Closing port $discovery_client_port..." --weight=1
+	ynh_exec_warn_less yunohost firewall disallow UDP $discovery_client_port
+fi
+
+#=================================================
+# SPECIFIC REMOVE
+#=================================================
+# REMOVE VARIOUS FILES
+#=================================================
+ynh_script_progression --message="Removing various files..." --weight=1
+
 ynh_secure_remove --file="$final_path"
 ynh_secure_remove --file="$config_path"
 ynh_secure_remove --file="/etc/systemd/system/jellyfin.service.d"
 
-#=================================================
-# REMOVE NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Removing NGINX web server configuration..." --weight=1
-
-# Remove the dedicated NGINX config
-ynh_remove_nginx_config
-
-#=================================================
-# REMOVE LOGROTATE CONFIGURATION
-#=================================================
-ynh_script_progression --message="Removing logrotate configuration..." --weight=1
-
-# Remove the app-specific logrotate config
-ynh_remove_logrotate
-
-#=================================================
-# CLOSE A PORT
-#=================================================
-
-if [[ $discovery_service -eq 1 ]] && yunohost firewall list | grep -q "\- 1900$"
-then
-	ynh_script_progression --message="Closing port 1900..." --weight=1
-	ynh_exec_warn_less yunohost firewall disallow UDP 1900
-fi
-
-if [[ $discovery_client -eq 1 ]] && yunohost firewall list | grep -q "\- 7359$"
-then
-	ynh_script_progression --message="Closing port 7359..." --weight=1
-	ynh_exec_warn_less yunohost firewall disallow UDP 7359
-fi
+# Remove the log files
+ynh_secure_remove --file="/var/log/$app"
 
 #=================================================
 # GENERIC FINALIZATION
