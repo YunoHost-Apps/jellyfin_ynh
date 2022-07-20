@@ -83,9 +83,9 @@ install_jellyfin_packages() {
 	ynh_setup_source --dest_dir=$tempdir --source_id="web.$debian.$YNH_ARCH"
 
 	# Install the packages
+	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-web.deb
 	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg5.deb
 	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-server.deb
-	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-web.deb
 
 	ynh_secure_remove --file="$tempdir"
 
@@ -93,9 +93,9 @@ install_jellyfin_packages() {
 	# but the code says multiple calls are supported.
 	# Also, they're already installed so that should be quasi instantaneous.
 	ynh_install_app_dependencies \
+		jellyfin-web="$pkg_version" \
 		jellyfin-ffmpeg5="$ffmpeg_pkg_version-$debian" \
-		jellyfin-server="$pkg_version" \
-		jellyfin-web="$pkg_version"
+		jellyfin-server="$pkg_version"
 }
 
 #=================================================
