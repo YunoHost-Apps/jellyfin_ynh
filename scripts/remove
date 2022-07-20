@@ -95,6 +95,9 @@ ynh_secure_remove --file="$final_path"
 ynh_secure_remove --file="$config_path"
 ynh_secure_remove --file="/etc/systemd/system/jellyfin.service.d"
 
+# Remove the log files
+ynh_secure_remove --file="/var/log/$app"
+
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
