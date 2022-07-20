@@ -23,7 +23,7 @@ ynh_abort_if_errors
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_script_progression --message="Loading settings..." --weight=1
+ynh_script_progression --message="Loading installation settings..." --weight=1
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -43,13 +43,25 @@ test ! -d $final_path \
 test ! -d $config_path \
 	|| ynh_die --message="There is already a directory: $config_path "
 
-architecture=$(dpkg --print-architecture)
-if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
-    ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
+if [[ ! "$YNH_ARCH" =~ ^(amd64|arm64|armhf)$ ]]; then
+	ynh_die "Jellyfin is not compatible with your architecture, $YNH_ARCH, which is neither amd64, arm64, or armhf." 1
 fi
 
 #=================================================
 # STANDARD RESTORATION STEPS
+#=================================================
+# RECREATE THE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Recreating the dedicated system user..." --weight=1
+
+# Create the dedicated user (if not existing)
+ynh_system_user_create --username=$app
+
+if grep -q "^render:" /etc/group; then
+	# Add user to render group
+	adduser $app render
+fi
+
 #=================================================
 # OPEN PORTS
 #=================================================
@@ -58,34 +70,27 @@ discovery_service=$discovery
 discovery_client=$discovery
 
 if [ $discovery -eq 1 ]; then
-    ynh_script_progression --message="Configuring firewall..." --weight=1
+	ynh_script_progression --message="Configuring firewall..." --weight=1
 
-    # Open port 1900 for service auto-discovery
-    if ynh_port_available --port=$discovery_service_port; then
-        ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
-    else
-        discovery_service=0
-        ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
-    fi
+	# Open port $discovery_service_port for service auto-discovery
+	if ynh_port_available --port=$discovery_service_port; then
+		ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
+	else
+		discovery_service=0
+		ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
+	fi
 
-    # Open port 7359 for client auto-discovery
-    if ynh_port_available --port=$discovery_client_port; then
-        ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
-    else
-        discovery_client=0
-        ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
-    fi
+	# Open port $discovery_client_port for client auto-discovery
+	if ynh_port_available --port=$discovery_client_port; then
+		ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
+	else
+		discovery_client=0
+		ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
+	fi
 fi
 
 ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
 ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
-
-#=================================================
-# RESTORE THE NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Restoring the NGINX web server configuration..."
-
-ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
 #=================================================
 # RESTORE THE APP MAIN DIR
@@ -95,14 +100,6 @@ ynh_script_progression --message="Restoring the app main directory..." --weight=
 ynh_restore_file --origin_path="$final_path"
 ynh_restore_file --origin_path="$config_path"
 ynh_restore_file --origin_path="/etc/default/jellyfin" --not_mandatory
-
-#=================================================
-# RECREATE THE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Recreating the dedicated system user..." --weight=1
-
-# Create the dedicated user (if not existing)
-ynh_system_user_create --username=$app
 
 #=================================================
 # SPECIFIC RESTORATION
@@ -122,12 +119,45 @@ ynh_script_progression --message="Reinstalling packages..." --weight=7
 install_jellyfin_packages
 
 #=================================================
+# RESTORE THE NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Restoring the NGINX web server configuration..."
+
+ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
+
+#=================================================
+# RESTORE USER RIGHTS
+#=================================================
+ynh_script_progression --message="Restoring user rights..."
+
+# Restore permissions on app files
+chown -R $app: $final_path
+chown -R $app: $config_path
+
+#=================================================
+# YUNOHOST MULTIMEDIA INTEGRATION
+#=================================================
+ynh_script_progression --message="Adding multimedia directories..." --weight=2
+
+# Build YunoHost multimedia directories
+ynh_multimedia_build_main_dir
+# Allow Jellyfin to write into these directories
+ynh_multimedia_addaccess $app
+
+#=================================================
 # RESTORE SYSTEMD
 #=================================================
 ynh_script_progression --message="Restoring the systemd configuration..." --weight=1
 
 ynh_restore_file --origin_path="/etc/systemd/system/jellyfin.service.d" --not_mandatory
 systemctl enable jellyfin.service --quiet
+
+#=================================================
+# RESTORE THE LOGROTATE CONFIGURATION
+#=================================================
+ynh_script_progression --message="Restoring the logrotate configuration..." --time --weight=1
+
+ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
@@ -143,37 +173,11 @@ needed_ports=()
 yunohost service add $app --description="Jellyfin media center" ${needed_ports:+--needs_exposed_ports} "${needed_ports[@]}"
 
 #=================================================
-# RESTORE THE LOGROTATE CONFIGURATION
-#=================================================
-ynh_script_progression --message="Restoring the logrotate configuration..." --time --weight=1
-
-ynh_restore_file --origin_path="/etc/logrotate.d/$app"
-
-#=================================================
-# RESTORE USER RIGHTS
-#=================================================
-ynh_script_progression --message="Restoring user rights..."
-
-# Restore permissions on app files
-chown -R $app: $final_path
-chown -R $app: $config_path
-
-#=================================================
 # START SYSTEMD SERVICE
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
 ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
-
-#=================================================
-# YUNOHOST MULTIMEDIA INTEGRATION
-#=================================================
-ynh_script_progression --message="Adding multimedia directories..." --weight=2
-
-# Build YunoHost multimedia directories
-ynh_multimedia_build_main_dir
-# Allow Jellyfin to write into these directories
-ynh_multimedia_addaccess $app
 
 #=================================================
 # GENERIC FINALIZATION

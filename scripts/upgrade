@@ -31,13 +31,36 @@ ynh_script_progression --message="Checking version..."
 upgrade_type=$(ynh_check_app_version_changed)
 
 #=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=3
+
+# Backup the current version of the app
+ynh_backup_before_upgrade
+ynh_clean_setup () {
+	ynh_clean_check_starting
+	# Restore it if the upgrade fails
+	ynh_restore_upgradebackup
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# STANDARD UPGRADE STEPS
+#=================================================
+# STOP SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Stopping a systemd service..." --weight=1
+
+ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
+
+#=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
-architecture=$(dpkg --print-architecture)
-if [[ ! "$architecture" =~ ^(amd64|arm64|armhf)$ ]]; then
-    ynh_die "Jellyfin is not compatible with your architecture, $architecture, which is neither amd64, arm64, or armhf." 1
+if [[ ! "$YNH_ARCH" =~ ^(amd64|arm64|armhf)$ ]]; then
+	ynh_die "Jellyfin is not compatible with your architecture, $YNH_ARCH, which is neither amd64, arm64, or armhf." 1
 fi
 
 # If path keys do not exist, create them
@@ -73,63 +96,62 @@ if [ -z "$discovery" ]; then
 fi
 
 if [ ! -f "/etc/logrotate.d/$app" ]; then
-    # Fix possibly missing file due to buggy restore:
-    ynh_use_logrotate
+	# Fix possibly missing file due to buggy restore:
+	ynh_use_logrotate
 fi
-
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=3
-
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	# Restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# STANDARD UPGRADE STEPS
-#=================================================
-# OPEN PORTS
-#=================================================
 
 discovery_service=$discovery
 discovery_client=$discovery
 
 if [ $discovery -eq 1 ]; then
-    ynh_script_progression --message="Configuring firewall..." --weight=1
+	ynh_script_progression --message="Configuring firewall..." --weight=1
 
-    # Open port 1900 for service auto-discovery
-    if ynh_port_available --port=$discovery_service_port; then
-        ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
-    else
-        discovery_service=0
-        ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
-    fi
+	# Open port $discovery_service_port for service auto-discovery
+	if ynh_port_available --port=$discovery_service_port; then
+		ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
+	else
+		discovery_service=0
+		ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
+	fi
 
-    # Open port 7359 for client auto-discovery
-    if ynh_port_available --port=$discovery_client_port; then
-        ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
-    else
-        discovery_client=0
-        ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
-    fi
+	# Open port $discovery_client_port for client auto-discovery
+	if ynh_port_available --port=$discovery_client_port; then
+		ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
+	else
+		discovery_client=0
+		ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
+	fi
 fi
 
 ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
 ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
 
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
+
+# Create a dedicated user (if not existing)
+ynh_system_user_create --username=$app
+
+if grep -q "^render:" /etc/group; then
+	# Add user to render group
+	adduser $app render
+fi
 
 #=================================================
-# STOP SYSTEMD SERVICE
+# UPGRADE DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..." --weight=1
+ynh_script_progression --message="Upgrading dependencies..." --weight=5
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
+ynh_install_app_dependencies $pkg_dependencies
+
+#=================================================
+# UPGRADE PACKAGES
+#=================================================
+ynh_script_progression --message="Upgrading packages..." --weight=3
+
+install_jellyfin_packages
 
 #=================================================
 # NGINX CONFIGURATION
@@ -140,31 +162,11 @@ ynh_script_progression --message="Upgrading NGINX web server configuration..." -
 ynh_add_nginx_config
 
 #=================================================
-# UPGRADE DEPENDENCIES
+# SPECIFIC UPGRADE
 #=================================================
-ynh_script_progression --message="Upgrading dependencies..." --weight=5
-
-ynh_install_app_dependencies $pkg_dependencies
-
+# UPDATE A CONFIG FILE
 #=================================================
-# UPGRADE packages
-#=================================================
-ynh_script_progression --message="Upgrading packages..." --weight=3
-
-install_jellyfin_packages
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
-
-# Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app
-
-#=================================================
-# MODIFY A CONFIG FILE
-#=================================================
-ynh_script_progression --message="Setting up configuration files..." --weight=2
+ynh_script_progression --message="Updating a configuration file..." --weight=2
 
 # TODO: investigate if we can avoid overriding system.xml
 #ynh_add_config --template="system.xml" --destination="$config_path/system.xml"
@@ -181,6 +183,14 @@ mkdir -p /var/lib/jellyfin/plugins/configurations/
 ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
 #=================================================
+# SECURE FILES AND DIRECTORIES
+#=================================================
+
+# Set permissions on app files
+chown -R $app: $final_path
+chown -R $app: $config_path
+
+#=================================================
 # YUNOHOST MULTIMEDIA INTEGRATION
 #=================================================
 ynh_script_progression --message="Adding multimedia directories..." --weight=2
@@ -193,19 +203,11 @@ ynh_multimedia_addaccess $app
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-# SECURE FILES AND DIRECTORIES
-#=================================================
-
-# Set permissions on app files
-chown -R $app: $final_path
-chown -R $app: $config_path
-
-#=================================================
 # SETUP LOGROTATE
 #=================================================
-ynh_script_progression --message="Configuring log rotation..." --weight=1
+ynh_script_progression --message="Upgrading logrotate configuration..." --weight=1
 
-# Use logrotate to manage application logfile(s)
+# Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate --non-append
 
 #=================================================
