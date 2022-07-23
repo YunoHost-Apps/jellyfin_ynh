@@ -1,5 +1,5 @@
-SOURCE_URL=https://repo.jellyfin.org/releases/plugin/ldap-authentication/ldap-authentication_15.0.0.0.zip
-SOURCE_SUM=e0fa2ee4ec0bbe3a6f56fd5775abe1dd41cde88f05d9c085e9135cda4680c00c
+SOURCE_URL=https://repo.jellyfin.org/releases/plugin/ldap-authentication/ldap-authentication_16.0.0.0.zip
+SOURCE_SUM=8857a7dbe8bd08db2a8c10621d388424a389a9f0d98253dbd0ea229310d5cf7f
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=zip
 SOURCE_IN_SUBDIR=false
