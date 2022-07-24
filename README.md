@@ -15,9 +15,10 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 ## Overview
 
-Media System that manage and stream your media.
+Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
-**Shipped version:** 10.8.0~ynh1
+
+**Shipped version:** 10.8.1~ynh1
 
 **Demo:** https://demo.jellyfin.org/stable/web/index.html
 
