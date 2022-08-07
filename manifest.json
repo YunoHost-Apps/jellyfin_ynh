@@ -13,7 +13,8 @@
         "website": "https://jellyfin.org",
         "demo": "https://demo.jellyfin.org/stable/web/index.html",
         "userdoc": "https://jellyfin.org/docs/",
-        "code": "https://github.com/jellyfin/jellyfin"
+        "code": "https://github.com/jellyfin/jellyfin",
+        "cpe": "cpe:2.3:a:jellyfin:jellyfin"
     },
     "license": "GPL-2.0-only",
     "maintainer": {
