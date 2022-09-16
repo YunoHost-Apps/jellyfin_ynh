@@ -6,14 +6,15 @@
         "en": "Media System that manage and stream your media.",
         "fr": "Système multimédia qui gère et diffuse vos médias."
     },
-    "version": "10.8.1~ynh1",
+    "version": "10.8.4~ynh1",
     "url": "https://jellyfin.org",
     "upstream": {
         "license": "GPL-2.0-only",
         "website": "https://jellyfin.org",
         "demo": "https://demo.jellyfin.org/stable/web/index.html",
         "userdoc": "https://jellyfin.org/docs/",
-        "code": "https://github.com/jellyfin/jellyfin"
+        "code": "https://github.com/jellyfin/jellyfin",
+        "cpe": "cpe:2.3:a:jellyfin:jellyfin"
     },
     "license": "GPL-2.0-only",
     "maintainer": {
