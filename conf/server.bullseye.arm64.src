@@ -1,5 +1,5 @@
-SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/stable/server/10.8.4/jellyfin-server_10.8.4-1_arm64.deb
-SOURCE_SUM=655ebbfd8b0cb493543653cf1a0ce306a2540c375c010ec12b69c6d3d76fb75d
+SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/stable/server/10.8.5/jellyfin-server_10.8.5-1_arm64.deb
+SOURCE_SUM=3aabb7161fab7dc5f2ffd38baaa90019413b99f94fbd7a6ada485865d9b47089
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=deb
 SOURCE_IN_SUBDIR=false
