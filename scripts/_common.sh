@@ -25,7 +25,7 @@ ffmpeg_deps=(
 	libgcc1
 	libgmp10
 	libgnutls30
-	libllvm11
+	libllvm13
 	libmp3lame0
 	libopus0
 	libstdc++6
