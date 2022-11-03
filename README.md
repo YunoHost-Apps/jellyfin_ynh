@@ -20,7 +20,6 @@ Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin
 
 **Shipped version:** 10.8.5~ynh1
 
-
 **Demo:** https://demo.jellyfin.org/stable/web/index.html
 
 ## Screenshots
