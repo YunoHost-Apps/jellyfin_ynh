@@ -3,8 +3,8 @@
     "id": "jellyfin",
     "packaging_format": 1,
     "description": {
-        "en": "Media System that manage and stream your media.",
-        "fr": "Système multimédia qui gère et diffuse vos médias."
+        "en": "Media System that manage and stream your media",
+        "fr": "Système multimédia qui gère et diffuse vos médias"
     },
     "version": "10.8.5~ynh1",
     "url": "https://jellyfin.org",
@@ -28,7 +28,7 @@
         }
     ],
     "requirements": {
-        "yunohost": ">= 4.3.0"
+        "yunohost": ">= 11.0.9"
     },
     "multi_instance": false,
     "services": [
