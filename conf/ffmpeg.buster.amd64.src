@@ -1,5 +1,5 @@
-SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-4/jellyfin-ffmpeg5_5.1.2-4-buster_amd64.deb
-SOURCE_SUM=52f6b24053f6e8b0b7d815d383fbf91bdfd4c562cc50fb9213d5bd4e206c3b61
+SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-buster_amd64.deb
+SOURCE_SUM=1e64a9819fd0bef5b77ba5e3136b63b293b0985519a8a51ebc8168c9eeb76cac
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=deb
 SOURCE_IN_SUBDIR=false
