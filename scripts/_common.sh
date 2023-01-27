@@ -5,10 +5,10 @@
 #=================================================
 
 debian=$(lsb_release --codename --short)
-pkg_version="10.8.7-1"
+pkg_version="10.8.9-1"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
-ffmpeg_pkg_version="5.1.2-4"
+ffmpeg_pkg_version="5.1.2-6"
 ldap_pkg_version="16.0.0.0"
 
 discovery_service_port=1900
