@@ -5,27 +5,26 @@ It shall NOT be edited by hand.
 
 # Jellyfin pour YunoHost
 
-[![Niveau d'intégration](https://dash.yunohost.org/integration/jellyfin.svg)](https://dash.yunohost.org/appci/app/jellyfin) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/jellyfin.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/jellyfin.maintain.svg)  
+[![Niveau d’intégration](https://dash.yunohost.org/integration/jellyfin.svg)](https://dash.yunohost.org/appci/app/jellyfin) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/jellyfin.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/jellyfin.maintain.svg)
 [![Installer Jellyfin avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jellyfin)
 
 *[Read this readme in english.](./README.md)*
 
-> *Ce package vous permet d'installer Jellyfin rapidement et simplement sur un serveur YunoHost.
-Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
+> *Ce package vous permet d’installer Jellyfin rapidement et simplement sur un serveur YunoHost.
+Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l’installer et en profiter.*
 
-## Vue d'ensemble
+## Vue d’ensemble
 
 Jellyfin vous permet de collecter, gérer et diffuser vos médias. Exécutez le serveur Jellyfin sur votre système et accédez au principal système de divertissement à logiciel libre.
 
 
-**Version incluse :** 10.8.5~ynh1
-
+**Version incluse :** 10.8.5~ynh1
 
 **Démo :** https://demo.jellyfin.org/stable/web/index.html
 
-## Captures d'écran
+## Captures d’écran
 
-![Capture d'écran de Jellyfin](./doc/screenshots/jellyfin.png)
+![Capture d’écran de Jellyfin](./doc/screenshots/jellyfin.png)
 
 ## Avertissements / informations importantes
 
@@ -43,9 +42,9 @@ si vous voulez que la mise à jour les ouvre pour vous.
 
 ## Documentations et ressources
 
-* Site officiel de l'app : <https://jellyfin.org>
+* Site officiel de l’app : <https://jellyfin.org>
 * Documentation officielle utilisateur : <https://jellyfin.org/docs/>
-* Dépôt de code officiel de l'app : <https://github.com/jellyfin/jellyfin>
+* Dépôt de code officiel de l’app : <https://github.com/jellyfin/jellyfin>
 * Documentation YunoHost pour cette app : <https://yunohost.org/app_jellyfin>
 * Signaler un bug : <https://github.com/YunoHost-Apps/jellyfin_ynh/issues>
 
@@ -61,4 +60,4 @@ ou
 sudo yunohost app upgrade jellyfin -u https://github.com/YunoHost-Apps/jellyfin_ynh/tree/testing --debug
 ```
 
-**Plus d'infos sur le packaging d'applications :** <https://yunohost.org/packaging_apps>
+**Plus d’infos sur le packaging d’applications :** <https://yunohost.org/packaging_apps>
