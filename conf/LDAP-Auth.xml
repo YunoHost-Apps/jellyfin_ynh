@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PluginConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <LdapServer>127.0.0.1</LdapServer>
-  <LdapBaseDn>ou=users,dc=yunohost,dc=org</LdapBaseDn>
   <LdapPort>389</LdapPort>
-  <LdapSearchAttributes>uid, mail</LdapSearchAttributes>
-  <LdapUsernameAttribute>uid</LdapUsernameAttribute>
-  <LdapSearchFilter>(permission=cn=jellyfin.main,ou=permission,dc=yunohost,dc=org)</LdapSearchFilter>
-  <LdapAdminFilter>(permission=cn=jellyfin.admin,ou=permission,dc=yunohost,dc=org)</LdapAdminFilter>
-  <LdapBindUser></LdapBindUser>
-  <LdapBindPassword></LdapBindPassword>
-  <CreateUsersFromLdap>true</CreateUsersFromLdap>
   <UseSsl>false</UseSsl>
   <UseStartTls>false</UseStartTls>
   <SkipSslVerify>false</SkipSslVerify>
+  <LdapBindUser />
+  <LdapBindPassword />
+  <LdapBaseDn>ou=users,dc=yunohost,dc=org</LdapBaseDn>
+  <LdapSearchFilter>(permission=cn=jellyfin.main,ou=permission,dc=yunohost,dc=org)</LdapSearchFilter>
+  <LdapAdminBaseDn />
+  <LdapAdminFilter>(permission=cn=jellyfin.admin,ou=permission,dc=yunohost,dc=org)</LdapAdminFilter>
+  <LdapSearchAttributes>uid, mail</LdapSearchAttributes>
+  <EnableCaseInsensitiveUsername>false</EnableCaseInsensitiveUsername>
+  <CreateUsersFromLdap>true</CreateUsersFromLdap>
+  <AllowPassChange>false</AllowPassChange>
+  <LdapUsernameAttribute>uid</LdapUsernameAttribute>
+  <LdapPasswordAttribute>userPassword</LdapPasswordAttribute>
+  <EnableAllFolders>true</EnableAllFolders>
+  <EnabledFolders>
+    <string>db36da0754ef18efa77eabef2d57a80d</string>
+    <string>db4c1708cbb5dd1676284a40f2950aba</string>
+  </EnabledFolders>
+  <PasswordResetUrl />
 </PluginConfiguration>
