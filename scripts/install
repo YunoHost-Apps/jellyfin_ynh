@@ -220,8 +220,12 @@ then
 	ynh_permission_update --permission="main" --add="visitors"
 fi
 
+# auth_header=false is because Jellyfin expects custom data in the Authorization HTTP header
+# (notably, for Jellyfin Vue)
+ynh_permission_url --permission="main" --auth_header=false
+
 # Only the admin can access the admin panel of the app (if the app has an admin panel)
-ynh_permission_create --permission="admin" --allowed=$admin
+ynh_permission_create --permission="admin" --auth_header=false --allowed=$admin
 
 #=================================================
 # RELOAD NGINX
