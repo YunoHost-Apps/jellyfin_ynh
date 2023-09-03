@@ -42,8 +42,8 @@ ffmpeg_deps=(
 )
 
 case "$debian" in
-	buster) ffmpeg_deps+=( libvpx5 libx264-155 libx265-165 ) ;;
 	bullseye) ffmpeg_deps+=( libvpx6 libx264-160 libx265-192 ) ;;
+ 	bookworm) ffmpeg_deps+=( libvpx7 libx264-164 libx265-199 ) ;;
 	*) echo "Unknown release: $debian" >&2; exit 1 ;;
 esac
 case "$YNH_ARCH" in
