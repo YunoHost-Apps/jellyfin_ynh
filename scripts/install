@@ -191,13 +191,7 @@ ynh_use_logrotate
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-# Build the ports list
-needed_ports=()
-(( $discovery_service == 1 )) && needed_ports+=( "$discovery_service_port" )
-(( $discovery_client == 1 )) && needed_ports+=( "$discovery_client_port" )
-
-# Integrate service and require to expose the ports if needed
-yunohost service add $app --description="Jellyfin media center" ${needed_ports:+--needs_exposed_ports} "${needed_ports[@]}"
+yunohost service add $app --description="Jellyfin media center"
 
 #=================================================
 # START SYSTEMD SERVICE
