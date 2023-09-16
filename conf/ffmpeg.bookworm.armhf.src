@@ -1,0 +1,7 @@
+SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/6.0-6/jellyfin-ffmpeg6_6.0-6-bookworm_armhf.deb
+SOURCE_SUM=5d8cb04731f1c0741f259f4b86c5e2047a464d868580710b14dc9c92871e1cdb
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=deb
+SOURCE_IN_SUBDIR=false
+SOURCE_EXTRACT=false
+SOURCE_FILENAME=jellyfin-ffmpeg5.deb
