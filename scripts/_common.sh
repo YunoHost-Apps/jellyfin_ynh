@@ -97,7 +97,12 @@ case "$YNH_ARCH" in
 	*) ffmpeg_deps+=( libdrm-intel1 libopencl1 ) ;;
 esac
 
-jellyfin_deps=(at libsqlite3-0 libfontconfig1 libfreetype6 libssl1.1)
+jellyfin_deps=(at libsqlite3-0 libfontconfig1 libfreetype6 )
+case "$debian" in
+	bullseye) jellyfin_deps+="libssl1.1" ;;
+ 	bookworm) jellyfin_deps="libssl3" ;;
+	*) echo "Unknown release: $debian" >&2; exit 1 ;;
+esac
 
 pkg_dependencies="${ffmpeg_deps[*]} ${jellyfin_deps[*]}"
 
