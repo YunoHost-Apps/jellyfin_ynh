@@ -14,7 +14,7 @@ ldap_pkg_version="16.0.0.0"
 discovery_service_port=1900
 discovery_client_port=7359
 
-ffmpeg_deps=(
+ffmpeg_deps_bullseye=(
 	libass9
 	libbluray2
 	libc6
@@ -39,11 +39,56 @@ ffmpeg_deps=(
 	libxcb-randr0
 	libzvbi0
 	zlib1g
+	libvpx6
+	libx264-160
+	libx265-192
+)
+
+ffmpeg_deps_bookworm=(
+	libass9
+	libbluray2
+	libc6
+	libelf1
+	libexpat1
+	libfontconfig1
+	libfreetype6
+	libfribidi0
+	libgcc-s1
+	libgmp10
+	libgnutls30
+	libllvm15
+	libmp3lame0
+	libopenmpt0
+	libopus0
+	libpciaccess0
+	libstdc++6
+	libtheora0
+	libudev1
+	libvorbis0a
+	libvorbisenc2
+	libvpx7
+	libwebp7
+	libwebpmux3
+	libx11-xcb1
+	libx264-164
+	libx265-199
+	libxcb-dri2-0
+	libxcb-dri3-0
+	libxcb-present0
+	libxcb-randr0
+	libxcb-shm0
+	libxcb-sync1
+	libxcb-xfixes0
+	libxcb1
+	libxshmfence1
+	libzstd1
+	libzvbi0
+	zlib1g
 )
 
 case "$debian" in
-	bullseye) ffmpeg_deps+=( libvpx6 libx264-160 libx265-192 ) ;;
- 	bookworm) ffmpeg_deps+=( libvpx7 libx264-164 libx265-199 ) ;;
+	bullseye) ffmpeg_deps=$ffmpeg_deps_bullseye ;;
+ 	bookworm) ffmpeg_deps=$ffmpeg_deps_bookworm ;;
 	*) echo "Unknown release: $debian" >&2; exit 1 ;;
 esac
 case "$YNH_ARCH" in
