@@ -100,7 +100,7 @@ esac
 jellyfin_deps=(at libsqlite3-0 libfontconfig1 libfreetype6 )
 case "$debian" in
 	bullseye) jellyfin_deps+="libssl1.1" ;;
- 	bookworm) jellyfin_deps="libssl3" ;;
+ 	bookworm) jellyfin_deps+="libssl3" ;;
 	*) echo "Unknown release: $debian" >&2; exit 1 ;;
 esac
 
