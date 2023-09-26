@@ -94,6 +94,7 @@ ynh_script_progression --message="Removing various files..." --weight=1
 ynh_secure_remove --file="$final_path"
 ynh_secure_remove --file="$config_path"
 ynh_secure_remove --file="/etc/systemd/system/jellyfin.service.d"
+ynh_secure_remove --file="/etc/sudoers.d/jellyfin-sudoers"
 
 # Remove the log files
 ynh_secure_remove --file="/var/log/$app"
