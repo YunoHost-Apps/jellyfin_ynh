@@ -5,7 +5,7 @@
 #=================================================
 
 debian=$(lsb_release --codename --short)
-pkg_version="10.8.10-1"
+pkg_version="10.8.11-1"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
 ffmpeg_pkg_version="5.1.2-6"
