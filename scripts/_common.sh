@@ -8,13 +8,13 @@ debian=$(lsb_release --codename --short)
 pkg_version="10.8.10-1"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
-ffmpeg_pkg_version="5.1.2-6"
+ffmpeg_pkg_version="6.0-6"
 ldap_pkg_version="16.0.0.0"
 
 discovery_service_port=1900
 discovery_client_port=7359
 
-ffmpeg_deps=(
+ffmpeg_deps_bullseye=(
 	libass9
 	libbluray2
 	libc6
@@ -27,6 +27,7 @@ ffmpeg_deps=(
 	libgnutls30
 	libllvm13
 	libmp3lame0
+	libopenmpt0
 	libopus0
 	libstdc++6
 	libtheora0
@@ -39,11 +40,56 @@ ffmpeg_deps=(
 	libxcb-randr0
 	libzvbi0
 	zlib1g
+	libvpx6
+	libx264-160
+	libx265-192
+)
+
+ffmpeg_deps_bookworm=(
+	libass9
+	libbluray2
+	libc6
+	libelf1
+	libexpat1
+	libfontconfig1
+	libfreetype6
+	libfribidi0
+	libgcc-s1
+	libgmp10
+	libgnutls30
+	libllvm15
+	libmp3lame0
+	libopenmpt0
+	libopus0
+	libpciaccess0
+	libstdc++6
+	libtheora0
+	libudev1
+	libvorbis0a
+	libvorbisenc2
+	libvpx7
+	libwebp7
+	libwebpmux3
+	libx11-xcb1
+	libx264-164
+	libx265-199
+	libxcb-dri2-0
+	libxcb-dri3-0
+	libxcb-present0
+	libxcb-randr0
+	libxcb-shm0
+	libxcb-sync1
+	libxcb-xfixes0
+	libxcb1
+	libxshmfence1
+	libzstd1
+	libzvbi0
+	zlib1g
 )
 
 case "$debian" in
-	buster) ffmpeg_deps+=( libvpx5 libx264-155 libx265-165 ) ;;
-	bullseye) ffmpeg_deps+=( libvpx6 libx264-160 libx265-192 ) ;;
+	bullseye) ffmpeg_deps=("${ffmpeg_deps_bullseye[@]}") ;;
+ 	bookworm) ffmpeg_deps=("${ffmpeg_deps_bookworm[@]}") ;;
 	*) echo "Unknown release: $debian" >&2; exit 1 ;;
 esac
 case "$YNH_ARCH" in
@@ -52,7 +98,12 @@ case "$YNH_ARCH" in
 	*) ffmpeg_deps+=( libdrm-intel1 libopencl1 ) ;;
 esac
 
-jellyfin_deps=(at libsqlite3-0 libfontconfig1 libfreetype6 libssl1.1)
+jellyfin_deps=( at libsqlite3-0 libfontconfig1 libfreetype6 )
+case "$debian" in
+	bullseye) jellyfin_deps+=( libssl1.1 ) ;;
+ 	bookworm) jellyfin_deps+=( libssl3 ) ;;
+	*) echo "Unknown release: $debian" >&2; exit 1 ;;
+esac
 
 pkg_dependencies="${ffmpeg_deps[*]} ${jellyfin_deps[*]}"
 
@@ -84,7 +135,7 @@ install_jellyfin_packages() {
 
 	# Install the packages
 	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-web.deb
-	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg5.deb
+	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg6.deb
 	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-server.deb
 
 	ynh_secure_remove --file="$tempdir"
@@ -94,7 +145,7 @@ install_jellyfin_packages() {
 	# Also, they're already installed so that should be quasi instantaneous.
 	ynh_install_app_dependencies \
 		jellyfin-web="$pkg_version" \
-		jellyfin-ffmpeg5="$ffmpeg_pkg_version-$debian" \
+		jellyfin-ffmpeg6="$ffmpeg_pkg_version-$debian" \
 		jellyfin-server="$pkg_version"
 }
 
