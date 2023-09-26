@@ -86,8 +86,12 @@ fi
 
 if ! ynh_permission_exists --permission="admin"; then
 	# Create the required permissions
-	ynh_permission_create --permission="admin" --allowed=$admin
+	ynh_permission_create --permission="admin" --auth_header=false --allowed=$admin
 fi
+
+# Update SSO permissions with --auth_header=false (notably, for Jellyfin Vue)
+ynh_permission_url --permission="main" --auth_header=false
+ynh_permission_url --permission="admin" --auth_header=false
 
 # If discovery key does not exist, create it
 if [ -z "$discovery" ]; then
