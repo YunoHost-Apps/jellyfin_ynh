@@ -88,8 +88,8 @@ ffmpeg_deps_bookworm=(
 )
 
 case "$debian" in
-	bullseye) ffmpeg_deps="${ffmpeg_deps_bullseye[*]}" ;;
- 	bookworm) ffmpeg_deps="${ffmpeg_deps_bookworm[*]}" ;;
+	bullseye) ffmpeg_deps=("${ffmpeg_deps_bullseye[@]}") ;;
+ 	bookworm) ffmpeg_deps=("${ffmpeg_deps_bookworm[@]}") ;;
 	*) echo "Unknown release: $debian" >&2; exit 1 ;;
 esac
 case "$YNH_ARCH" in
