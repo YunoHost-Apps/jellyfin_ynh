@@ -27,6 +27,7 @@ ffmpeg_deps_bullseye=(
 	libgnutls30
 	libllvm13
 	libmp3lame0
+	libopenmpt0
 	libopus0
 	libstdc++6
 	libtheora0
@@ -134,7 +135,7 @@ install_jellyfin_packages() {
 
 	# Install the packages
 	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-web.deb
-	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg5.deb
+	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-ffmpeg6.deb
 	ynh_exec_warn_less dpkg --force-confdef --force-confnew -i $tempdir/jellyfin-server.deb
 
 	ynh_secure_remove --file="$tempdir"
@@ -144,7 +145,7 @@ install_jellyfin_packages() {
 	# Also, they're already installed so that should be quasi instantaneous.
 	ynh_install_app_dependencies \
 		jellyfin-web="$pkg_version" \
-		jellyfin-ffmpeg5="$ffmpeg_pkg_version-$debian" \
+		jellyfin-ffmpeg6="$ffmpeg_pkg_version-$debian" \
 		jellyfin-server="$pkg_version"
 }
 

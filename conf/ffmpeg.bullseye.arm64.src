@@ -4,4 +4,4 @@ SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=deb
 SOURCE_IN_SUBDIR=false
 SOURCE_EXTRACT=false
-SOURCE_FILENAME=jellyfin-ffmpeg5.deb
+SOURCE_FILENAME=jellyfin-ffmpeg6.deb
