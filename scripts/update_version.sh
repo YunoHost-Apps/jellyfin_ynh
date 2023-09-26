@@ -69,7 +69,7 @@ prepare_source () {
 	fi
 }
 
-debians=("buster" "bullseye")
+debians=("bullseye" "bookworm")
 architectures=("amd64" "arm64" "armhf")
 for debian in "${debians[@]}"; do
   for architecture in "${architectures[@]}"; do
