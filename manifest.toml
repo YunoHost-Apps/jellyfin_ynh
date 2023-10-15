@@ -130,12 +130,11 @@ ram.runtime = "100M"
     in_subdir = false
 
 
-    # Handled by the deb package
-    # [resources.system_user]
-    # home = "/var/lib/jellyfin"
+    [resources.system_user]
+    home = "/var/lib/jellyfin"
 
-    # [resources.install_dir]
-    # dir = "/var/lib/jellyfin"
+    [resources.install_dir]
+    dir = "/var/lib/jellyfin"
 
     [resources.permissions]
     # auth_header=false is because Jellyfin expects custom data in the Authorization HTTP header (notably, for Jellyfin Vue)
