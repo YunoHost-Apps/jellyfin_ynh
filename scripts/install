@@ -10,99 +10,23 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# MANAGE SCRIPT FAILURE
+# CREATE DIRECTORIES
 #=================================================
 
-ynh_clean_setup () {
-	ynh_clean_check_starting
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# RETRIEVE ARGUMENTS FROM THE MANIFEST
-#=================================================
-
-domain=$YNH_APP_ARG_DOMAIN
-path_url=$YNH_APP_ARG_PATH
-is_public=$YNH_APP_ARG_IS_PUBLIC
-admin=$YNH_APP_ARG_ADMIN
-discovery=$YNH_APP_ARG_DISCOVERY
-
-app=$YNH_APP_INSTANCE_NAME
-
-#=================================================
-# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
-#=================================================
-ynh_script_progression --message="Validating installation parameters..." --weight=1
-
-final_path=/var/lib/jellyfin
-config_path=/etc/jellyfin
-test ! -e "$final_path" || ynh_die --message="There is already a directory: $final_path "
-test ! -e "$config_path" || ynh_die --message="There is already a directory: $config_path "
-
-if [[ ! "$YNH_ARCH" =~ ^(amd64|arm64|armhf)$ ]]; then
-	ynh_die "Jellyfin is not compatible with your architecture, $YNH_ARCH, which is neither amd64, arm64, or armhf." 1
+if [ -d "$config_path" ]; then
+	ynh_die --message="There is already a directory: $config_path "
 fi
-
-# Register (book) web path
-ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
-
-#=================================================
-# STORE SETTINGS FROM MANIFEST
-#=================================================
-ynh_script_progression --message="Storing installation settings..." --weight=2
-
-ynh_app_setting_set --app=$app --key=domain --value=$domain
-ynh_app_setting_set --app=$app --key=path --value=$path_url
-ynh_app_setting_set --app=$app --key=admin --value=$admin
-ynh_app_setting_set --app=$app --key=discovery --value=$discovery
-ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-ynh_app_setting_set --app=$app --key=config_path --value=$config_path
+ynh_app_setting_set --app="$app" --key=config_path --value="$config_path"
 
 #=================================================
 # STANDARD MODIFICATIONS
 #=================================================
-# FIND AND OPEN A PORT
+# OPEN PORTS
 #=================================================
-ynh_script_progression --message="Finding an available port..." --weight=1
 
-# Find an available port
-port=$(ynh_find_port --port=8095)
-ynh_app_setting_set --app=$app --key=port --value=$port
+ynh_script_progression --message="Configuring firewall..." --weight=1
 
-discovery_service=$discovery
-discovery_client=$discovery
-
-if [ $discovery -eq 1 ]; then
-	ynh_script_progression --message="Configuring firewall..." --weight=1
-
-	# Open port $discovery_service_port for service auto-discovery
-	if ynh_port_available --port=$discovery_service_port; then
-		ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
-	else
-		discovery_service=0
-		ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
-	fi
-
-	# Open port $discovery_client_port for client auto-discovery
-	if ynh_port_available --port=$discovery_client_port; then
-		ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
-	else
-		discovery_client=0
-		ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
-	fi
-fi
-
-ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
-ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
-
-#=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..." --weight=5
-
-ynh_install_app_dependencies $pkg_dependencies
+open_jellyfin_discovery_ports
 
 #=================================================
 # INSTALL PACKAGES
@@ -112,24 +36,15 @@ ynh_script_progression --message="Installing packages..." --weight=1
 install_jellyfin_packages
 
 #=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Configuring system user..." --weight=2
-
-# Create a system user
-ynh_system_user_create --username=$app
+# SYSTEM CONFIGURATION
+#=================================================ç
+ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
 
 if grep -q "^render:" /etc/group; then
 	# Add user to render group
-	adduser $app render
+	adduser "$app" render
 fi
 
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Configuring NGINX web server..." --weight=6
-
-# Create a dedicated NGINX config
 ynh_add_nginx_config
 
 #=================================================
@@ -142,7 +57,7 @@ sleep 30
 
 ynh_script_progression --message="Adding a configuration file..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
+ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
 ynh_add_config --template="system.xml" --destination="$config_path/system.xml"
 ynh_add_config --template="network.xml" --destination="$config_path/network.xml"
@@ -153,7 +68,7 @@ ynh_add_config --template="logging.json" --destination="$config_path/logging.jso
 #=================================================
 ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
-ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
+ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
 mkdir -p /var/lib/jellyfin/plugins/configurations/
 ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
@@ -163,8 +78,8 @@ ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugi
 ynh_script_progression --message="Securing files and directories..."
 
 # Set permissions to app files
-chown -R $app: $final_path
-chown -R $app: $config_path
+chown -R "$app:" "$data_path"
+chown -R "$app:" "$config_path"
 
 #=================================================
 # YUNOHOST MULTIMEDIA INTEGRATION
@@ -174,7 +89,7 @@ ynh_script_progression --message="Adding multimedia directories..." --weight=2
 # Build YunoHost multimedia directories
 ynh_multimedia_build_main_dir
 # Allow Jellyfin to write into these directories
-ynh_multimedia_addaccess $app
+ynh_multimedia_addaccess "$app"
 
 #=================================================
 # GENERIC FINALIZATION
@@ -191,7 +106,10 @@ ynh_use_logrotate
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description="Jellyfin media center"
+yunohost service add "$app" --description="Jellyfin media center"
+
+# Only the admin can access the admin panel of the app (if the app has an admin panel)
+ynh_permission_update --permission="admin" --add="$admin"
 
 #=================================================
 # START SYSTEMD SERVICE
@@ -199,34 +117,7 @@ yunohost service add $app --description="Jellyfin media center"
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
 # Start a systemd service
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
-
-#=================================================
-# SETUP SSOWAT
-#=================================================
-ynh_script_progression --message="Configuring permissions..." --weight=1
-
-# Make app public if necessary
-if [ $is_public -eq 1 ]
-then
-	# Everyone can access the app.
-	# The "main" permission is automatically created before the install script.
-	ynh_permission_update --permission="main" --add="visitors"
-fi
-
-# auth_header=false is because Jellyfin expects custom data in the Authorization HTTP header
-# (notably, for Jellyfin Vue)
-ynh_permission_url --permission="main" --auth_header=false
-
-# Only the admin can access the admin panel of the app (if the app has an admin panel)
-ynh_permission_create --permission="admin" --auth_header=false --allowed=$admin
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading NGINX web server..." --weight=2
-
-ynh_systemd_action --service_name=nginx --action=reload
+ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
 
 #=================================================
 # END OF SCRIPT

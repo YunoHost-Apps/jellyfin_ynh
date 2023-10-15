@@ -1,0 +1,15 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/tests.v1.schema.json
+
+test_format = 1.0
+
+[default]
+
+    preinstall = """
+    sudo apt update >/dev/null
+    """
+
+    args.admin = "john"
+
+    test_upgrade_from.384dcd2ff1dbf4b0085edb7f12e4d15f00508e2b.name = "10.8.0_ynh1"
+    test_upgrade_from.384dcd2ff1dbf4b0085edb7f12e4d15f00508e2b.args.domain = "domain.tld"
+    test_upgrade_from.384dcd2ff1dbf4b0085edb7f12e4d15f00508e2b.args.admin = "john"
