@@ -1,7 +1,0 @@
-SOURCE_URL=https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/__FFMPEG_PKG_VERSION__/jellyfin-ffmpeg5___FFMPEG_PKG_VERSION__-__DEBIAN_____ARCHITECTURE__.deb
-SOURCE_SUM=https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/__FFMPEG_PKG_VERSION__/jellyfin-ffmpeg5___FFMPEG_PKG_VERSION__-__DEBIAN_____ARCHITECTURE__.deb.sha256sum
-SOURCE_SUM_PRG=sha256sum
-SOURCE_FORMAT=deb
-SOURCE_IN_SUBDIR=false
-SOURCE_EXTRACT=false
-SOURCE_FILENAME=jellyfin-ffmpeg5.deb

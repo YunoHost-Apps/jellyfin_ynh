@@ -1,0 +1,151 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
+
+packaging_format = 2
+
+id = "jellyfin"
+name = "Jellyfin"
+description.en = "Media System that manage and stream your media"
+description.fr = "Système multimédia qui gère et diffuse vos médias"
+
+version = "10.8.11~ynh3"
+
+maintainers = ["tituspijean"]
+
+[upstream]
+license = "GPL-2.0-only"
+website = "https://jellyfin.org"
+demo = "https://demo.jellyfin.org/stable/web/index.html"
+userdoc = "https://jellyfin.org/docs/"
+code = "https://github.com/jellyfin/jellyfin"
+cpe = "cpe:2.3:a:jellyfin:jellyfin"
+fund = "https://opencollective.com/jellyfin"
+
+[integration]
+yunohost = ">= 11.0.9"
+architectures = ["armhf", "arm64", "amd64"]
+multi_instance = false
+ldap = true
+sso = true
+disk = "300M"
+ram.build = "200M"
+ram.runtime = "100M"
+
+[install]
+    [install.domain]
+    type = "domain"
+
+    [install.path]
+    type = "path"
+    default = "/jellyfin"
+
+    [install.init_main_permission]
+    help.en = "Jellyfin has its own login system, you should make it public to let external clients access it (mobile app, etc.)."
+    help.fr = "Jellyfin a son propre système de connexion, vous devriez la laisser publique pour permettre la connexion de clients externes (app mobile, etc.)."
+    type = "group"
+    default = "visitors"
+
+    [install.admin]
+    type = "user"
+
+    [install.discovery]
+    ask.en = "Should the ports for client and server discovery be opened?"
+    ask.fr = "Est-ce que les ports pour la découverte entre clients et serveur doivent être ouverts ?"
+    help.en = "Enable discovery if you use Jellyfin on your local network or through a VPN to smoothen detection between clients and server. If it is installed on a VPS and only accessed via its web interface, you should disable discovery."
+    help.fr = "Activez la découverte si vous utilisez Jellyfin sur votre réseau local ou via un VPN pour simplifier la détection entre clients et serveur. S'il est installé sur un VPS et utilisé uniquement via son interface web, vous devriez désactiver la découverte."
+    type = "boolean"
+    default = true
+
+[resources]
+    [resources.sources]
+    [resources.sources.server]
+    armhf.url = "https://repo.jellyfin.org/releases/server/debian/versions/stable/server/10.8.11/jellyfin-server_10.8.11-1_armhf.deb"
+    armhf.sha256 = "f35d0cda50b22be9d5480f68db70bf1b66f0a974d93739a333fa540e941147d1"
+
+    arm64.url = "https://repo.jellyfin.org/releases/server/debian/versions/stable/server/10.8.11/jellyfin-server_10.8.11-1_arm64.deb"
+    arm64.sha256 = "a1d132fbf624e9745e43a6600f6364ff15e86c8cf75950a5a44b7a20e6fd41ca"
+
+    amd64.url = "https://repo.jellyfin.org/releases/server/debian/versions/stable/server/10.8.11/jellyfin-server_10.8.11-1_amd64.deb"
+    amd64.sha256 = "8d512bf3d457c8cd92ade0cd32ce99d70f5549677779404ae89413ec77248e87"
+
+    rename = "jellyfin-server.deb"
+    format = "whatever"
+    extract = false
+
+    [resources.sources.web]
+    url = "https://repo.jellyfin.org/releases/server/debian/versions/stable/web/10.8.11/jellyfin-web_10.8.11-1_all.deb"
+    sha256 = "9875062909d8a4e7081a50c5aac2fb6378edfeebccb0830a6eadd7e0d04b7f6d"
+
+    rename = "jellyfin-web.deb"
+    format = "whatever"
+    extract = false
+
+
+    # [resources.sources.ffmpeg_bookworm]
+    # armhf.url = "https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-bookworm_armhf.deb"
+    # armhf.sha256 = "Not"
+
+    # arm64.url = "https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-bookworm_arm64.deb"
+    # arm64.sha256 = "Not"
+
+    # amd64.url = "https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-bookworm_amd64.deb"
+    # amd64.sha256 = "Not"
+
+    # rename = "jellyfin-ffmpeg5.deb"
+    # format = "whatever"
+    # extract = false
+
+
+    [resources.sources.ffmpeg_bullseye]
+    armhf.url = "https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-bullseye_armhf.deb"
+    armhf.sha256 = "f29c51a4ff70655777f5f106847d8fac86786646e9d7af60420c748c4c8df3fe"
+
+    arm64.url = "https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-bullseye_arm64.deb"
+    arm64.sha256 = "d3785119cdf5263f91c968c9bc0c4d8ac89c489141441e6320f224bf0b2072e6"
+
+    amd64.url = "https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-bullseye_amd64.deb"
+    amd64.sha256 = "3dbb0fa5d32abe7fe5b9706f230180300a180707cdebda88b013462333dcdfcc"
+
+    rename = "jellyfin-ffmpeg5.deb"
+    format = "whatever"
+    extract = false
+
+
+    [resources.sources.ffmpeg_buster]
+    armhf.url = "https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-buster_armhf.deb"
+    armhf.sha256 = "4a5cec25a7f3468b5e779e6317bc85d69d909bea3fb8a36e75bfdb773546e94b"
+
+    arm64.url = "https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-buster_arm64.deb"
+    arm64.sha256 = "c52297fc7783a072bf042dfd924b7cfe7e169f63389398d43afb8be81059b70f"
+
+    amd64.url = "https://repo.jellyfin.org/releases/server/debian/versions/jellyfin-ffmpeg/5.1.2-6/jellyfin-ffmpeg5_5.1.2-6-buster_amd64.deb"
+    amd64.sha256 = "1e64a9819fd0bef5b77ba5e3136b63b293b0985519a8a51ebc8168c9eeb76cac"
+    rename = "jellyfin-ffmpeg5.deb"
+    format = "whatever"
+    extract = false
+
+
+    [resources.sources.plugin_ldap]
+    url = "https://repo.jellyfin.org/releases/plugin/ldap-authentication/ldap-authentication_16.0.0.0.zip"
+    sha256 = "8857a7dbe8bd08db2a8c10621d388424a389a9f0d98253dbd0ea229310d5cf7f"
+    in_subdir = false
+
+
+    # Handled by the deb package
+    # [resources.system_user]
+    # home = "/var/lib/jellyfin"
+
+    # [resources.install_dir]
+    # dir = "/var/lib/jellyfin"
+
+    [resources.permissions]
+    # auth_header=false is because Jellyfin expects custom data in the Authorization HTTP header (notably, for Jellyfin Vue)
+    main.url = "/"
+    main.auth_header = false
+
+    admin.protected = true
+    admin.auth_header = false
+
+    [resources.ports]
+    main.default = 8095
+
+    [resources.apt]

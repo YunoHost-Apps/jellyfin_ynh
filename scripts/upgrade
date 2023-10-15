@@ -10,40 +10,11 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# LOAD SETTINGS
-#=================================================
-ynh_script_progression --message="Loading installation settings..." --weight=1
-
-app=$YNH_APP_INSTANCE_NAME
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_app_setting_get --app=$app --key=path)
-admin=$(ynh_app_setting_get --app=$app --key=admin)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-config_path=$(ynh_app_setting_get --app=$app --key=config_path)
-port=$(ynh_app_setting_get --app=$app --key=port)
-discovery=$(ynh_app_setting_get --app=$app --key=discovery)
-
-#=================================================
 # CHECK VERSION
 #=================================================
 ynh_script_progression --message="Checking version..."
 
 upgrade_type=$(ynh_check_app_version_changed)
-
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=3
-
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	ynh_clean_check_starting
-	# Restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
 
 #=================================================
 # STANDARD UPGRADE STEPS
@@ -52,51 +23,31 @@ ynh_abort_if_errors
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
+ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
-if [[ ! "$YNH_ARCH" =~ ^(amd64|arm64|armhf)$ ]]; then
-	ynh_die "Jellyfin is not compatible with your architecture, $YNH_ARCH, which is neither amd64, arm64, or armhf." 1
+# If render group exists, and system user doesn't belong to it, add it
+if grep -q "^render:" /etc/group && ! id -Gn "$app" | grep -q '\brender\b'; then
+	adduser "$app" render
 fi
 
 # If path keys do not exist, create them
-# If config_path is mixed up with final_path, fix them
+# If config_path is mixed up with install_dir, fix them
 if [ -z "$config_path" ] || [[ $config_path = "/var/lib/jellyfin" ]]; then
 	config_path=/etc/jellyfin
-	final_path=/var/lib/jellyfin
-	ynh_app_setting_set --app=$app --key=config_path --value=$config_path
-	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+	ynh_app_setting_set --app="$app" --key=config_path --value=$config_path
 fi
 
-# If render group exists, and system user doesn't belong to it, add it
-if [ $(grep -q "^render:" /etc/group) ] && [ ! $(id -Gn $app | grep -q '\brender\b') ]; then
-	adduser $app render
-fi
-
-# Cleaning legacy permissions
-if ynh_legacy_permissions_exists; then
-	ynh_legacy_permissions_delete_all
-
-	ynh_app_setting_delete --app=$app --key=is_public
-fi
-
-if ! ynh_permission_exists --permission="admin"; then
-	# Create the required permissions
-	ynh_permission_create --permission="admin" --auth_header=false --allowed=$admin
-fi
-
-# Update SSO permissions with --auth_header=false (notably, for Jellyfin Vue)
-ynh_permission_url --permission="main" --auth_header=false
-ynh_permission_url --permission="admin" --auth_header=false
+ynh_app_setting_delete --app="$app" --key=is_public
 
 # If discovery key does not exist, create it
-if [ -z "$discovery" ]; then
+if [ -z "${discovery:-}" ]; then
 	discovery=0
-	ynh_app_setting_set --app=$app --key=discovery --value=$discovery
+	ynh_app_setting_set --app="$app" --key=discovery --value=$discovery
 fi
 
 if [ ! -f "/etc/logrotate.d/$app" ]; then
@@ -131,26 +82,6 @@ ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_servic
 ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
 
 #=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..." --weight=1
-
-# Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app
-
-if grep -q "^render:" /etc/group; then
-	# Add user to render group
-	adduser $app render
-fi
-
-#=================================================
-# UPGRADE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Upgrading dependencies..." --weight=5
-
-ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
 # UPGRADE PACKAGES
 #=================================================
 ynh_script_progression --message="Upgrading packages..." --weight=3
@@ -182,7 +113,7 @@ ynh_add_config --template="logging.json" --destination="$config_path/logging.jso
 #=================================================
 ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
-ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=ldap
+ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
 mkdir -p /var/lib/jellyfin/plugins/configurations/
 ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
@@ -191,7 +122,7 @@ ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugi
 #=================================================
 
 # Set permissions on app files
-chown -R $app: $final_path
+chown -R $app: $data_path
 chown -R $app: $config_path
 
 #=================================================
@@ -227,13 +158,6 @@ yunohost service add $app --description="Jellyfin media center"
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
 ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading NGINX web server..." --weight=1
-
-ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT
