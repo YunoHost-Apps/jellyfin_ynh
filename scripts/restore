@@ -19,7 +19,7 @@ ynh_script_progression --message="Reconfiguring the dedicated system user..." --
 
 # It could be created later by the deb, but it's cleaner here
 ynh_system_user_create --username=$app
-if grep -q "^render:" /etc/group; then
+if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
 	# Add user to render group
 	adduser $app render
 fi
