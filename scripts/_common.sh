@@ -8,7 +8,7 @@ debian=$(lsb_release --codename --short)
 pkg_version="10.8.11-1"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
-ffmpeg_pkg_version="5.1.2-6"
+ffmpeg_pkg_version="6.0-6"
 ldap_pkg_version="16.0.0.0"
 
 discovery_service_port=1900
@@ -37,7 +37,7 @@ install_jellyfin_packages() {
 	# Install the packages
 	ynh_package_install \
 		"$tempdir/jellyfin-web.deb" \
-		"$tempdir/jellyfin-ffmpeg5.deb" \
+		"$tempdir/jellyfin-ffmpeg6.deb" \
 		"$tempdir/jellyfin-server.deb"
 
 	# The doc says it should be called only once,
@@ -45,11 +45,11 @@ install_jellyfin_packages() {
 	# Also, they're already installed so that should be quasi instantaneous.
 	ynh_install_app_dependencies \
 		jellyfin-web="$pkg_version" \
-		jellyfin-ffmpeg5="$ffmpeg_pkg_version-$debian" \
+		jellyfin-ffmpeg6="$ffmpeg_pkg_version-$debian" \
 		jellyfin-server="$pkg_version"
 
 	# Mark packages as dependencies, to allow automatic removal
-	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg5
+	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg6
 }
 
 open_jellyfin_discovery_ports() {

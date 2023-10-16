@@ -37,7 +37,6 @@ ynh_remove_nginx_config
 ynh_script_progression --message="Removing packages..." --weight=1
 
 ynh_remove_app_dependencies
-# jellyfin-web jellyfin-ffmpeg5 jellyfin-server
 
 #=================================================
 # CLOSE A PORT
