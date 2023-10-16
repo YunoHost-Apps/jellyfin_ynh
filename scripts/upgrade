@@ -23,7 +23,7 @@ upgrade_type=$(ynh_check_app_version_changed)
 #=================================================
 ynh_script_progression --message="Stopping a systemd service..." --weight=1
 
-ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
+ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --timeout=15
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
@@ -157,7 +157,7 @@ yunohost service add $app --description="Jellyfin media center"
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --timeout=15
 
 #=================================================
 # END OF SCRIPT

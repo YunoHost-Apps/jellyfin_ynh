@@ -57,7 +57,7 @@ sleep 30
 
 ynh_script_progression --message="Adding a configuration file..." --weight=1
 
-ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --line_match="Stopped Jellyfin Media Server" --timeout=15
+ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --timeout=15
 
 ynh_add_config --template="system.xml" --destination="$config_path/system.xml"
 ynh_add_config --template="network.xml" --destination="$config_path/network.xml"
@@ -117,7 +117,7 @@ ynh_permission_update --permission="admin" --add="$admin"
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
 # Start a systemd service
-ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
+ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --timeout=15
 
 #=================================================
 # END OF SCRIPT
