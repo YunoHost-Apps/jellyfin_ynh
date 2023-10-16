@@ -86,6 +86,14 @@ ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
 #=================================================
 ynh_script_progression --message="Upgrading packages..." --weight=3
 
+# ynh_package_install passes --no-remove so the ffmpeg5 -> ffmpeg6 migration is blocked.
+# So we remove the packages before installing the new ones.
+if ynh_package_is_installed "jellyfin-ffmpeg5"; then
+	# Previous versions of the package did not do that so remove_app_dependencies doesn't do its job
+	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg5
+	ynh_remove_app_dependencies
+fi
+
 install_jellyfin_packages
 
 #=================================================
