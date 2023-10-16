@@ -21,7 +21,7 @@ cpe = "cpe:2.3:a:jellyfin:jellyfin"
 fund = "https://opencollective.com/jellyfin"
 
 [integration]
-yunohost = ">= 11.0.9"
+yunohost = ">= 11.2"
 architectures = ["armhf", "arm64", "amd64"]
 multi_instance = false
 ldap = true
