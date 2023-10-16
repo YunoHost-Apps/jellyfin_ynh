@@ -31,7 +31,7 @@ ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --
 ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
 
 # If render group exists, and system user doesn't belong to it, add it
-if grep -q "^render:" /etc/group && ! id -Gn "$app" | grep -q '\brender\b'; then
+if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
 	adduser "$app" render
 fi
 

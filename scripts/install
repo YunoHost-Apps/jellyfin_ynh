@@ -40,7 +40,7 @@ install_jellyfin_packages
 #=================================================ç
 ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
 
-if grep -q "^render:" /etc/group; then
+if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
 	# Add user to render group
 	adduser "$app" render
 fi
