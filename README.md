@@ -46,7 +46,7 @@ if you want the upgrade to open them for you.
 * Official app website: <https://jellyfin.org>
 * Official user documentation: <https://jellyfin.org/docs/>
 * Upstream app code repository: <https://github.com/jellyfin/jellyfin>
-* YunoHost documentation for this app: <https://yunohost.org/app_jellyfin>
+* YunoHost Store: <https://apps.yunohost.org/app/jellyfin>
 * Report a bug: <https://github.com/YunoHost-Apps/jellyfin_ynh/issues>
 
 ## Developer info

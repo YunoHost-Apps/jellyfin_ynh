@@ -46,7 +46,7 @@ si vous voulez que la mise à jour les ouvre pour vous.
 * Site officiel de l’app : <https://jellyfin.org>
 * Documentation officielle utilisateur : <https://jellyfin.org/docs/>
 * Dépôt de code officiel de l’app : <https://github.com/jellyfin/jellyfin>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_jellyfin>
+* YunoHost Store: <https://apps.yunohost.org/app/jellyfin>
 * Signaler un bug : <https://github.com/YunoHost-Apps/jellyfin_ynh/issues>
 
 ## Informations pour les développeurs
