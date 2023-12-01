@@ -5,11 +5,11 @@
 #=================================================
 
 debian=$(lsb_release --codename --short)
-pkg_version="10.8.11-1"
+pkg_version="10.8.13-1"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
 ffmpeg_pkg_version="6.0.1-1"
-ldap_pkg_version="16.0.0.0"
+ldap_pkg_version="17.0.0.0"
 
 discovery_service_port=1900
 discovery_client_port=7359
