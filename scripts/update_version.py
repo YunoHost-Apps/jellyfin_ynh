@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from typing import Any
 from pathlib import Path
 import tomlkit
 import requests
@@ -51,7 +52,7 @@ def sha256sum_of(url: str) -> str:
 
 def main() -> None:
     manifest_file = REPO_ROOT/"manifest.toml"
-    manifest = tomlkit.parse(manifest_file.open(encoding="utf-8").read())
+    manifest: dict[str, Any] = tomlkit.parse(manifest_file.open(encoding="utf-8").read())
 
     jellyfin_version = version_from__common_sh("pkg_version")
     ffmpeg_version = version_from__common_sh("ffmpeg_pkg_version")
@@ -73,7 +74,6 @@ def main() -> None:
             manifest["resources"]["sources"][f"ffmpeg_{deb}"][arch]["sha256"] = sha256sum_of(url)
 
     manifest_file.open("w", encoding="utf-8").write(tomlkit.dumps(manifest))
-
 
 
 if __name__ == "__main__":
