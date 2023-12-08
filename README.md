@@ -19,27 +19,14 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
 
-**Shipped version:** 10.8.11~ynh2
+**Shipped version:** 10.8.11~ynh3
 
 **Demo:** https://demo.jellyfin.org/stable/web/index.html
 
 ## Screenshots
 
-![Screenshot of Jellyfin](./doc/screenshots/jellyfin.png)
-
-## Disclaimers / important information
-
-* The app relies on YunoHost's LDAP server for users to log in:
-  * Standard users need the `main` permission;
-  * Users with the `admin` permission will have access to the administration panel.
-
-* The app can access YunoHost's multimedia directories:
-choose one of the folders in `/home/yunohost.multimedia/share` upon configuration of your libraries.
-
-* Starting version 10.7.5~ynh2, you can ask for the discovery ports (1900 and 7359) to be opened.
-They ease the setting up of your media center between clients and server.
-  * If you are upgrading to this version and above, set `discovery: '1'` in `/etc/yunohost/apps/jellyfin/settings.yml`
-if you want the upgrade to open them for you.
+![Screenshot of Jellyfin](./doc/screenshots/jellyfin-1.jpg)
+![Screenshot of Jellyfin](./doc/screenshots/jellyfin-2.jpg)
 
 ## Documentation and resources
 
