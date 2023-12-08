@@ -7,7 +7,8 @@ import requests
 
 REPO_ROOT = Path(__file__).parent.parent
 
-JELLYFIN_REPO = "https://repo.jellyfin.org/releases/server/debian"
+JELLYFIN_REPO = "https://repo.jellyfin.org"
+JELLYFIN_DEB_REPO = f"{JELLYFIN_REPO}/releases/server/debian"
 
 ARCHS = [
     "armhf",
@@ -30,17 +31,22 @@ def version_from__common_sh(name: str) -> str:
 
 def server_url(arch: str, version: str) -> str:
     version_simple = version.split("-")[0]
-    return f"{JELLYFIN_REPO}/versions/stable/server/{version_simple}/jellyfin-server_{version}_{arch}.deb"
+    return f"{JELLYFIN_DEB_REPO}/versions/stable/server/{version_simple}/jellyfin-server_{version}_{arch}.deb"
 
 
 def web_url(arch: str, version: str) -> str:
     version_simple = version.split("-")[0]
-    return f"{JELLYFIN_REPO}/versions/stable/web/{version_simple}/jellyfin-web_{version}_all.deb"
+    return f"{JELLYFIN_DEB_REPO}/versions/stable/web/{version_simple}/jellyfin-web_{version}_all.deb"
 
 
 def ffmpeg_url(arch: str, deb: str, version: str) -> str:
     major = version.split(".")[0]
-    return f"{JELLYFIN_REPO}/versions/jellyfin-ffmpeg/{version}/jellyfin-ffmpeg{major}_{version}-{deb}_{arch}.deb"
+    return f"{JELLYFIN_DEB_REPO}/versions/jellyfin-ffmpeg/{version}/jellyfin-ffmpeg{major}_{version}-{deb}_{arch}.deb"
+
+
+def ldap_url(arch: str, version: str) -> str:
+    major = version.split(".")[0]
+    return f"{JELLYFIN_REPO}/releases/plugin/ldap-authentication/ldap-authentication_{version}.zip"
 
 
 def sha256sum_of(url: str) -> str:
@@ -72,6 +78,10 @@ def main() -> None:
             url = ffmpeg_url(arch, deb, ffmpeg_version)
             manifest["resources"]["sources"][f"ffmpeg_{deb}"][arch]["url"] = url
             manifest["resources"]["sources"][f"ffmpeg_{deb}"][arch]["sha256"] = sha256sum_of(url)
+
+    url = ldap_url(arch, ldap_version)
+    manifest["resources"]["sources"]["plugin_ldap"]["url"] = url
+    manifest["resources"]["sources"]["plugin_ldap"]["sha256"] = sha256sum_of(url)
 
     manifest_file.open("w", encoding="utf-8").write(tomlkit.dumps(manifest))
 
