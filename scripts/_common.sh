@@ -37,8 +37,14 @@ install_jellyfin_packages() {
 	# Install the packages
 	ynh_package_install \
 		"$tempdir/jellyfin-web.deb" \
-		"$tempdir/jellyfin-ffmpeg6.deb" \
 		"$tempdir/jellyfin-server.deb"
+
+	# We need to workaround yunohoost passing --no-remove to replace jellyfin-ffmpeg5...
+	if ynh_package_is_installed "jellyfin-ffmpeg5"; then
+		ynh_package_remove "jellyfin-ffmpeg5"
+	fi
+	ynh_package_install \
+		"$tempdir/jellyfin-ffmpeg6.deb"
 
 	# The doc says it should be called only once,
 	# but the code says multiple calls are supported.
