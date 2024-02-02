@@ -97,7 +97,7 @@ done
 if ynh_package_is_installed "jellyfin-ffmpeg5"; then
 	# Previous versions of the package did not do that so remove_app_dependencies doesn't do its job
 	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg5
-	ynh_remove_app_dependencies
+	# ynh_remove_app_dependencies
 fi
 
 install_jellyfin_packages
