@@ -11,53 +11,15 @@ source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# MANAGE SCRIPT FAILURE
-#=================================================
-
-ynh_clean_setup () {
-	ynh_clean_check_starting
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# LOAD SETTINGS
-#=================================================
-ynh_script_progression --message="Loading installation settings..." --weight=1
-
-app=$YNH_APP_INSTANCE_NAME
-
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_app_setting_get --app=$app --key=path)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-config_path=$(ynh_app_setting_get --app=$app --key=config_path)
-discovery=$(ynh_app_setting_get --app=$app --key=discovery)
-
-#=================================================
-# CHECK IF THE APP CAN BE RESTORED
-#=================================================
-ynh_script_progression --message="Validating restoration parameters..." --weight=2
-
-test ! -d $final_path \
-	|| ynh_die --message="There is already a directory: $final_path "
-test ! -d $config_path \
-	|| ynh_die --message="There is already a directory: $config_path "
-
-if [[ ! "$YNH_ARCH" =~ ^(amd64|arm64|armhf)$ ]]; then
-	ynh_die "Jellyfin is not compatible with your architecture, $YNH_ARCH, which is neither amd64, arm64, or armhf." 1
-fi
-
-#=================================================
 # STANDARD RESTORATION STEPS
 #=================================================
 # RECREATE THE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Recreating the dedicated system user..." --weight=1
+ynh_script_progression --message="Reconfiguring the dedicated system user..." --weight=1
 
-# Create the dedicated user (if not existing)
+# It could be created later by the deb, but it's cleaner here
 ynh_system_user_create --username=$app
-
-if grep -q "^render:" /etc/group; then
+if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
 	# Add user to render group
 	adduser $app render
 fi
@@ -65,51 +27,18 @@ fi
 #=================================================
 # OPEN PORTS
 #=================================================
+ynh_script_progression --message="Configuring firewall..." --weight=1
 
-discovery_service=$discovery
-discovery_client=$discovery
-
-if [ $discovery -eq 1 ]; then
-	ynh_script_progression --message="Configuring firewall..." --weight=1
-
-	# Open port $discovery_service_port for service auto-discovery
-	if ynh_port_available --port=$discovery_service_port; then
-		ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
-	else
-		discovery_service=0
-		ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
-	fi
-
-	# Open port $discovery_client_port for client auto-discovery
-	if ynh_port_available --port=$discovery_client_port; then
-		ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
-	else
-		discovery_client=0
-		ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
-	fi
-fi
-
-ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
-ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
+open_jellyfin_discovery_ports
 
 #=================================================
 # RESTORE THE APP MAIN DIR
 #=================================================
 ynh_script_progression --message="Restoring the app main directory..." --weight=2
 
-ynh_restore_file --origin_path="$final_path"
+ynh_restore_file --origin_path="$data_path"
 ynh_restore_file --origin_path="$config_path"
 ynh_restore_file --origin_path="/etc/default/jellyfin" --not_mandatory
-
-#=================================================
-# SPECIFIC RESTORATION
-#=================================================
-# REINSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Reinstalling dependencies..." --weight=5
-
-# Define and install dependencies
-ynh_install_app_dependencies $pkg_dependencies
 
 #=================================================
 # REINSTALL PACKAGES
@@ -131,7 +60,7 @@ ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 ynh_script_progression --message="Restoring user rights..."
 
 # Restore permissions on app files
-chown -R $app: $final_path
+chown -R $app: $data_path
 chown -R $app: $config_path
 
 #=================================================
@@ -171,7 +100,7 @@ yunohost service add $app --description="Jellyfin media center"
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --line_match="Started Jellyfin Media Server" --timeout=15
+ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --timeout=15
 
 #=================================================
 # GENERIC FINALIZATION

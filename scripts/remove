@@ -10,19 +10,6 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# LOAD SETTINGS
-#=================================================
-ynh_script_progression --message="Loading installation settings..." --weight=1
-
-app=$YNH_APP_INSTANCE_NAME
-
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-discovery_client=$(ynh_app_setting_get --app=$app --key=discovery_client)
-discovery_service=$(ynh_app_setting_get --app=$app --key=discovery_service)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-config_path=$(ynh_app_setting_get --app=$app --key=config_path)
-
-#=================================================
 # STANDARD REMOVE
 #=================================================
 # REMOVE SERVICE INTEGRATION IN YUNOHOST
@@ -32,41 +19,24 @@ config_path=$(ynh_app_setting_get --app=$app --key=config_path)
 if ynh_exec_warn_less yunohost service status $app >/dev/null
 then
 	ynh_script_progression --message="Removing $app service integration..." --weight=3
-	yunohost service remove $app
+	yunohost service remove "$app"
 fi
 
 #=================================================
-# REMOVE LOGROTATE CONFIGURATION
+# REMOVE SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Removing logrotate configuration..." --weight=1
+ynh_script_progression --message="Removing system configurations related to $app..." --weight=1
 
-# Remove the app-specific logrotate config
 ynh_remove_logrotate
 
-#=================================================
-# REMOVE NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Removing NGINX web server configuration..." --weight=1
-
-# Remove the dedicated NGINX config
 ynh_remove_nginx_config
-
-#=================================================
-# REMOVE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Removing dependencies..." --weight=3
-
-# Remove metapackage and its dependencies
-ynh_remove_app_dependencies
 
 #=================================================
 # REMOVE PACKAGES
 #=================================================
 ynh_script_progression --message="Removing packages..." --weight=1
 
-dpkg --remove jellyfin-web
-dpkg --remove jellyfin-server
-dpkg --remove jellyfin-ffmpeg5
+ynh_remove_app_dependencies
 
 #=================================================
 # CLOSE A PORT
@@ -91,23 +61,12 @@ fi
 #=================================================
 ynh_script_progression --message="Removing various files..." --weight=1
 
-ynh_secure_remove --file="$final_path"
 ynh_secure_remove --file="$config_path"
 ynh_secure_remove --file="/etc/systemd/system/jellyfin.service.d"
 ynh_secure_remove --file="/etc/sudoers.d/jellyfin-sudoers"
 
 # Remove the log files
 ynh_secure_remove --file="/var/log/$app"
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# REMOVE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Removing the dedicated system user..." --weight=2
-
-# Delete a system user
-ynh_system_user_delete --username=$app
 
 #=================================================
 # END OF SCRIPT
