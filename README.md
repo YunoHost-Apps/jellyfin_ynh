@@ -19,7 +19,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
 
-**Shipped version:** 10.8.11~ynh3
+**Shipped version:** 10.8.13~ynh3
 
 **Demo:** https://demo.jellyfin.org/stable/web/index.html
 
