@@ -7,7 +7,7 @@ name = "Jellyfin"
 description.en = "Media System that manage and stream your media"
 description.fr = "Système multimédia qui gère et diffuse vos médias"
 
-version = "10.8.13~ynh3"
+version = "10.8.13~ynh1"
 
 maintainers = ["tituspijean"]
 
