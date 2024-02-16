@@ -19,7 +19,7 @@ Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) po
 Jellyfin vous permet de collecter, gérer et diffuser vos médias. Exécutez le serveur Jellyfin sur votre système et accédez au principal système de divertissement à logiciel libre.
 
 
-**Version incluse :** 10.8.13~ynh3
+**Version incluse :** 10.8.13~ynh1
 
 **Démo :** https://demo.jellyfin.org/stable/web/index.html
 
