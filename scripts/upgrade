@@ -133,7 +133,7 @@ ynh_add_config --template="logging.json" --destination="$config_path/logging.jso
 #=================================================
 ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
-ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
+ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap --full_replace=1
 mkdir -p /var/lib/jellyfin/plugins/configurations/
 ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
