@@ -25,8 +25,8 @@ Jellyfin vous permet de collecter, gérer et diffuser vos médias. Exécutez le 
 
 ## Captures d’écran
 
-![Capture d’écran de Jellyfin](./doc/screenshots/jellyfin-2.jpg)
 ![Capture d’écran de Jellyfin](./doc/screenshots/jellyfin-1.jpg)
+![Capture d’écran de Jellyfin](./doc/screenshots/jellyfin-2.jpg)
 
 ## Documentations et ressources
 

@@ -25,8 +25,8 @@ Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin
 
 ## Capturas de pantalla
 
-![Captura de pantalla de Jellyfin](./doc/screenshots/jellyfin-2.jpg)
 ![Captura de pantalla de Jellyfin](./doc/screenshots/jellyfin-1.jpg)
+![Captura de pantalla de Jellyfin](./doc/screenshots/jellyfin-2.jpg)
 
 ## Documentación e recursos
 
