@@ -29,6 +29,17 @@ cache_path="/var/cache/$app"
 # PERSONAL HELPERS
 #=================================================
 
+remove_legacy_jellyfin_packages() {
+	# ynh_package_install passes --no-remove so the ffmpeg5 -> ffmpeg6 migration is blocked.
+	# So we remove the packages before installing the new ones.
+	if ynh_package_is_installed "jellyfin-ffmpeg5"; then
+		# Previous versions of the package did not do that so remove_app_dependencies doesn't do its job
+		apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg5
+
+		ynh_package_remove "jellyfin-ffmpeg5"
+	fi
+}
+
 install_jellyfin_packages() {
 	# Get version numbers from manifest UNUSED because update_version.py uses the hard-coded variables
 	# pkg_version="$(ynh_app_upstream_version)"
@@ -54,10 +65,7 @@ install_jellyfin_packages() {
 		"$tempdir/jellyfin-web.deb" \
 		"$tempdir/jellyfin-server.deb"
 
-	# We need to workaround yunohoost passing --no-remove to replace jellyfin-ffmpeg5...
-	if ynh_package_is_installed "jellyfin-ffmpeg5"; then
-		ynh_package_remove "jellyfin-ffmpeg5"
-	fi
+	remove_legacy_jellyfin_packages
 
 	# Install the packages. Allow downgrades because apt decided bullseye > bookworm
 	ynh_package_install --allow-downgrades \
