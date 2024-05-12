@@ -92,14 +92,6 @@ for name in system.xml network.xml logging.json; do
 	cp "$config_path/$name" "$bakdir/$name"
 done
 
-# ynh_package_install passes --no-remove so the ffmpeg5 -> ffmpeg6 migration is blocked.
-# So we remove the packages before installing the new ones.
-if ynh_package_is_installed "jellyfin-ffmpeg5"; then
-	# Previous versions of the package did not do that so remove_app_dependencies doesn't do its job
-	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg5
-	# ynh_remove_app_dependencies
-fi
-
 install_jellyfin_packages
 
 #=================================================
@@ -123,17 +115,44 @@ for name in system.xml network.xml logging.json; do
 done
 ynh_secure_remove "$bakdir"
 
-# TODO: investigate if we can avoid overriding system.xml
-#ynh_add_config --template="system.xml" --destination="$config_path/system.xml"
 ynh_add_config --template="network.xml" --destination="$config_path/network.xml"
 ynh_add_config --template="logging.json" --destination="$config_path/logging.json"
+
+#=================================================
+# ENSURE NO OLD/INCOMPATIBLE PLUGINS ARE LEFT
+#=================================================
+shopt -s nullglob
+mkdir -p /var/lib/jellyfin/plugins-backup
+
+if [ -d /var/lib/jellyfin/plugins ]; then
+	for directory in /var/lib/jellyfin/plugins/*; do
+		if [[ "$(basename "$directory")" = "configurations" ]]; then
+			# Kepe plugin config
+			continue
+		fi
+
+		if [ ! -f "$directory"/meta.json ]; then
+			mv "$directory" /var/lib/jellyfin/plugins-backup/
+		fi
+
+		# Jellyfin doesn't refuse to start with old plugins. It just does weird
+		# things such as https://github.com/jellyfin/jellyfin-plugin-ldapauth/issues/161
+		# As a precaution, move older ABI plugins to another folder so things don't break
+		abi="$(jq -r '.targetAbi' "$directory"/meta.json)"
+		if [[ "$abi" != "$plugin_abi" ]]; then
+			name="$(basename "$directory")"
+			ynh_print_warn --message="Jellyfin plugin '$name' has different ABI version $abi than expected $plugin_abi. Moving to /var/lib/jellyfin/plugins-backup."
+			mv "$directory" /var/lib/jellyfin/plugins-backup/
+		fi
+	done
+fi
 
 #=================================================
 # INSTALL LDAP PLUGIN
 #=================================================
 ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
-ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
+ynh_setup_source --full_replace=1 --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
 mkdir -p /var/lib/jellyfin/plugins/configurations/
 ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
@@ -163,7 +182,7 @@ ynh_multimedia_addaccess $app
 ynh_script_progression --message="Upgrading logrotate configuration..." --weight=1
 
 # Use logrotate to manage app-specific logfile(s)
-ynh_use_logrotate --non-append
+ynh_use_logrotate
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
@@ -173,11 +192,17 @@ ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 yunohost service add $app --description="Jellyfin media center"
 
 #=================================================
+# EDIT SYSTEMD ENVIRONMENT VARIABLE FOR AUTO-DISCOVERY
+#=================================================
+ynh_add_config --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
+systemctl daemon-reload
+
+#=================================================
 # START SYSTEMD SERVICE
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="systemd" --timeout=15
+ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --timeout=15
 
 #=================================================
 # END OF SCRIPT

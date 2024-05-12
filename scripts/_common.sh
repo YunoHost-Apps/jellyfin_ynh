@@ -5,11 +5,15 @@
 #=================================================
 
 debian=$(lsb_release --codename --short)
-pkg_version="10.8.13-1"
+debian_number=$(lsb_release --release --short)
+pkg_version="10.9.1"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
-ffmpeg_pkg_version="6.0.1-3"
-ldap_pkg_version="17.0.0.0"
+ffmpeg_pkg_version="6.0.1-6"
+
+# "targetAbi" line in plugin's meta.json, to check for outdated plugins
+plugin_abi="10.9.0.0"
+ldap_pkg_version="19.0.0.0"
 
 discovery_service_port=1900
 discovery_client_port=7359
@@ -30,9 +34,10 @@ install_jellyfin_packages() {
 	tempdir="$(mktemp -d)"
 
 	# Download the deb files
-	ynh_setup_source --dest_dir="$tempdir" --source_id="web"
+	ynh_setup_source --dest_dir="$tempdir" --source_id="web_$debian"
 	ynh_setup_source --dest_dir="$tempdir" --source_id="ffmpeg_$debian"
-	ynh_setup_source --dest_dir="$tempdir" --source_id="server"
+	ynh_setup_source --dest_dir="$tempdir" --source_id="server_$debian"
+
 
 	# Install the packages
 	ynh_package_install \
@@ -43,16 +48,18 @@ install_jellyfin_packages() {
 	if ynh_package_is_installed "jellyfin-ffmpeg5"; then
 		ynh_package_remove "jellyfin-ffmpeg5"
 	fi
+
+	# Install the packages
 	ynh_package_install \
-		"$tempdir/jellyfin-ffmpeg6.deb"
+		"${tempdir}/jellyfin-ffmpeg6.deb"
 
 	# The doc says it should be called only once,
 	# but the code says multiple calls are supported.
 	# Also, they're already installed so that should be quasi instantaneous.
 	ynh_install_app_dependencies \
-		jellyfin-web="$pkg_version" \
+		jellyfin-web="$pkg_version+deb$debian_number" \
 		jellyfin-ffmpeg6="$ffmpeg_pkg_version-$debian" \
-		jellyfin-server="$pkg_version"
+		jellyfin-server="$pkg_version+deb$debian_number"
 
 	# Mark packages as dependencies, to allow automatic removal
 	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg6

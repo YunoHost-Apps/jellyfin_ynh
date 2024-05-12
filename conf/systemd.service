@@ -1,0 +1,2 @@
+[Service]
+Environment="JELLYFIN_PublishedServerUrl=https://__DOMAIN____PATH__"
