@@ -58,24 +58,24 @@ ram.runtime = "100M"
 [resources]
 
     [resources.sources.server_bullseye]
-    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.1/armhf/jellyfin-server_10.9.1+deb11_armhf.deb"
-    armhf.sha256 = "88a5bd8831468a7fd6f71e2389e99df4951c062e639a788caabdc6aef53d7974"
-    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.1/arm64/jellyfin-server_10.9.1+deb11_arm64.deb"
-    arm64.sha256 = "fc61cce35d98ceae8cabc154c891dcd2afc302e82d30eb9bbe9ed8fb4a89129e"
-    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.1/amd64/jellyfin-server_10.9.1+deb11_amd64.deb"
-    amd64.sha256 = "ee855f20090639a214339254de3e4f2cedcbec4d887026dc0c7191209316e556"
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.2/armhf/jellyfin-server_10.9.2+deb11_armhf.deb"
+    armhf.sha256 = "354dcc1f6e16997d3788b45d714008827e4b2d6d09989cc7b073c3b25903a27e"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.2/arm64/jellyfin-server_10.9.2+deb11_arm64.deb"
+    arm64.sha256 = "4fbeecd75c6388727a0b30c1949331a3890408bdfebbb417c93a7145add10e88"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.2/amd64/jellyfin-server_10.9.2+deb11_amd64.deb"
+    amd64.sha256 = "590d642ccfde0bbfa68a2283ce51439848f157477c1780bd8a819ff06920398e"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-server.deb"
 
     [resources.sources.server_bookworm]
-    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.1/armhf/jellyfin-server_10.9.1+deb12_armhf.deb"
-    armhf.sha256 = "fad4963580ae9cdc9cf11b3a05e6b2544e2e5765fec4d7c83d81f65285385171"
-    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.1/arm64/jellyfin-server_10.9.1+deb12_arm64.deb"
-    arm64.sha256 = "a7d2b9805833bba01404d594356e91861e78ba63cdff44b02da85a416a49c03b"
-    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.1/amd64/jellyfin-server_10.9.1+deb12_amd64.deb"
-    amd64.sha256 = "be13ab2dab329febb5ff3aa683c6f8f190c86d14e614c5ae4f84560f3504e8b5"
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.2/armhf/jellyfin-server_10.9.2+deb12_armhf.deb"
+    armhf.sha256 = "c27b8222afd8a75dce8ed33b3e6dd2cc833628c8ef9dd53dfaaf146587e708fd"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.2/arm64/jellyfin-server_10.9.2+deb12_arm64.deb"
+    arm64.sha256 = "c243996b90a02bd367b5203471082c050cc27b3177a8de22e1f92341ba72463e"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.2/amd64/jellyfin-server_10.9.2+deb12_amd64.deb"
+    amd64.sha256 = "5ec7de506e5ef6d25551a9e11b205947a988af647570f7ee158e98ea495e181b"
 
     format = "whatever"
     extract = false
@@ -83,16 +83,16 @@ ram.runtime = "100M"
 
 
     [resources.sources.web_bullseye]
-    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.1/amd64/jellyfin-web_10.9.1+deb11_all.deb"
-    sha256 = "003f433fa1b18017917b47878a6c31b8d165fd909cd1641092dc41e3909ed209"
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.2/amd64/jellyfin-web_10.9.2+deb11_all.deb"
+    sha256 = "276bccdd205e6c1920cbb3ba0953657a66200d14830bf6459a8317cd81eead3a"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-web.deb"
 
     [resources.sources.web_bookworm]
-    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.1/amd64/jellyfin-web_10.9.1+deb12_all.deb"
-    sha256 = "327613691aab0e2448992bb8020fc5481e9438066984189f60f2e8feaf76416d"
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.2/amd64/jellyfin-web_10.9.2+deb12_all.deb"
+    sha256 = "cc7a0bfb5c40bd88dc53e6e9abf08ba1d698a362a3de28969a486cce7b369dea"
 
     format = "whatever"
     extract = false
