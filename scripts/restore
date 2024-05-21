@@ -27,9 +27,8 @@ fi
 #=================================================
 # OPEN PORTS
 #=================================================
-ynh_script_progression --message="Configuring firewall..." --weight=1
-
-open_jellyfin_discovery_ports
+ynh_script_progression --message="Checking whether to open ports..." --weight=1
+configure_jellyfin_discovery_ports install
 
 #=================================================
 # RESTORE THE APP MAIN DIR
@@ -93,7 +92,15 @@ ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description="Jellyfin media center"
+ports_args=()
+if [[ "${opened_ports:-__NOTHING__}" = "__NOTHING__" ]]; then
+	ports_args+=('--open-ports')
+	ports_args+=(${ports})
+fi
+
+yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"
+
+
 
 #=================================================
 # START SYSTEMD SERVICE

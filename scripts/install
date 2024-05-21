@@ -23,10 +23,8 @@ ynh_app_setting_set --app="$app" --key=config_path --value="$config_path"
 #=================================================
 # OPEN PORTS
 #=================================================
-
-ynh_script_progression --message="Configuring firewall..." --weight=1
-
-open_jellyfin_discovery_ports
+ynh_script_progression --message="Checking whether to open ports..." --weight=1
+configure_jellyfin_discovery_ports install
 
 #=================================================
 # INSTALL PACKAGES
@@ -107,7 +105,13 @@ ynh_use_logrotate
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add "$app" --description="Jellyfin media center"
+ports_args=()
+if [[ "${opened_ports:-__NOTHING__}" = "__NOTHING__" ]]; then
+	ports_args+=('--open-ports')
+	ports_args+=(${ports})
+fi
+
+yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"
 
 # Only the admin can access the admin panel of the app (if the app has an admin panel)
 ynh_permission_update --permission="admin" --add="$admin"

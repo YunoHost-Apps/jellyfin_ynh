@@ -55,31 +55,11 @@ if [ ! -f "/etc/logrotate.d/$app" ]; then
 	ynh_use_logrotate
 fi
 
-discovery_service=$discovery
-discovery_client=$discovery
-
-if [ $discovery -eq 1 ]; then
-	ynh_script_progression --message="Configuring firewall..." --weight=1
-
-	# Open port $discovery_service_port for service auto-discovery
-	if ynh_port_available --port=$discovery_service_port; then
-		ynh_exec_warn_less yunohost firewall allow UDP $discovery_service_port
-	else
-		discovery_service=0
-		ynh_print_warn --message="Port $discovery_service_port (for service auto-discovery) is not available. Continuing nonetheless."
-	fi
-
-	# Open port $discovery_client_port for client auto-discovery
-	if ynh_port_available --port=$discovery_client_port; then
-		ynh_exec_warn_less yunohost firewall allow UDP $discovery_client_port
-	else
-		discovery_client=0
-		ynh_print_warn --message="Port $discovery_client_port (for client auto-discovery) is not available. Continuing nonetheless."
-	fi
-fi
-
-ynh_app_setting_set --app=$app --key=discovery_service --value=$discovery_service
-ynh_app_setting_set --app=$app --key=discovery_client --value=$discovery_client
+#=================================================
+# OPEN PORTS
+#=================================================
+ynh_script_progression --message="Checking whether to open ports..." --weight=1
+configure_jellyfin_discovery_ports install
 
 #=================================================
 # UPGRADE PACKAGES
@@ -189,7 +169,13 @@ ynh_use_logrotate
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description="Jellyfin media center"
+ports_args=()
+if [[ "${opened_ports:-__NOTHING__}" = "__NOTHING__" ]]; then
+	ports_args+=('--open-ports')
+	ports_args+=(${ports})
+fi
+
+yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"
 
 #=================================================
 # EDIT SYSTEMD ENVIRONMENT VARIABLE FOR AUTO-DISCOVERY

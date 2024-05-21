@@ -65,11 +65,39 @@ install_jellyfin_packages() {
 	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg6
 }
 
-open_jellyfin_discovery_ports() {
+configure_jellyfin_discovery_ports() {
+	case $1 in
+		"install")
+			install_jellyfin_discovery_ports
+			;;
+		"remove")
+			remove_jellyfin_discovery_ports
+			;;
+		*)
+			ynh_print_warn --message="Invalid script calling configure_jellyfin_discovery_ports with args (should be install|remove): $@"
+			;;
+	esac
+}
+
+remove_jellyfin_discovery_ports() {
+	if [[ $discovery_service -eq 1 ]] && yunohost firewall list | grep -q "\- $discovery_service_port$"
+then
+	ynh_exec_warn_less yunohost firewall disallow UDP $discovery_service_port
+fi
+
+if [[ $discovery_client -eq 1 ]] && yunohost firewall list | grep -q "\- $discovery_client_port$"
+then
+	ynh_exec_warn_less yunohost firewall disallow UDP $discovery_client_port
+fi
+
+}
+
+install_jellyfin_discovery_ports() {
 	discovery_service=$discovery
 	discovery_client=$discovery
 
 	if [ "$discovery" -eq 1 ]; then
+		opened_ports=($discovery_service_port $discovery_client_port)
 
 		# Open port $discovery_service_port for service auto-discovery
 		if ynh_port_available --port=$discovery_service_port; then
