@@ -44,7 +44,7 @@ ram.runtime = "100M"
     type = "group"
     default = "visitors"
 
-    [install.admin]
+    [install.init_admin_permission]
     type = "user"
 
     [install.discovery]
@@ -143,6 +143,7 @@ ram.runtime = "100M"
 
     admin.protected = true
     admin.auth_header = false
+    admin.show_tile = false
 
     [resources.ports]
     main.default = 8095
