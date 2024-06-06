@@ -7,7 +7,7 @@ name = "Jellyfin"
 description.en = "Media System that manage and stream your media"
 description.fr = "Système multimédia qui gère et diffuse vos médias"
 
-version = "10.9.1~ynh1"
+version = "10.9.6~ynh1"
 
 maintainers = ["tituspijean"]
 
@@ -58,24 +58,24 @@ ram.runtime = "100M"
 [resources]
 
     [resources.sources.server_bullseye]
-    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.5/armhf/jellyfin-server_10.9.5+deb11_armhf.deb"
-    armhf.sha256 = "6723d766c92894d1bdf7e30a351fc0bf30749311e43742f9a257d8f12b17466b"
-    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.5/arm64/jellyfin-server_10.9.5+deb11_arm64.deb"
-    arm64.sha256 = "68c399a2ffbdd2f510d7b44475e6a8e01c0f1afb1912314d94d6ae124eb8bc35"
-    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.5/amd64/jellyfin-server_10.9.5+deb11_amd64.deb"
-    amd64.sha256 = "cb697eb81f2beb7194287ce28115aafadf16618c615e06d1427b068df4392cfa"
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.6/armhf/jellyfin-server_10.9.6+deb11_armhf.deb"
+    armhf.sha256 = "aaadbda9350db388b7e96427e640dcce0821c8241f23bba1f1587ee642ca05f1"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.6/arm64/jellyfin-server_10.9.6+deb11_arm64.deb"
+    arm64.sha256 = "bf0dc1239fff35aa03582b78c4371dd5e96422ead43bf24fa8b0527fcca64b3f"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.6/amd64/jellyfin-server_10.9.6+deb11_amd64.deb"
+    amd64.sha256 = "ec5d745f6e140d1ed1795c36276f695fe96c295396db475b85bdce54f29d9506"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-server.deb"
 
     [resources.sources.server_bookworm]
-    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.5/armhf/jellyfin-server_10.9.5+deb12_armhf.deb"
-    armhf.sha256 = "9ac48b03fe4a47ff9df0643e52ff91eb7ba32d3daa9feda124f1e0ce0c5b14de"
-    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.5/arm64/jellyfin-server_10.9.5+deb12_arm64.deb"
-    arm64.sha256 = "4c436612664bbc8d0b36a776d8d9146889e000262e3f4e86154b24e266bdbd9b"
-    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.5/amd64/jellyfin-server_10.9.5+deb12_amd64.deb"
-    amd64.sha256 = "629f5260989802330aee542bfc48d8ee0f6026435309b0796c763348c4b107c6"
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.6/armhf/jellyfin-server_10.9.6+deb12_armhf.deb"
+    armhf.sha256 = "2666666e66e7c736b47723d911c85807154fb277a7da46ea9bd12cfbb474a2ea"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.6/arm64/jellyfin-server_10.9.6+deb12_arm64.deb"
+    arm64.sha256 = "7ef1d9c347619e59af7d71e97c762031f6c24680a035f54964f34a2042103c1f"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.6/amd64/jellyfin-server_10.9.6+deb12_amd64.deb"
+    amd64.sha256 = "eafe4e19ee2a99bfb98c9de11e367f0d2313cd585332efe8cd1468e132221181"
 
     format = "whatever"
     extract = false
@@ -83,16 +83,16 @@ ram.runtime = "100M"
 
 
     [resources.sources.web_bullseye]
-    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.5/amd64/jellyfin-web_10.9.5+deb11_all.deb"
-    sha256 = "6c3fcd6c53be1b55e43fd12873039b7b08491540ce2769be1c41f101f8abcd13"
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.6/amd64/jellyfin-web_10.9.6+deb11_all.deb"
+    sha256 = "ea469e302a19db6bfc1ac5001adeb5f278e9c02b52cb6752000345a4a7392416"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-web.deb"
 
     [resources.sources.web_bookworm]
-    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.5/amd64/jellyfin-web_10.9.5+deb12_all.deb"
-    sha256 = "475d73ac400d0ec8155c008169c56d4c75d980174255f5fc910b8ac848a17d88"
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.6/amd64/jellyfin-web_10.9.6+deb12_all.deb"
+    sha256 = "7324d204b5c050a3d85e10861c6923366fa9c17b21ed8cd6420b07363c0d1f5f"
 
     format = "whatever"
     extract = false
