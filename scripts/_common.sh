@@ -6,10 +6,10 @@
 
 debian=$(lsb_release --codename --short)
 debian_number=$(lsb_release --release --short)
-pkg_version="10.9.2"
+pkg_version="10.9.5"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
-ffmpeg_pkg_version="6.0.1-6"
+ffmpeg_pkg_version="6.0.1-7"
 
 # "targetAbi" line in plugin's meta.json, to check for outdated plugins
 plugin_abi="10.9.0.0"
