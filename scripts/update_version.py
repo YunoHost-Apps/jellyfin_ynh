@@ -2,12 +2,13 @@
 
 from typing import Any
 from pathlib import Path
+import hashlib
 import tomlkit
 import requests
 
 REPO_ROOT = Path(__file__).parent.parent
 
-JELLYFIN_REPO = "https://repo.jellyfin.org"
+JELLYFIN_REPO = "https://repo.jellyfin.org/files"
 JELLYFIN_DEB_REPO = f"{JELLYFIN_REPO}/releases/server/debian"
 
 ARCHS = [
@@ -45,7 +46,6 @@ def ffmpeg_url(arch: str, deb: str, version: str) -> str:
 
 
 def ldap_url(arch: str, version: str) -> str:
-    major = version.split(".")[0]
     return f"{JELLYFIN_REPO}/releases/plugin/ldap-authentication/ldap-authentication_{version}.zip"
 
 
@@ -54,6 +54,18 @@ def sha256sum_of(url: str) -> str:
 
     content = result.content.decode("utf-8")
     return content.split(" ")[0]
+
+
+def sha256_of_remote_file(url: str) -> str:
+    print(f"Computing sha256sum for {url} ...")
+    try:
+        r = requests.get(url, stream=True)
+        m = hashlib.sha256()
+        for data in r.iter_content(8192):
+            m.update(data)
+        return m.hexdigest()
+    except Exception as e:
+        raise RuntimeError(f"Failed to compute sha256 for {url} : {e}") from e
 
 
 def main() -> None:
@@ -81,7 +93,7 @@ def main() -> None:
 
     url = ldap_url(arch, ldap_version)
     manifest["resources"]["sources"]["plugin_ldap"]["url"] = url
-    manifest["resources"]["sources"]["plugin_ldap"]["sha256"] = sha256sum_of(url)
+    manifest["resources"]["sources"]["plugin_ldap"]["sha256"] = sha256_of_remote_file(url)
 
     manifest_file.open("w", encoding="utf-8").write(tomlkit.dumps(manifest))
 
