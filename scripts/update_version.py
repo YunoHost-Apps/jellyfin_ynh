@@ -4,11 +4,11 @@ from typing import Any
 from pathlib import Path
 import tomlkit
 import requests
+import hashlib
 
 REPO_ROOT = Path(__file__).parent.parent
 
-JELLYFIN_REPO = "https://repo.jellyfin.org"
-JELLYFIN_DEB_REPO = f"{JELLYFIN_REPO}/releases/server/debian"
+JELLYFIN_REPO = "https://repo.jellyfin.org/files"
 
 ARCHS = [
     "armhf",
@@ -31,29 +31,28 @@ def version_from__common_sh(name: str) -> str:
 
 def server_url(arch: str, version: str) -> str:
     version_simple = version.split("-")[0]
-    return f"{JELLYFIN_DEB_REPO}/versions/stable/server/{version_simple}/jellyfin-server_{version}_{arch}.deb"
+    return f"{JELLYFIN_REPO}/server/debian/stable/{version_simple}/{arch}/jellyfin-server_{version}_{arch}.deb"
 
 
 def web_url(arch: str, version: str) -> str:
     version_simple = version.split("-")[0]
-    return f"{JELLYFIN_DEB_REPO}/versions/stable/web/{version_simple}/jellyfin-web_{version}_all.deb"
+    return f"{JELLYFIN_REPO}/server/debian/stable/{version_simple}/amd64/jellyfin-web_{version}_all.deb"
 
 
 def ffmpeg_url(arch: str, deb: str, version: str) -> str:
     major = version.split(".")[0]
-    return f"{JELLYFIN_DEB_REPO}/versions/jellyfin-ffmpeg/{version}/jellyfin-ffmpeg{major}_{version}-{deb}_{arch}.deb"
-
+    return f"{JELLYFIN_REPO}/ffmpeg/debian/6.x/{version}/{arch}/jellyfin-ffmpeg{major}_{version}-{deb}_{arch}.deb"
 
 def ldap_url(arch: str, version: str) -> str:
     major = version.split(".")[0]
-    return f"{JELLYFIN_REPO}/releases/plugin/ldap-authentication/ldap-authentication_{version}.zip"
+    return f"{JELLYFIN_REPO}/plugin/ldap-authentication/ldap-authentication_{version}.zip"
 
 
 def sha256sum_of(url: str) -> str:
-    result = requests.get(f"{url}.sha256sum", timeout=10)
+    result = requests.get(f"{url}", timeout=10)
 
-    content = result.content.decode("utf-8")
-    return content.split(" ")[0]
+    sha256sum = hashlib.sha256(result.content)
+    return sha256sum.hexdigest()
 
 
 def main() -> None:
