@@ -5,6 +5,7 @@ from pathlib import Path
 import hashlib
 import tomlkit
 import requests
+import hashlib
 
 REPO_ROOT = Path(__file__).parent.parent
 
