@@ -5,7 +5,7 @@
 
 # YunoHost 上的 Jellyfin
 
-[![集成程度](https://dash.yunohost.org/integration/jellyfin.svg)](https://dash.yunohost.org/appci/app/jellyfin) ![工作状态](https://ci-apps.yunohost.org/ci/badges/jellyfin.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/jellyfin.maintain.svg)
+[![集成程度](https://dash.yunohost.org/integration/jellyfin.svg)](https://ci-apps.yunohost.org/ci/apps/jellyfin/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/jellyfin.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/jellyfin.maintain.svg)
 
 [![使用 YunoHost 安装 Jellyfin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jellyfin)
 
@@ -19,7 +19,7 @@
 Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
 
-**分发版本：** 10.8.13~ynh1
+**分发版本：** 10.8.13~ynh2
 
 **演示：** <https://demo.jellyfin.org/stable/web/index.html>
 
