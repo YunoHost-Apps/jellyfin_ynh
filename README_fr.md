@@ -5,7 +5,7 @@ Il NE doit PAS être modifié à la main.
 
 # Jellyfin pour YunoHost
 
-[![Niveau d’intégration](https://dash.yunohost.org/integration/jellyfin.svg)](https://dash.yunohost.org/appci/app/jellyfin) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/jellyfin.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/jellyfin.maintain.svg)
+[![Niveau d’intégration](https://dash.yunohost.org/integration/jellyfin.svg)](https://ci-apps.yunohost.org/ci/apps/jellyfin/) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/jellyfin.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/jellyfin.maintain.svg)
 
 [![Installer Jellyfin avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jellyfin)
 
