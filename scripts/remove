@@ -41,18 +41,8 @@ ynh_remove_app_dependencies
 #=================================================
 # CLOSE A PORT
 #=================================================
-
-if [[ $discovery_service -eq 1 ]] && yunohost firewall list | grep -q "\- $discovery_service_port$"
-then
-	ynh_script_progression --message="Closing port $discovery_service_port..." --weight=1
-	ynh_exec_warn_less yunohost firewall disallow UDP $discovery_service_port
-fi
-
-if [[ $discovery_client -eq 1 ]] && yunohost firewall list | grep -q "\- $discovery_client_port$"
-then
-	ynh_script_progression --message="Closing port $discovery_client_port..." --weight=1
-	ynh_exec_warn_less yunohost firewall disallow UDP $discovery_client_port
-fi
+ynh_script_progression --message="Checking whether to open ports..." --weight=1
+configure_jellyfin_discovery_ports remove
 
 #=================================================
 # SPECIFIC REMOVE
