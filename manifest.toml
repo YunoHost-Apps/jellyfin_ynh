@@ -45,6 +45,10 @@ ram.runtime = "100M"
     default = "visitors"
 
     [install.init_admin_permission]
+    ask.en = "Select an account to grant it access to Jellyfin's administration panel."
+    ask.fr = "Choisissez un compte pour lui accorder l'accès au tableau de bord d'administration de Jellyfin."
+    help.en = "You can grant this access to other accounts and groups with the permission system later."
+    help.en = "Vous pourrez octroire l'accès à d'autres comptes et groupes avec le système de permissions plus tard."
     type = "user"
 
     [install.discovery]
