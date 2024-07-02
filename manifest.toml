@@ -7,7 +7,7 @@ name = "Jellyfin"
 description.en = "Media System that manage and stream your media"
 description.fr = "Système multimédia qui gère et diffuse vos médias"
 
-version = "10.8.13~ynh2"
+version = "10.9.7~ynh1"
 
 maintainers = ["tituspijean"]
 
@@ -44,7 +44,11 @@ ram.runtime = "100M"
     type = "group"
     default = "visitors"
 
-    [install.admin]
+    [install.init_admin_permission]
+    ask.en = "Select an account to grant it access to Jellyfin's administration panel."
+    ask.fr = "Choisissez un compte pour lui accorder l'accès au tableau de bord d'administration de Jellyfin."
+    help.en = "You can grant this access to other accounts and groups with the permission system later."
+    help.fr = "Vous pourrez octroire l'accès à d'autres comptes et groupes avec le système de permissions plus tard."
     type = "user"
 
     [install.discovery]
@@ -56,78 +60,77 @@ ram.runtime = "100M"
     default = true
 
 [resources]
-    [resources.sources]
-    [resources.sources.server]
-    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/10.8.13/armhf/jellyfin-server_10.8.13-1_armhf.deb"
-    armhf.sha256 = "ee4588aeeb55282b044d3bb4efef146a43abd742d3ef9327e042b2959008dc60"
 
-    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/10.8.13/arm64/jellyfin-server_10.8.13-1_arm64.deb"
-    arm64.sha256 = "b9b917ec6ed4ddd3c728cb7be84245ff625c0a7ae12653a921cb3a9f6149252d"
+    [resources.sources.server_bullseye]
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.7/armhf/jellyfin-server_10.9.7+deb11_armhf.deb"
+    armhf.sha256 = "a05083388d32f8de32b9860a41d59d42fc6a976e1f19f44465105cac9e6809b5"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.7/arm64/jellyfin-server_10.9.7+deb11_arm64.deb"
+    arm64.sha256 = "09e21c2ef81e15fddb905ec90082b275c13c1a996be2a0defe0256feede89537"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.7/amd64/jellyfin-server_10.9.7+deb11_amd64.deb"
+    amd64.sha256 = "55f7f18ee2812aa55e4c5956c954310fd3b37c99d89e1f1dde14b2c5cce2c62c"
 
-    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/10.8.13/amd64/jellyfin-server_10.8.13-1_amd64.deb"
-    amd64.sha256 = "d54decc098d5e61be50847edba8722d6468e22134bae2df514859e064eb8d727"
-
+    format = "whatever"
+    extract = false
     rename = "jellyfin-server.deb"
+
+    [resources.sources.server_bookworm]
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.7/armhf/jellyfin-server_10.9.7+deb12_armhf.deb"
+    armhf.sha256 = "c5f0cd1a685c31276204b85bda20f6739945f3c4c27212ef116fd91364a3afef"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.7/arm64/jellyfin-server_10.9.7+deb12_arm64.deb"
+    arm64.sha256 = "f096803d494fe6b60faeb787a11a6e4a3576c13eee46db393f40767d156d0568"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.7/amd64/jellyfin-server_10.9.7+deb12_amd64.deb"
+    amd64.sha256 = "fcd2486ce67ab6eba639e06865cc17945a785b698f34e0e9b102807413d727c1"
+
     format = "whatever"
     extract = false
+    rename = "jellyfin-server.deb"
 
-    [resources.sources.web]
-    url = "https://repo.jellyfin.org/files/server/debian/stable/10.8.13/amd64/jellyfin-web_10.8.13-1_all.deb"
-    sha256 = "8a30e2239f97d1d749f6059db0ff1e4189f44babfb9b0cf236102b7c95b0babe"
 
+    [resources.sources.web_bullseye]
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.7/amd64/jellyfin-web_10.9.7+deb11_all.deb"
+    sha256 = "3ce87029296d88cbb63a8d114c4b45a2999f4b79fac6ca2fce41be7fe406ba09"
+
+    format = "whatever"
+    extract = false
     rename = "jellyfin-web.deb"
+
+    [resources.sources.web_bookworm]
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.7/amd64/jellyfin-web_10.9.7+deb12_all.deb"
+    sha256 = "f203d9a031ee1c781a7cb71f2fee3f998d59d0c94dfdfb6033e5b2d83b3d2007"
+
     format = "whatever"
     extract = false
-
-
-    [resources.sources.ffmpeg_bookworm]
-    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-3/armhf/jellyfin-ffmpeg6_6.0.1-3-bookworm_armhf.deb"
-    armhf.sha256 = "bdb28e67fa4dc8e321366c4a19e18bcc6166a60d6aa5a4bf2da1263489b4f25f"
-
-    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-3/arm64/jellyfin-ffmpeg6_6.0.1-3-bookworm_arm64.deb"
-    arm64.sha256 = "aabf62104399f242ddb7b8c2e308976f6b233ceac5ffccbabd340a28e428ca3c"
-
-    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-3/amd64/jellyfin-ffmpeg6_6.0.1-3-bookworm_amd64.deb"
-    amd64.sha256 = "cb40c04e026d83b9265535e214f883d4a26824b5703304064fd38fffa70ac449"
-
-    rename = "jellyfin-ffmpeg6.deb"
-    format = "whatever"
-    extract = false
+    rename = "jellyfin-web.deb"
 
 
     [resources.sources.ffmpeg_bullseye]
-    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-3/armhf/jellyfin-ffmpeg6_6.0.1-3-bullseye_armhf.deb"
-    armhf.sha256 = "700bab9e8c96594f83d731019cdbc20fbab303c1d8440288e463e372cd16ed7a"
+    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/armhf/jellyfin-ffmpeg6_6.0.1-7-bullseye_armhf.deb"
+    armhf.sha256 = "4940083aa8bf6f04df7fbd3c5740f96b8b1d41ae2aeef8aba25eed7fbc72dd57"
+    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/arm64/jellyfin-ffmpeg6_6.0.1-7-bullseye_arm64.deb"
+    arm64.sha256 = "106311dfc45cfa69f9588772b9c0327e1558fd5186f6b4ce6d1f615ad09893bb"
+    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/amd64/jellyfin-ffmpeg6_6.0.1-7-bullseye_amd64.deb"
+    amd64.sha256 = "ee50c84a501c530e179088cf3f6d9048fe446e186d93f726a2073b860a313c5c"
 
-    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-3/arm64/jellyfin-ffmpeg6_6.0.1-3-bullseye_arm64.deb"
-    arm64.sha256 = "56ef93f285e922417cda98b109021be614a5307d9d7c18aff22fa0c439ab77b5"
-
-    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-3/amd64/jellyfin-ffmpeg6_6.0.1-3-bullseye_amd64.deb"
-    amd64.sha256 = "50b0cbd2cd0ab64fd6803d2bdfd15946ec6f80c0b492f81ad85e921ffafdcf7e"
-
-    rename = "jellyfin-ffmpeg6.deb"
     format = "whatever"
     extract = false
-
-
-    [resources.sources.ffmpeg_buster]
-    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-3/armhf/jellyfin-ffmpeg6_6.0.1-3-buster_armhf.deb"
-    armhf.sha256 = "6f3beae72aec030aae96dc044bfcf736f12fc135cc574cde8085609e47374a43"
-
-    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-3/arm64/jellyfin-ffmpeg6_6.0.1-3-buster_arm64.deb"
-    arm64.sha256 = "109ea41f17e314e3e9b32689844841ddd54a600419ff89e0e979e195a25b91c5"
-
-    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-3/amd64/jellyfin-ffmpeg6_6.0.1-3-buster_amd64.deb"
-    amd64.sha256 = "a1c55b7f439f2b9a487ea90341a280467f1973fcd12607f08bcd16cf22ce307a"
-    
     rename = "jellyfin-ffmpeg6.deb"
+
+    [resources.sources.ffmpeg_bookworm]
+    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/armhf/jellyfin-ffmpeg6_6.0.1-7-bookworm_armhf.deb"
+    armhf.sha256 = "03d8a5512c7406e77359475da729157fc653dc5203f2399b59c71c6f59ca10f3"
+    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/arm64/jellyfin-ffmpeg6_6.0.1-7-bookworm_arm64.deb"
+    arm64.sha256 = "6c21dfdd931c576fcd5c095d4aae2cf92d4720beba6c73404f3d56220213c2a4"
+    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/amd64/jellyfin-ffmpeg6_6.0.1-7-bookworm_amd64.deb"
+    amd64.sha256 = "0773fda9111e03394e088790eabc99dbb0291d107a4950bdcbfafd94c5d0652e"
+
     format = "whatever"
     extract = false
+    rename = "jellyfin-ffmpeg6.deb"
 
 
     [resources.sources.plugin_ldap]
-    url = "https://repo.jellyfin.org/files/plugin/ldap-authentication/ldap-authentication_17.0.0.0.zip"
-    sha256 = "042bdd16950c7569c154311cc64af49c7d6096e9b0a7184287707d5ee317ecf5"
+    url = "https://repo.jellyfin.org/files/plugin/ldap-authentication/ldap-authentication_19.0.0.0.zip"
+    sha256 = "3b8366f670484c9ab1ece826667754b69736d910d9ccde90c105a67ba441ead9"
     in_subdir = false
 
 
@@ -144,8 +147,16 @@ ram.runtime = "100M"
 
     admin.protected = true
     admin.auth_header = false
+    admin.show_tile = false
 
     [resources.ports]
     main.default = 8095
+    # If we ever want to automatically expose the discovery ports without a setting
+    # servicediscovery.default = 1900
+    # servicediscovery.exposed = "UDP"
+    # servicediscovery.fixed = true
+    # clientdiscovery.default = 7359
+    # clientdiscovery.exposed = "UDP"
+    # clientdiscovery.fixed = true
 
     [resources.apt]
