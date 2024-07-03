@@ -23,10 +23,8 @@ ynh_app_setting_set --app="$app" --key=config_path --value="$config_path"
 #=================================================
 # OPEN PORTS
 #=================================================
-
-ynh_script_progression --message="Configuring firewall..." --weight=1
-
-open_jellyfin_discovery_ports
+ynh_script_progression --message="Checking whether to open ports..." --weight=1
+configure_jellyfin_discovery_ports install
 
 #=================================================
 # INSTALL PACKAGES
@@ -69,6 +67,7 @@ ynh_add_config --template="logging.json" --destination="$config_path/logging.jso
 ynh_script_progression --message="Installing LDAP plugin..." --weight=2
 
 ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
+
 mkdir -p /var/lib/jellyfin/plugins/configurations/
 ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
@@ -106,10 +105,19 @@ ynh_use_logrotate
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add "$app" --description="Jellyfin media center"
+ports_args=()
+if [[ "${opened_ports:-__NOTHING__}" != "__NOTHING__" ]]; then
+	ports_args+=('--needs_exposed_ports')
+	ports_args+=(${opened_ports})
+fi
 
-# Only the admin can access the admin panel of the app (if the app has an admin panel)
-ynh_permission_update --permission="admin" --add="$admin"
+yunohost service add "$app" --description="Jellyfin media center" ${ports_args[@]}
+
+#=================================================
+# EDIT SYSTEMD ENVIRONMENT VARIABLE FOR AUTO-DISCOVERY
+#=================================================
+ynh_add_config --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
+systemctl daemon-reload
 
 #=================================================
 # START SYSTEMD SERVICE
