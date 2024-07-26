@@ -1,8 +1,6 @@
 #!/bin/bash
 
 #=================================================
-# GENERIC START
-#=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
 
@@ -19,12 +17,25 @@ fi
 ynh_app_setting_set --app="$app" --key=config_path --value="$config_path"
 
 #=================================================
-# STANDARD MODIFICATIONS
+# SYSTEM CONFIGURATION
+#=================================================ç
+ynh_script_progression --message="Configuring the dedicated system user..." --weight=1
+
+if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
+	# Add user to render group
+	adduser "$app" render
+fi
+
 #=================================================
 # OPEN PORTS
 #=================================================
 ynh_script_progression --message="Checking whether to open ports..." --weight=1
 configure_jellyfin_discovery_ports install
+
+ports_args=()
+if [[ "${opened_ports:-__NOTHING__}" != "__NOTHING__" ]]; then
+	ports_args=( "--needs_exposed_ports" "${opened_ports[@]}" )
+fi
 
 #=================================================
 # INSTALL PACKAGES
@@ -33,20 +44,6 @@ ynh_script_progression --message="Installing packages..." --weight=1
 
 install_jellyfin_packages
 
-#=================================================
-# SYSTEM CONFIGURATION
-#=================================================ç
-ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
-
-if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
-	# Add user to render group
-	adduser "$app" render
-fi
-
-ynh_add_nginx_config
-
-#=================================================
-# SPECIFIC SETUP
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
@@ -87,42 +84,29 @@ ynh_script_progression --message="Adding multimedia directories..." --weight=2
 
 # Build YunoHost multimedia directories
 ynh_multimedia_build_main_dir
+
 # Allow Jellyfin to write into these directories
 ynh_multimedia_addaccess "$app"
 
 #=================================================
-# GENERIC FINALIZATION
+# SYSTEM CONFIGURATION
 #=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Configuring log rotation..." --weight=1
+ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
+
+# Create a dedicated NGINX config using the conf/nginx.conf template
+ynh_add_nginx_config
+
+ynh_add_config --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
+systemctl daemon-reload
+yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"
 
 # Use logrotate to manage application logfile(s)
 ynh_use_logrotate
 
 #=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
-
-ports_args=()
-if [[ "${opened_ports:-__NOTHING__}" != "__NOTHING__" ]]; then
-	ports_args+=('--needs_exposed_ports')
-	ports_args+=(${opened_ports})
-fi
-
-yunohost service add "$app" --description="Jellyfin media center" ${ports_args[@]}
-
-#=================================================
-# EDIT SYSTEMD ENVIRONMENT VARIABLE FOR AUTO-DISCOVERY
-#=================================================
-ynh_add_config --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
-systemctl daemon-reload
-
-#=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --weight=1
+ynh_script_progression --message="Starting $app's systemd service..." --weight=1
 
 # Start a systemd service
 ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --timeout=15
