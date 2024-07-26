@@ -6,7 +6,7 @@
 
 debian=$(lsb_release --codename --short)
 debian_number=$(lsb_release --release --short)
-pkg_version="10.9.7"
+pkg_version="10.9.8"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
 ffmpeg_pkg_version="6.0.1-7"
@@ -30,6 +30,11 @@ cache_path="/var/cache/$app"
 #=================================================
 
 install_jellyfin_packages() {
+	# Get version numbers from manifest UNUSED because update_version.py uses the hard-coded variables
+	# pkg_version="$(ynh_app_upstream_version)"
+	# ffmpeg_url="$(ynh_read_manifest --manifest_key="resources.sources.ffmpeg_${debian}.${YNH_ARCH}.url")"
+	# ffmpeg_pkg_version="$(echo "$ffmpeg_url" | sed "s/.*\/jellyfin-ffmpeg[0-9]*_\([0-9.-]*\)-${debian}_${YNH_ARCH}.deb/\1/")"
+
 	# Create the temporary directory
 	tempdir="$(mktemp -d)"
 

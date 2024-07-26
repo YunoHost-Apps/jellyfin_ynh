@@ -1,8 +1,6 @@
 #!/bin/bash
 
 #=================================================
-# GENERIC START
-#=================================================
 # IMPORT GENERIC HELPERS
 #=================================================
 
@@ -10,18 +8,9 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# CHECK VERSION
-#=================================================
-ynh_script_progression --message="Checking version..."
-
-upgrade_type=$(ynh_check_app_version_changed)
-
-#=================================================
-# STANDARD UPGRADE STEPS
-#=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping a systemd service..." --weight=1
+ynh_script_progression --message="Stopping $app's systemd service..." --weight=1
 
 ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --timeout=15
 
@@ -61,6 +50,11 @@ fi
 ynh_script_progression --message="Checking whether to open ports..." --weight=1
 configure_jellyfin_discovery_ports install
 
+ports_args=()
+if [[ "${opened_ports:-__NOTHING__}" != "__NOTHING__" ]]; then
+	ports_args=( "--needs_exposed_ports" "${opened_ports[@]}" )
+fi
+
 #=================================================
 # UPGRADE PACKAGES
 #=================================================
@@ -74,16 +68,6 @@ done
 
 install_jellyfin_packages
 
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=1
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
-
-#=================================================
-# SPECIFIC UPGRADE
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
@@ -141,8 +125,8 @@ ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugi
 #=================================================
 
 # Set permissions on app files
-chown -R $app: $data_path
-chown -R $app: $config_path
+chown -R "$app:" "$data_path"
+chown -R "$app:" "$config_path"
 
 #=================================================
 # YUNOHOST MULTIMEDIA INTEGRATION
@@ -151,44 +135,32 @@ ynh_script_progression --message="Adding multimedia directories..." --weight=2
 
 # Build YunoHost multimedia directories
 ynh_multimedia_build_main_dir
+
 # Allow Jellyfin to write into these directories
-ynh_multimedia_addaccess $app
+ynh_multimedia_addaccess "$app"
 
 #=================================================
-# GENERIC FINALIZATION
+# REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Upgrading logrotate configuration..." --weight=1
+ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
+
+# Create a dedicated NGINX config
+ynh_add_nginx_config
+
+ynh_add_config --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
+systemctl daemon-reload
 
 # Use logrotate to manage app-specific logfile(s)
 ynh_use_logrotate
 
-#=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
-
-ports_args=()
-if [[ "${opened_ports:-__NOTHING__}" = "__NOTHING__" ]]; then
-	ports_args+=('--open-ports')
-	ports_args+=(${ports})
-fi
-
 yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"
-
-#=================================================
-# EDIT SYSTEMD ENVIRONMENT VARIABLE FOR AUTO-DISCOVERY
-#=================================================
-ynh_add_config --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
-systemctl daemon-reload
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --weight=1
+ynh_script_progression --message="Starting $app's systemd service..." --weight=1
 
-ynh_systemd_action --service_name=$app --action="restart" --log_path="systemd" --timeout=15
+ynh_systemd_action --service_name="$app" --action="restart" --log_path="systemd" --timeout=15
 
 #=================================================
 # END OF SCRIPT
