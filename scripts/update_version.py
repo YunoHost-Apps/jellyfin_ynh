@@ -36,7 +36,8 @@ class JellyfinDistro:
         return f"{JELLYFIN_REPO}/files/server/debian/stable/v{version}/amd64/jellyfin-web_{version}+deb{self.debian_number}_all.deb"
 
     def ffmpeg_url(self, version: str, arch: str) -> str:
-        return f"{JELLYFIN_REPO}/files/ffmpeg/debian/latest-6.x/{arch}/jellyfin-ffmpeg6_{version}-{self.debian_name}_{arch}.deb"
+        major = version.split(".")[0]
+        return f"{JELLYFIN_REPO}/files/ffmpeg/debian/{major}.x/{version}/{arch}/jellyfin-ffmpeg6_{version}-{self.debian_name}_{arch}.deb"
 
     def ldap_url(self, version: str) -> str:
         return f"{JELLYFIN_REPO}/files/plugin/ldap-authentication/ldap-authentication_{version}.zip"
