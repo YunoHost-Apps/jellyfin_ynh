@@ -104,11 +104,11 @@ ram.runtime = "100M"
 
 
     [resources.sources.ffmpeg_bullseye]
-    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/armhf/jellyfin-ffmpeg6_6.0.1-7-bullseye_armhf.deb"
+    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/armhf/jellyfin-ffmpeg6_6.0.1-7-bullseye_armhf.deb"
     armhf.sha256 = "4940083aa8bf6f04df7fbd3c5740f96b8b1d41ae2aeef8aba25eed7fbc72dd57"
-    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/arm64/jellyfin-ffmpeg6_6.0.1-7-bullseye_arm64.deb"
+    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/arm64/jellyfin-ffmpeg6_6.0.1-7-bullseye_arm64.deb"
     arm64.sha256 = "106311dfc45cfa69f9588772b9c0327e1558fd5186f6b4ce6d1f615ad09893bb"
-    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/amd64/jellyfin-ffmpeg6_6.0.1-7-bullseye_amd64.deb"
+    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/amd64/jellyfin-ffmpeg6_6.0.1-7-bullseye_amd64.deb"
     amd64.sha256 = "ee50c84a501c530e179088cf3f6d9048fe446e186d93f726a2073b860a313c5c"
 
     format = "whatever"
@@ -116,11 +116,11 @@ ram.runtime = "100M"
     rename = "jellyfin-ffmpeg6.deb"
 
     [resources.sources.ffmpeg_bookworm]
-    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/armhf/jellyfin-ffmpeg6_6.0.1-7-bookworm_armhf.deb"
+    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/armhf/jellyfin-ffmpeg6_6.0.1-7-bookworm_armhf.deb"
     armhf.sha256 = "03d8a5512c7406e77359475da729157fc653dc5203f2399b59c71c6f59ca10f3"
-    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/arm64/jellyfin-ffmpeg6_6.0.1-7-bookworm_arm64.deb"
+    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/arm64/jellyfin-ffmpeg6_6.0.1-7-bookworm_arm64.deb"
     arm64.sha256 = "6c21dfdd931c576fcd5c095d4aae2cf92d4720beba6c73404f3d56220213c2a4"
-    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/latest-6.x/amd64/jellyfin-ffmpeg6_6.0.1-7-bookworm_amd64.deb"
+    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/amd64/jellyfin-ffmpeg6_6.0.1-7-bookworm_amd64.deb"
     amd64.sha256 = "0773fda9111e03394e088790eabc99dbb0291d107a4950bdcbfafd94c5d0652e"
 
     format = "whatever"
