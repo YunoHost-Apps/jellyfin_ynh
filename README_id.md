@@ -32,7 +32,7 @@ Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin
 
 - Website aplikasi resmi: <https://jellyfin.org>
 - Dokumentasi pengguna resmi: <https://jellyfin.org/docs/>
-- Repositori kode aplikasi hulu: <https://github.com/jellyfin/jellyfin>
+- Depot kode aplikasi hulu: <https://github.com/jellyfin/jellyfin>
 - Gudang YunoHost: <https://apps.yunohost.org/app/jellyfin>
 - Laporkan bug: <https://github.com/YunoHost-Apps/jellyfin_ynh/issues>
 
