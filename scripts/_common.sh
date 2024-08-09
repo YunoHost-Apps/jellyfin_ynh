@@ -35,6 +35,12 @@ install_jellyfin_packages() {
 	# ffmpeg_url="$(ynh_read_manifest --manifest_key="resources.sources.ffmpeg_${debian}.${YNH_ARCH}.url")"
 	# ffmpeg_pkg_version="$(echo "$ffmpeg_url" | sed "s/.*\/jellyfin-ffmpeg[0-9]*_\([0-9.-]*\)-${debian}_${YNH_ARCH}.deb/\1/")"
 
+	# This should only run on upgrade, to fix https://github.com/YunoHost-Apps/jellyfin_ynh/issues/163
+	# Previously the package depended on exact package versions, so upgrade was broken.
+	if ynh_package_is_installed --package="$app-ynh-deps" && ynh_package_is_installed --package="jellyfin-server"; then
+		ynh_install_app_dependencies jellyfin-web jellyfin-ffmpeg6 jellyfin-server
+	fi
+
 	# Create the temporary directory
 	tempdir="$(mktemp -d)"
 
@@ -42,7 +48,6 @@ install_jellyfin_packages() {
 	ynh_setup_source --dest_dir="$tempdir" --source_id="web_$debian"
 	ynh_setup_source --dest_dir="$tempdir" --source_id="ffmpeg_$debian"
 	ynh_setup_source --dest_dir="$tempdir" --source_id="server_$debian"
-
 
 	# Install the packages. Allow downgrades because apt decided bullseye > bookworm
 	ynh_package_install --allow-downgrades \
@@ -61,10 +66,7 @@ install_jellyfin_packages() {
 	# The doc says it should be called only once,
 	# but the code says multiple calls are supported.
 	# Also, they're already installed so that should be quasi instantaneous.
-	ynh_install_app_dependencies \
-		jellyfin-web="$pkg_version+deb$debian_number" \
-		jellyfin-ffmpeg6="$ffmpeg_pkg_version-$debian" \
-		jellyfin-server="$pkg_version+deb$debian_number"
+	ynh_install_app_dependencies jellyfin-web jellyfin-ffmpeg6 jellyfin-server
 
 	# Mark packages as dependencies, to allow automatic removal
 	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg6
