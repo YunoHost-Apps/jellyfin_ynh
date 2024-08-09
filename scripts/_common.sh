@@ -44,8 +44,8 @@ install_jellyfin_packages() {
 	ynh_setup_source --dest_dir="$tempdir" --source_id="server_$debian"
 
 
-	# Install the packages
-	ynh_package_install \
+	# Install the packages. Allow downgrades because apt decided bullseye > bookworm
+	ynh_package_install --allow-downgrades \
 		"$tempdir/jellyfin-web.deb" \
 		"$tempdir/jellyfin-server.deb"
 
@@ -54,8 +54,8 @@ install_jellyfin_packages() {
 		ynh_package_remove "jellyfin-ffmpeg5"
 	fi
 
-	# Install the packages
-	ynh_package_install \
+	# Install the packages. Allow downgrades because apt decided bullseye > bookworm
+	ynh_package_install --allow-downgrades \
 		"${tempdir}/jellyfin-ffmpeg6.deb"
 
 	# The doc says it should be called only once,
