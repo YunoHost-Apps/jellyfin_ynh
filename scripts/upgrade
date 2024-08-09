@@ -90,22 +90,24 @@ mkdir -p /var/lib/jellyfin/plugins-backup
 
 if [ -d /var/lib/jellyfin/plugins ]; then
 	for directory in /var/lib/jellyfin/plugins/*; do
-		if [[ "$(basename "$directory")" = "configurations" ]]; then
-			# Kepe plugin config
+		name="$(basename "$directory")"
+		if [[ "$name" = "configurations" ]]; then
+			# Keep plugin config
 			continue
 		fi
 
 		if [ ! -f "$directory"/meta.json ]; then
+			ynh_print_warn --message="Jellyfin plugin '$name' looks legacy (missing meta.json). Moving to /var/lib/jellyfin/plugins-backup."
 			mv "$directory" /var/lib/jellyfin/plugins-backup/
 		fi
 
 		# Jellyfin doesn't refuse to start with old plugins. It just does weird
 		# things such as https://github.com/jellyfin/jellyfin-plugin-ldapauth/issues/161
 		# As a precaution, move older ABI plugins to another folder so things don't break
-		abi="$(jq -r '.targetAbi' "$directory"/meta.json)"
-		if [[ "$abi" != "$plugin_abi" ]]; then
-			name="$(basename "$directory")"
-			ynh_print_warn --message="Jellyfin plugin '$name' has different ABI version $abi than expected $plugin_abi. Moving to /var/lib/jellyfin/plugins-backup."
+		abi="$(jq -r '.targetAbi' "$directory/meta.json")"
+
+		if dpkg --compare-versions "$abi" lt "$plugin_abi"; then
+			ynh_print_warn --message="Jellyfin plugin '$name' ABI $abi is lower than expected $plugin_abi. Moving to /var/lib/jellyfin/plugins-backup."
 			mv "$directory" /var/lib/jellyfin/plugins-backup/
 		fi
 	done
