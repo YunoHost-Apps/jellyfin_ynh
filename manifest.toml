@@ -7,7 +7,7 @@ name = "Jellyfin"
 description.en = "Media System that manage and stream your media"
 description.fr = "Système multimédia qui gère et diffuse vos médias"
 
-version = "10.9.8~ynh2"
+version = "10.9.9~ynh1"
 
 maintainers = ["tituspijean"]
 
@@ -62,24 +62,24 @@ ram.runtime = "100M"
 [resources]
 
     [resources.sources.server_bullseye]
-    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.8/armhf/jellyfin-server_10.9.8+deb11_armhf.deb"
-    armhf.sha256 = "e3f058a5cb0bff207799564c2f3e0db20172ee9a34da17f9acd1e46095ca192b"
-    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.8/arm64/jellyfin-server_10.9.8+deb11_arm64.deb"
-    arm64.sha256 = "333fc7b830dae31bf97325cf0afe616e7cd56de1fa7a9ef0b72abff9b758e474"
-    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.8/amd64/jellyfin-server_10.9.8+deb11_amd64.deb"
-    amd64.sha256 = "7bcb0532b84758c6b9663c46205d4126865496fba2c25eea091923e125d1fbf0"
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/armhf/jellyfin-server_10.9.9+deb11_armhf.deb"
+    armhf.sha256 = "ebba44ba5cc4b2d56aaa4ec5949d73e76e4191c3e9226e6a18bfb4d851b6c530"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/arm64/jellyfin-server_10.9.9+deb11_arm64.deb"
+    arm64.sha256 = "88bc6bd347c9ddd6162cb1678edc5eeefd0a864fdbbef11004093185b0e10105"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/amd64/jellyfin-server_10.9.9+deb11_amd64.deb"
+    amd64.sha256 = "5f8a6faaba6bbc72b6312fc08207aed0af8429938520ea991fcdb5c42c796a00"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-server.deb"
 
     [resources.sources.server_bookworm]
-    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.8/armhf/jellyfin-server_10.9.8+deb12_armhf.deb"
-    armhf.sha256 = "965d13aa96b35a72d21cb3cdd961ae469b7b9f19bb5415c34b24426300068b04"
-    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.8/arm64/jellyfin-server_10.9.8+deb12_arm64.deb"
-    arm64.sha256 = "96978fbf0289732004e88b626ecead0cf6c2261b523f72c3997dc26f707dc4bd"
-    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.8/amd64/jellyfin-server_10.9.8+deb12_amd64.deb"
-    amd64.sha256 = "76a6efb43dffc3cd7b704076822d8c2e607453a0122db6c8451bdb03318f075e"
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/armhf/jellyfin-server_10.9.9+deb12_armhf.deb"
+    armhf.sha256 = "7a003b1682b05d114e828cc54b49832bccb3136b9771918838fa5816f6973741"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/arm64/jellyfin-server_10.9.9+deb12_arm64.deb"
+    arm64.sha256 = "dce199d0db4f70951720cb1dcdf95842e413cc4f2b34e413b66a95f5b7d4e804"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/amd64/jellyfin-server_10.9.9+deb12_amd64.deb"
+    amd64.sha256 = "074dd18e7ef1b01973549da747408b086abba6478d61097f741c77a96a054e25"
 
     format = "whatever"
     extract = false
@@ -87,16 +87,16 @@ ram.runtime = "100M"
 
 
     [resources.sources.web_bullseye]
-    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.8/amd64/jellyfin-web_10.9.8+deb11_all.deb"
-    sha256 = "62daa8c2f2bedcc19dba508aad3b1fd52568ed1edcbc3a09071be83f48820a78"
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/amd64/jellyfin-web_10.9.9+deb11_all.deb"
+    sha256 = "ce69a60bfbae56da600ac392cb8355d54662a78b3e32870695ff7c98c57ecd69"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-web.deb"
 
     [resources.sources.web_bookworm]
-    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.8/amd64/jellyfin-web_10.9.8+deb12_all.deb"
-    sha256 = "30dc942102ac4d546bea65cd523723f661b082be684518b7ad9ca771235aac7f"
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/amd64/jellyfin-web_10.9.9+deb12_all.deb"
+    sha256 = "cd1772bcfcc62a778a780ff5234fdaff7bb0f0bd57a546d8186b77746f4ce5bb"
 
     format = "whatever"
     extract = false
@@ -104,24 +104,24 @@ ram.runtime = "100M"
 
 
     [resources.sources.ffmpeg_bullseye]
-    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/armhf/jellyfin-ffmpeg6_6.0.1-7-bullseye_armhf.deb"
-    armhf.sha256 = "4940083aa8bf6f04df7fbd3c5740f96b8b1d41ae2aeef8aba25eed7fbc72dd57"
-    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/arm64/jellyfin-ffmpeg6_6.0.1-7-bullseye_arm64.deb"
-    arm64.sha256 = "106311dfc45cfa69f9588772b9c0327e1558fd5186f6b4ce6d1f615ad09893bb"
-    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/amd64/jellyfin-ffmpeg6_6.0.1-7-bullseye_amd64.deb"
-    amd64.sha256 = "ee50c84a501c530e179088cf3f6d9048fe446e186d93f726a2073b860a313c5c"
+    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-8/armhf/jellyfin-ffmpeg6_6.0.1-8-bullseye_armhf.deb"
+    armhf.sha256 = "33a7a57c12ae87b4054f880106df4c51afaf7e506d51970d9c6511bc2d781f87"
+    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-8/arm64/jellyfin-ffmpeg6_6.0.1-8-bullseye_arm64.deb"
+    arm64.sha256 = "119b10cff71a9e717b464e64dc5b0ddfa0b07f8bc70727a3280a57500162e82c"
+    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-8/amd64/jellyfin-ffmpeg6_6.0.1-8-bullseye_amd64.deb"
+    amd64.sha256 = "79b51ed4e5201af1c527c4dd4a135ea444e28104fe0899d7c635acb1ff4a3db6"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-ffmpeg6.deb"
 
     [resources.sources.ffmpeg_bookworm]
-    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/armhf/jellyfin-ffmpeg6_6.0.1-7-bookworm_armhf.deb"
-    armhf.sha256 = "03d8a5512c7406e77359475da729157fc653dc5203f2399b59c71c6f59ca10f3"
-    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/arm64/jellyfin-ffmpeg6_6.0.1-7-bookworm_arm64.deb"
-    arm64.sha256 = "6c21dfdd931c576fcd5c095d4aae2cf92d4720beba6c73404f3d56220213c2a4"
-    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-7/amd64/jellyfin-ffmpeg6_6.0.1-7-bookworm_amd64.deb"
-    amd64.sha256 = "0773fda9111e03394e088790eabc99dbb0291d107a4950bdcbfafd94c5d0652e"
+    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-8/armhf/jellyfin-ffmpeg6_6.0.1-8-bookworm_armhf.deb"
+    armhf.sha256 = "f06f1c053053a103decfc8c6e1ddb85d02fd910596825d90fd51934b868aa591"
+    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-8/arm64/jellyfin-ffmpeg6_6.0.1-8-bookworm_arm64.deb"
+    arm64.sha256 = "5fe705505898e25c3724451c26c90b4d5b6e25a8e1e6b825a4601b4d7819a160"
+    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-8/amd64/jellyfin-ffmpeg6_6.0.1-8-bookworm_amd64.deb"
+    amd64.sha256 = "dab2d0b5247dc20f29ada768842c988633834bfecfe1601580f964649979b865"
 
     format = "whatever"
     extract = false
