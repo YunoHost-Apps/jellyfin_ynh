@@ -7,7 +7,7 @@ name = "Jellyfin"
 description.en = "Media System that manage and stream your media"
 description.fr = "Système multimédia qui gère et diffuse vos médias"
 
-version = "10.9.9~ynh2"
+version = "10.9.10~ynh1"
 
 maintainers = ["tituspijean"]
 
@@ -62,24 +62,24 @@ ram.runtime = "100M"
 [resources]
 
     [resources.sources.server_bullseye]
-    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/armhf/jellyfin-server_10.9.9+deb11_armhf.deb"
-    armhf.sha256 = "ebba44ba5cc4b2d56aaa4ec5949d73e76e4191c3e9226e6a18bfb4d851b6c530"
-    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/arm64/jellyfin-server_10.9.9+deb11_arm64.deb"
-    arm64.sha256 = "88bc6bd347c9ddd6162cb1678edc5eeefd0a864fdbbef11004093185b0e10105"
-    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/amd64/jellyfin-server_10.9.9+deb11_amd64.deb"
-    amd64.sha256 = "5f8a6faaba6bbc72b6312fc08207aed0af8429938520ea991fcdb5c42c796a00"
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.10/armhf/jellyfin-server_10.9.10+deb11_armhf.deb"
+    armhf.sha256 = "d22182cdf51fe777ce3e2892bf6e6df3b3a01072fda97f50000a637e1b186d46"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.10/arm64/jellyfin-server_10.9.10+deb11_arm64.deb"
+    arm64.sha256 = "8ff447e95bc1bdc5bfbef26b1f88ccf7bcfacbfeba051367533be1f8ff343b9d"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.10/amd64/jellyfin-server_10.9.10+deb11_amd64.deb"
+    amd64.sha256 = "60cb06c968f3bfb9b63a9e1856bbc724af0809d07c98337e17e612fbf9885fe9"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-server.deb"
 
     [resources.sources.server_bookworm]
-    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/armhf/jellyfin-server_10.9.9+deb12_armhf.deb"
-    armhf.sha256 = "7a003b1682b05d114e828cc54b49832bccb3136b9771918838fa5816f6973741"
-    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/arm64/jellyfin-server_10.9.9+deb12_arm64.deb"
-    arm64.sha256 = "dce199d0db4f70951720cb1dcdf95842e413cc4f2b34e413b66a95f5b7d4e804"
-    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/amd64/jellyfin-server_10.9.9+deb12_amd64.deb"
-    amd64.sha256 = "074dd18e7ef1b01973549da747408b086abba6478d61097f741c77a96a054e25"
+    armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.10/armhf/jellyfin-server_10.9.10+deb12_armhf.deb"
+    armhf.sha256 = "5eeb54facd281d6053efefc4911a11c852461d6c723938574f15c7709ef51062"
+    arm64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.10/arm64/jellyfin-server_10.9.10+deb12_arm64.deb"
+    arm64.sha256 = "af0f358e42c45cb67a6eaa0a3c82017060366f9958081c70884612cc186c0d6b"
+    amd64.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.10/amd64/jellyfin-server_10.9.10+deb12_amd64.deb"
+    amd64.sha256 = "210d0fd714ac859d661926a20795a9020f1c829e64b233180df65b64aa6398ef"
 
     format = "whatever"
     extract = false
@@ -87,16 +87,16 @@ ram.runtime = "100M"
 
 
     [resources.sources.web_bullseye]
-    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/amd64/jellyfin-web_10.9.9+deb11_all.deb"
-    sha256 = "ce69a60bfbae56da600ac392cb8355d54662a78b3e32870695ff7c98c57ecd69"
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.10/amd64/jellyfin-web_10.9.10+deb11_all.deb"
+    sha256 = "1e6a80e817d82779196677ebe885f185600554515a63209e0f031def0ac85c6c"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-web.deb"
 
     [resources.sources.web_bookworm]
-    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.9/amd64/jellyfin-web_10.9.9+deb12_all.deb"
-    sha256 = "cd1772bcfcc62a778a780ff5234fdaff7bb0f0bd57a546d8186b77746f4ce5bb"
+    url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.10/amd64/jellyfin-web_10.9.10+deb12_all.deb"
+    sha256 = "fbf2e641cfc597737ff0dcd329b1e8d829de2dbb85f30ed076dea0cbbc95fbef"
 
     format = "whatever"
     extract = false
