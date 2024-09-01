@@ -6,7 +6,7 @@
 
 debian=$(lsb_release --codename --short)
 debian_number=$(lsb_release --release --short)
-pkg_version="10.9.9"
+pkg_version="10.9.10"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
 ffmpeg_pkg_version="6.0.1-8"
@@ -23,7 +23,6 @@ data_path="/var/lib/$app"
 config_path="/etc/$app"
 log_path="/var/log/$app"
 cache_path="/var/cache/$app"
-
 
 #=================================================
 # PERSONAL HELPERS
