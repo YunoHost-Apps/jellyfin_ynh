@@ -19,7 +19,7 @@ NON debe editarse manualmente.
 Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
 
-**Versión proporcionada:** 10.9.9~ynh2
+**Versión proporcionada:** 10.9.10~ynh1
 
 **Demo:** <https://demo.jellyfin.org/stable/web/index.html>
 
