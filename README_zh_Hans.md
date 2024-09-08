@@ -19,7 +19,7 @@
 Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
 
-**分发版本：** 10.9.9~ynh2
+**分发版本：** 10.9.11~ynh1
 
 **演示：** <https://demo.jellyfin.org/stable/web/index.html>
 
