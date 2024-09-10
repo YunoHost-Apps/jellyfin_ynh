@@ -34,11 +34,7 @@ fi
 ynh_app_setting_delete --key=is_public
 
 # If discovery key does not exist, create it
-# FIXMEhelpers2.1: maybe replace with: ynh_app_setting_set_default --key=discovery --value=0
-if [ -z "${discovery:-}" ]; then
-	discovery=0
-	ynh_app_setting_set --key=discovery --value=$discovery
-fi
+ynh_app_setting_set_default --key=discovery --value=0
 
 if [ ! -f "/etc/logrotate.d/$app" ]; then
 	# Fix possibly missing file due to buggy restore:
