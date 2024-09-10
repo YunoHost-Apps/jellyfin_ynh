@@ -102,7 +102,7 @@ install_jellyfin_discovery_ports() {
 		opened_ports=($discovery_service_port $discovery_client_port)
 
 		# Open port $discovery_service_port for service auto-discovery
-		if #REMOVEME? ynh_port_available --port=$discovery_service_port; then
+		if ynh_port_available --port=$discovery_service_port; then
 			ynh_hide_warnings yunohost firewall allow UDP $discovery_service_port
 		else
 			discovery_service=0
@@ -110,7 +110,7 @@ install_jellyfin_discovery_ports() {
 		fi
 
 		# Open port $discovery_client_port for client auto-discovery
-		if #REMOVEME? ynh_port_available --port=$discovery_client_port; then
+		if ynh_port_available --port=$discovery_client_port; then
 			ynh_hide_warnings yunohost firewall allow UDP $discovery_client_port
 		else
 			discovery_client=0
