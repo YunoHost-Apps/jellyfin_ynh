@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
@@ -45,6 +41,7 @@ fi
 # OPEN PORTS
 #=================================================
 ynh_script_progression "Checking whether to open ports..."
+
 configure_jellyfin_discovery_ports install
 
 ports_args=()
@@ -82,6 +79,7 @@ ynh_config_add --template="logging.json" --destination="$config_path/logging.jso
 #=================================================
 # ENSURE NO OLD/INCOMPATIBLE PLUGINS ARE LEFT
 #=================================================
+
 shopt -s nullglob
 mkdir -p /var/lib/jellyfin/plugins-backup
 
@@ -123,7 +121,6 @@ ynh_config_add --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugi
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
-# Set permissions on app files
 chown -R "$app:" "$data_path"
 chown -R "$app:" "$config_path"
 
@@ -143,13 +140,11 @@ ynh_multimedia_addaccess "$app"
 #=================================================
 ynh_script_progression "Upgrading system configurations related to $app..."
 
-# Create a dedicated NGINX config
 ynh_config_add_nginx
 
 ynh_config_add --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
 systemctl daemon-reload
 
-# Use logrotate to manage app-specific logfile(s)
 ynh_config_add_logrotate
 
 yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"

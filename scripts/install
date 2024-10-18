@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
@@ -30,6 +26,7 @@ fi
 # OPEN PORTS
 #=================================================
 ynh_script_progression "Checking whether to open ports..."
+
 configure_jellyfin_discovery_ports install
 
 ports_args=()
@@ -48,6 +45,7 @@ install_jellyfin_packages
 # ADD A CONFIGURATION
 #=================================================
 ynh_print_info "Waiting 30s to let Jellyfin fully start a first time..."
+
 sleep 30
 
 ynh_script_progression "Adding $app's configuration..."
@@ -73,7 +71,6 @@ ynh_config_add --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugi
 #=================================================
 ynh_script_progression "Securing files and directories..."
 
-# Set permissions to app files
 chown -R "$app:" "$data_path"
 chown -R "$app:" "$config_path"
 
@@ -93,14 +90,12 @@ ynh_multimedia_addaccess "$app"
 #=================================================
 ynh_script_progression "Adding system configurations related to $app..."
 
-# Create a dedicated NGINX config using the conf/nginx.conf template
 ynh_config_add_nginx
 
 ynh_config_add --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
 systemctl daemon-reload
 yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"
 
-# Use logrotate to manage application logfile(s)
 ynh_config_add_logrotate
 
 #=================================================
@@ -108,7 +103,6 @@ ynh_config_add_logrotate
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-# Start a systemd service
 ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=15
 
 #=================================================

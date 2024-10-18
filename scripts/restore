@@ -1,10 +1,5 @@
 #!/bin/bash
 
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
-# Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
@@ -23,6 +18,7 @@ fi
 # OPEN PORTS
 #=================================================
 ynh_script_progression "Checking whether to open ports..."
+
 configure_jellyfin_discovery_ports install
 
 ports_args=()
@@ -51,7 +47,6 @@ install_jellyfin_packages
 #=================================================
 ynh_script_progression "Restoring user rights..."
 
-# Restore permissions on app files
 chown -R "$app:" "$data_path"
 chown -R "$app:" "$config_path"
 
