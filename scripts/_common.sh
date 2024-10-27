@@ -43,10 +43,21 @@ install_jellyfin_packages() {
 	# Create the temporary directory
 	tempdir="$(mktemp -d)"
 
+	# If there is a new version, the web and server resources are moved to archive
+	server_url=$"(ynh_read_manifest --manifest_key="resources.sources.server_${debian}.${YNH_ARCH}.url")"
+	server_resource="server_$debian"
+    if ! curl --output /dev/null --silent --head --fail "$server_url"; then
+		server_resource="server_archive_$debian"
+    fi
+	web_url=$"(ynh_read_manifest --manifest_key="resources.sources.web_${debian}.${YNH_ARCH}.url")"
+	web_resource="web_$debian"
+	if ! curl --output /dev/null --silent --head --fail "$web_url"; then
+		web_resource="web_archive_$debian"
+    fi
 	# Download the deb files
-	ynh_setup_source --dest_dir="$tempdir" --source_id="web_$debian"
+	ynh_setup_source --dest_dir="$tempdir" --source_id="$web_resource"
 	ynh_setup_source --dest_dir="$tempdir" --source_id="ffmpeg_$debian"
-	ynh_setup_source --dest_dir="$tempdir" --source_id="server_$debian"
+	ynh_setup_source --dest_dir="$tempdir" --source_id="$server_resource"
 
 	# Install the packages. Allow downgrades because apt decided bullseye > bookworm
 	ynh_package_install --allow-downgrades \
