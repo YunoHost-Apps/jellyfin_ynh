@@ -72,6 +72,20 @@ ram.runtime = "100M"
     format = "whatever"
     extract = false
     rename = "jellyfin-server.deb"
+    prefetch = false
+
+    [resources.sources.server_archive_bullseye]
+    armhf.url = "https://repo.jellyfin.org/archive/server/debian/stable/v10.9.11/armhf/jellyfin-server_10.9.11+deb11_armhf.deb"
+    armhf.sha256 = "c38ce5b82ed61575eab74d68d9b26754c444e4c99a930e1166244ef1cc1f0963"
+    arm64.url = "https://repo.jellyfin.org/archive/server/debian/stable/v10.9.11/arm64/jellyfin-server_10.9.11+deb11_arm64.deb"
+    arm64.sha256 = "02bc3469c291af42f0400585913027adb27682eac063fdcda200c7b84dfab376"
+    amd64.url = "https://repo.jellyfin.org/archive/server/debian/stable/v10.9.11/amd64/jellyfin-server_10.9.11+deb11_amd64.deb"
+    amd64.sha256 = "f055766da637ac5588b91018fd1be20e51647dc1ef3648e733cced53cde94f73"
+
+    format = "whatever"
+    extract = false
+    rename = "jellyfin-server.deb"
+    prefetch = false
 
     [resources.sources.server_bookworm]
     armhf.url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.11/armhf/jellyfin-server_10.9.11+deb12_armhf.deb"
@@ -84,7 +98,20 @@ ram.runtime = "100M"
     format = "whatever"
     extract = false
     rename = "jellyfin-server.deb"
+    prefetch = false
 
+    [resources.sources.server_archive_bookworm]
+    armhf.url = "https://repo.jellyfin.org/archive/server/debian/stable/v10.9.11/armhf/jellyfin-server_10.9.11+deb12_armhf.deb"
+    armhf.sha256 = "fec1a8c5607f25c7b88fb4e1dc9c72f9ed86db6e960978fb7a27715caf657527"
+    arm64.url = "https://repo.jellyfin.org/archive/server/debian/stable/v10.9.11/arm64/jellyfin-server_10.9.11+deb12_arm64.deb"
+    arm64.sha256 = "6ae5b307e0c82b1b0f41e3f935d4a815e7aedec3d07d956d4820e9295bd156e0"
+    amd64.url = "https://repo.jellyfin.org/archive/server/debian/stable/v10.9.11/amd64/jellyfin-server_10.9.11+deb12_amd64.deb"
+    amd64.sha256 = "19f66ac4ca511aeb2ab88aca551e95f3da7ed5708c98baeabf032b7df7d13db3"
+
+    format = "whatever"
+    extract = false
+    rename = "jellyfin-server.deb"
+    prefetch = false
 
     [resources.sources.web_bullseye]
     url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.11/amd64/jellyfin-web_10.9.11+deb11_all.deb"
@@ -93,6 +120,16 @@ ram.runtime = "100M"
     format = "whatever"
     extract = false
     rename = "jellyfin-web.deb"
+    prefetch = false
+
+    [resources.sources.web_archive_bullseye]
+    url = "https://repo.jellyfin.org/archive/server/debian/stable/v10.9.11/amd64/jellyfin-web_10.9.11+deb11_all.deb"
+    sha256 = "5d5c48b76f1d780b7b6fdc5b9d3e606cab561a30b7b9613bd9673f113b6833b4"
+
+    format = "whatever"
+    extract = false
+    rename = "jellyfin-web.deb"
+    prefetch = false
 
     [resources.sources.web_bookworm]
     url = "https://repo.jellyfin.org/files/server/debian/stable/v10.9.11/amd64/jellyfin-web_10.9.11+deb12_all.deb"
@@ -101,7 +138,16 @@ ram.runtime = "100M"
     format = "whatever"
     extract = false
     rename = "jellyfin-web.deb"
+    prefetch = false
 
+    [resources.sources.web_archive_bookworm]
+    url = "https://repo.jellyfin.org/archive/server/debian/stable/v10.9.11/amd64/jellyfin-web_10.9.11+deb12_all.deb"
+    sha256 = "a440660ab1dd749cdf6a7cded1f26c7afd3d364d30560e680cbb5d2ccd66cb52"
+
+    format = "whatever"
+    extract = false
+    rename = "jellyfin-web.deb"
+    prefetch = false
 
     [resources.sources.ffmpeg_bullseye]
     armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/6.x/6.0.1-8/armhf/jellyfin-ffmpeg6_6.0.1-8-bullseye_armhf.deb"
