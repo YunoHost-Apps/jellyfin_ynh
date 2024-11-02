@@ -17,4 +17,4 @@ test_format = 1.0
 
     [default.curl_tests]
     home.path = "/web/index.html"
-    home.expect_title = "Jellyfin
+    home.expect_title = "Jellyfin"
