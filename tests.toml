@@ -14,3 +14,7 @@ test_format = 1.0
     test_upgrade_from.c78bd4fc24803f23b1d243f397f3128d8fe663d8.name = "10.8.13_ynh1"
     test_upgrade_from.c78bd4fc24803f23b1d243f397f3128d8fe663d8.args.domain = "domain.tld"
     test_upgrade_from.c78bd4fc24803f23b1d243f397f3128d8fe663d8.args.admin = "package_checker"
+
+    [default.curl_tests]
+    home.path = "/web/index.html"
+    home.expect_title = "Jellyfin
