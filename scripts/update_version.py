@@ -6,6 +6,7 @@ import hashlib
 import tomlkit
 import requests
 import hashlib
+from copy import deepcopy
 
 REPO_ROOT = Path(__file__).parent.parent
 
@@ -45,14 +46,19 @@ class JellyfinDistro:
     def update_package(self, manifest: Dict, package: str, version: str):
         url = None
         urls = {}
+        archive_needed = False
         if package == "server":
             for arch in self.arch: urls[arch] = self.server_url(version, arch)
             key = f"server_{self.debian_name}"
-            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-server.deb" }
+            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-server.deb", "prefetch": False }
+            archive_needed = True
+            archive_key = f"server_archive_{self.debian_name}"
         elif package == "web":
             url = self.web_url(version)
             key = f"web_{self.debian_name}"
-            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-web.deb" }
+            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-web.deb", "prefetch": False }
+            archive_needed = True
+            archive_key = f"web_archive_{self.debian_name}"
         elif package == "ffmpeg":
             for arch in self.arch: urls[arch] = self.ffmpeg_url(version, arch)
             key = f"ffmpeg_{self.debian_name}"
@@ -70,17 +76,30 @@ class JellyfinDistro:
         if url:
             print(f"Checking for updates for Jellyfin's {package} (distro={self.debian_name}) to version {version}")
             self.update_package_helper(manifest["resources"]["sources"][key], package, version, url)
+            if archive_needed:
+                manifest["resources"]["sources"][archive_key] = deepcopy(manifest["resources"]["sources"][key])
+                # Create the archive entry with the url updated
+                manifest["resources"]["sources"][archive_key]["url"] = url.replace(f"{JELLYFIN_REPO}/files", f"{JELLYFIN_REPO}/archive")
         else:
             # Different URL per architecture
             for arch, url in urls.items():
                 if arch not in manifest["resources"]["sources"][key]:
                     manifest["resources"]["sources"][key][arch] = {}
+                    
                 print(f"Checking for updates for Jellyfin's {package} (arch={arch},distro={self.debian_name}) to version {version}")
                 self.update_package_helper(manifest["resources"]["sources"][key][arch], package, version, url)
+                # Create the archive entry with the url updated
+            if archive_needed:
+                manifest["resources"]["sources"][archive_key] = deepcopy(manifest["resources"]["sources"][key])
+                for arch, url in urls.items():
+                    manifest["resources"]["sources"][archive_key][arch]["url"] = url.replace(f"{JELLYFIN_REPO}/files", f"{JELLYFIN_REPO}/archive")
 
         # Add extra settings
         for k, v in extra.items():
             manifest["resources"]["sources"][key][k] = v
+            if archive_needed:
+                manifest["resources"]["sources"][archive_key][k] = v
+
 
     def update_package_helper(self, entry: Dict, package: str, version: str, url: str):
         # Assume version changed only if URL changed
