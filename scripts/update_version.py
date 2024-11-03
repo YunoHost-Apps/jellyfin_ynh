@@ -6,6 +6,7 @@ import hashlib
 import tomlkit
 import requests
 import hashlib
+from copy import deepcopy
 
 REPO_ROOT = Path(__file__).parent.parent
 
@@ -76,7 +77,7 @@ class JellyfinDistro:
             print(f"Checking for updates for Jellyfin's {package} (distro={self.debian_name}) to version {version}")
             self.update_package_helper(manifest["resources"]["sources"][key], package, version, url)
             if archive_needed:
-                manifest["resources"]["sources"][archive_key] = manifest["resources"]["sources"][key]
+                manifest["resources"]["sources"][archive_key] = deepcopy(manifest["resources"]["sources"][key])
                 # Create the archive entry with the url updated
                 manifest["resources"]["sources"][archive_key]["url"] = url.replace(f"{JELLYFIN_REPO}/files", f"{JELLYFIN_REPO}/archive")
         else:
@@ -88,8 +89,9 @@ class JellyfinDistro:
                 print(f"Checking for updates for Jellyfin's {package} (arch={arch},distro={self.debian_name}) to version {version}")
                 self.update_package_helper(manifest["resources"]["sources"][key][arch], package, version, url)
                 # Create the archive entry with the url updated
-                if archive_needed:
-                    manifest["resources"]["sources"][archive_key][arch] = manifest["resources"]["sources"][key][arch]
+            if archive_needed:
+                manifest["resources"]["sources"][archive_key] = deepcopy(manifest["resources"]["sources"][key])
+                for arch, url in urls.items():
                     manifest["resources"]["sources"][archive_key][arch]["url"] = url.replace(f"{JELLYFIN_REPO}/files", f"{JELLYFIN_REPO}/archive")
 
         # Add extra settings
