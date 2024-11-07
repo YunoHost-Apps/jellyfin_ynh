@@ -64,7 +64,7 @@ install_jellyfin_packages() {
 		"$tempdir/jellyfin-web.deb" \
 		"$tempdir/jellyfin-server.deb"
 
-	# We need to workaround yunohoost passing --no-remove to replace jellyfin-ffmpeg6...
+	# We need to workaround yunohost passing --no-remove to replace jellyfin-ffmpeg6...
 	if ynh_package_is_installed "jellyfin-ffmpeg6"; then
 		ynh_package_remove "jellyfin-ffmpeg6"
 	fi
