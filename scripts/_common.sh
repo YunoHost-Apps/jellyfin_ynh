@@ -34,6 +34,14 @@ install_jellyfin_packages() {
 	# ffmpeg_url="$(ynh_read_manifest --manifest_key="resources.sources.ffmpeg_${debian}.${YNH_ARCH}.url")"
 	# ffmpeg_pkg_version="$(echo "$ffmpeg_url" | sed "s/.*\/jellyfin-ffmpeg[0-9]*_\([0-9.-]*\)-${debian}_${YNH_ARCH}.deb/\1/")"
 
+	# We need to workaround yunohost passing --no-remove to replace jellyfin-ffmpeg5 and 6...
+	for ffmpeg_installed_version in "jellyfin-ffmpeg5" "jellyfin-ffmpeg6"
+	do
+		if ynh_package_is_installed "$ffmpeg_installed_version"; then
+			ynh_package_remove "=$ffmpeg_installed_version"
+		fi
+	done
+
 	# This should only run on upgrade, to fix https://github.com/YunoHost-Apps/jellyfin_ynh/issues/163
 	# Previously the package depended on exact package versions, so upgrade was broken.
 	if ynh_package_is_installed --package="$app-ynh-deps" && ynh_package_is_installed --package="jellyfin-server"; then
@@ -63,11 +71,6 @@ install_jellyfin_packages() {
 	ynh_package_install --allow-downgrades \
 		"$tempdir/jellyfin-web.deb" \
 		"$tempdir/jellyfin-server.deb"
-
-	# We need to workaround yunohost passing --no-remove to replace jellyfin-ffmpeg6...
-	if ynh_package_is_installed "jellyfin-ffmpeg6"; then
-		ynh_package_remove "jellyfin-ffmpeg6"
-	fi
 
 	# Install the packages. Allow downgrades because apt decided bullseye > bookworm
 	ynh_package_install --allow-downgrades \
