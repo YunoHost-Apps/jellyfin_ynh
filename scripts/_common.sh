@@ -38,7 +38,7 @@ install_jellyfin_packages() {
 	for ffmpeg_installed_version in "jellyfin-ffmpeg5" "jellyfin-ffmpeg6"
 	do
 		if ynh_package_is_installed "$ffmpeg_installed_version"; then
-			ynh_package_remove "=$ffmpeg_installed_version"
+			ynh_package_remove "$ffmpeg_installed_version"
 		fi
 	done
 
