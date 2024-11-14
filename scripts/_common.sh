@@ -6,10 +6,10 @@
 
 debian=$(lsb_release --codename --short)
 debian_number=$(lsb_release --release --short)
-pkg_version="10.9.11"
+pkg_version="10.10.1"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
-ffmpeg_pkg_version="6.0.1-8"
+ffmpeg_pkg_version="7.0.2-5"
 
 # "targetAbi" line in plugin's meta.json, to check for outdated plugins
 plugin_abi="10.9.0.0"
@@ -34,10 +34,18 @@ install_jellyfin_packages() {
 	# ffmpeg_url="$(ynh_read_manifest --manifest_key="resources.sources.ffmpeg_${debian}.${YNH_ARCH}.url")"
 	# ffmpeg_pkg_version="$(echo "$ffmpeg_url" | sed "s/.*\/jellyfin-ffmpeg[0-9]*_\([0-9.-]*\)-${debian}_${YNH_ARCH}.deb/\1/")"
 
+	# We need to workaround yunohost passing --no-remove to replace jellyfin-ffmpeg5 and 6...
+	for ffmpeg_installed_version in "jellyfin-ffmpeg5" "jellyfin-ffmpeg6"
+	do
+		if ynh_package_is_installed "$ffmpeg_installed_version"; then
+			ynh_package_remove "$ffmpeg_installed_version"
+		fi
+	done
+
 	# This should only run on upgrade, to fix https://github.com/YunoHost-Apps/jellyfin_ynh/issues/163
 	# Previously the package depended on exact package versions, so upgrade was broken.
 	if ynh_package_is_installed --package="$app-ynh-deps" && ynh_package_is_installed --package="jellyfin-server"; then
-		ynh_install_app_dependencies jellyfin-web jellyfin-ffmpeg6 jellyfin-server
+		ynh_install_app_dependencies jellyfin-web jellyfin-ffmpeg7 jellyfin-server
 	fi
 
 	# Create the temporary directory
@@ -64,22 +72,17 @@ install_jellyfin_packages() {
 		"$tempdir/jellyfin-web.deb" \
 		"$tempdir/jellyfin-server.deb"
 
-	# We need to workaround yunohoost passing --no-remove to replace jellyfin-ffmpeg5...
-	if ynh_package_is_installed "jellyfin-ffmpeg5"; then
-		ynh_package_remove "jellyfin-ffmpeg5"
-	fi
-
 	# Install the packages. Allow downgrades because apt decided bullseye > bookworm
 	ynh_package_install --allow-downgrades \
-		"${tempdir}/jellyfin-ffmpeg6.deb"
+		"${tempdir}/jellyfin-ffmpeg7.deb"
 
 	# The doc says it should be called only once,
 	# but the code says multiple calls are supported.
 	# Also, they're already installed so that should be quasi instantaneous.
-	ynh_install_app_dependencies jellyfin-web jellyfin-ffmpeg6 jellyfin-server
+	ynh_install_app_dependencies jellyfin-web jellyfin-ffmpeg7 jellyfin-server
 
 	# Mark packages as dependencies, to allow automatic removal
-	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg6
+	apt-mark auto jellyfin-server jellyfin-web jellyfin-ffmpeg7
 }
 
 configure_jellyfin_discovery_ports() {
