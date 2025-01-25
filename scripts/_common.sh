@@ -27,7 +27,7 @@ cache_path="/var/cache/$app"
 install_jellyfin_packages() {
 	# Get version numbers from manifest UNUSED because update_version.py uses the hard-coded variables
 	# pkg_version="$(ynh_app_upstream_version)"
-	# ffmpeg_url="$(ynh_read_manifest --manifest_key="resources.sources.ffmpeg_${debian}.${YNH_ARCH}.url")"
+	# ffmpeg_url="$(ynh_read_manifest "resources.sources.ffmpeg_${debian}.${YNH_ARCH}.url")"
 	# ffmpeg_pkg_version="$(echo "$ffmpeg_url" | sed "s/.*\/jellyfin-ffmpeg[0-9]*_\([0-9.-]*\)-${debian}_${YNH_ARCH}.deb/\1/")"
 
 	# We need to workaround yunohost passing --no-remove to replace jellyfin-ffmpeg5 and 6...
@@ -48,12 +48,12 @@ install_jellyfin_packages() {
 	tempdir="$(mktemp -d)"
 
 	# If there is a new version, the web and server resources are moved to archive
-	server_url="$(ynh_read_manifest --manifest_key="resources.sources.server_${debian}.${YNH_ARCH}.url")"
+	server_url="$(ynh_read_manifest "resources.sources.server_${debian}.${YNH_ARCH}.url")"
 	server_resource="server_$debian"
 	if ! curl --output /dev/null --silent --head --fail "$server_url"; then
 		server_resource="server_archive_$debian"
 	fi
-	web_url="$(ynh_read_manifest --manifest_key="resources.sources.web_${debian}.url")"
+	web_url="$(ynh_read_manifest "resources.sources.web_${debian}.url")"
 	web_resource="web_$debian"
 	if ! curl --output /dev/null --silent --head --fail "$web_url"; then
 		web_resource="web_archive_$debian"
