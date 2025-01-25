@@ -40,7 +40,7 @@ install_jellyfin_packages() {
 
 	# This should only run on upgrade, to fix https://github.com/YunoHost-Apps/jellyfin_ynh/issues/163
 	# Previously the package depended on exact package versions, so upgrade was broken.
-	if _ynh_apt_package_is_installed"$app-ynh-deps" && _ynh_apt_package_is_installed "jellyfin-server"; then
+	if _ynh_apt_package_is_installed "$app-ynh-deps" && _ynh_apt_package_is_installed "jellyfin-server"; then
 		ynh_apt_install_dependencies jellyfin-web jellyfin-ffmpeg7 jellyfin-server
 	fi
 
