@@ -62,7 +62,7 @@ class JellyfinDistro:
         elif package == "ffmpeg":
             for arch in self.arch: urls[arch] = self.ffmpeg_url(version, arch)
             key = f"ffmpeg_{self.debian_name}"
-            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-ffmpeg6.deb" }
+            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-ffmpeg7.deb" }
         elif package == "ldap":
             url = self.ldap_url(version)
             key = "plugin_ldap"
