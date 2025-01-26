@@ -160,7 +160,7 @@ ram.runtime = "100M"
 
     format = "whatever"
     extract = false
-    rename = "jellyfin-ffmpeg6.deb"
+    rename = "jellyfin-ffmpeg7.deb"
 
     [resources.sources.ffmpeg_bookworm]
     armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/7.x/7.0.2-9/armhf/jellyfin-ffmpeg7_7.0.2-9-bookworm_armhf.deb"
@@ -172,7 +172,7 @@ ram.runtime = "100M"
 
     format = "whatever"
     extract = false
-    rename = "jellyfin-ffmpeg6.deb"
+    rename = "jellyfin-ffmpeg7.deb"
 
 
     [resources.sources.plugin_ldap]
