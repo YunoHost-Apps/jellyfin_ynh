@@ -147,7 +147,7 @@ ynh_script_progression "Upgrading system configurations related to $app..."
 # Create a dedicated NGINX config
 ynh_config_add_nginx
 
-ynh_config_add --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
+ynh_config_add--template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
 systemctl daemon-reload
 
 # Use logrotate to manage app-specific logfile(s)
