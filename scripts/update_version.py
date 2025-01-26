@@ -38,7 +38,7 @@ class JellyfinDistro:
 
     def ffmpeg_url(self, version: str, arch: str) -> str:
         major = version.split(".")[0]
-        return f"{JELLYFIN_REPO}/files/ffmpeg/debian/{major}.x/{version}/{arch}/jellyfin-ffmpeg6_{version}-{self.debian_name}_{arch}.deb"
+        return f"{JELLYFIN_REPO}/files/ffmpeg/debian/{major}.x/{version}/{arch}/jellyfin-ffmpeg7_{version}-{self.debian_name}_{arch}.deb"
 
     def ldap_url(self, version: str) -> str:
         return f"{JELLYFIN_REPO}/files/plugin/ldap-authentication/ldap-authentication_{version}.zip"
@@ -62,7 +62,7 @@ class JellyfinDistro:
         elif package == "ffmpeg":
             for arch in self.arch: urls[arch] = self.ffmpeg_url(version, arch)
             key = f"ffmpeg_{self.debian_name}"
-            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-ffmpeg6.deb" }
+            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-ffmpeg7.deb" }
         elif package == "ldap":
             url = self.ldap_url(version)
             key = "plugin_ldap"
