@@ -8,31 +8,28 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-#=================================================
-# DECLARE DATA AND CONF FILES TO BACKUP
-#=================================================
-ynh_print_info --message="Declaring files to be backed up..."
+ynh_print_info "Declaring files to be backed up..."
 
 #=================================================
 # BACKUP THE APP MAIN DIR
 #=================================================
 
-ynh_backup --src_path="$data_path"
-ynh_backup --src_path="$config_path"
-ynh_backup --src_path="/etc/default/jellyfin" --not_mandatory
+ynh_backup "$data_path"
+ynh_backup "$config_path"
+ynh_backup "/etc/default/jellyfin" || true
 
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
 
-ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
+ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
 
-ynh_backup --src_path="/etc/logrotate.d/$app"
+ynh_backup "/etc/logrotate.d/$app"
 
-ynh_backup --src_path="/etc/systemd/system/jellyfin.service.d" --not_mandatory
+ynh_backup "/etc/systemd/system/jellyfin.service.d" || true
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_print_info --message="Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
+ynh_print_info "Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
