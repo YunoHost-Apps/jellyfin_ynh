@@ -5,7 +5,9 @@ Ini TIDAK boleh diedit dengan tangan.
 
 # Jellyfin untuk YunoHost
 
-[![Tingkat integrasi](https://dash.yunohost.org/integration/jellyfin.svg)](https://ci-apps.yunohost.org/ci/apps/jellyfin/) ![Status kerja](https://ci-apps.yunohost.org/ci/badges/jellyfin.status.svg) ![Status pemeliharaan](https://ci-apps.yunohost.org/ci/badges/jellyfin.maintain.svg)
+[![Tingkat integrasi](https://apps.yunohost.org/badge/integration/jellyfin)](https://ci-apps.yunohost.org/ci/apps/jellyfin/)
+![Status kerja](https://apps.yunohost.org/badge/state/jellyfin)
+![Status pemeliharaan](https://apps.yunohost.org/badge/maintained/jellyfin)
 
 [![Pasang Jellyfin dengan YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jellyfin)
 
@@ -19,7 +21,7 @@ Ini TIDAK boleh diedit dengan tangan.
 Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
 
-**Versi terkirim:** 10.10.1~ynh1
+**Versi terkirim:** 10.10.5~ynh1
 
 **Demo:** <https://demo.jellyfin.org/stable/web/index.html>
 
