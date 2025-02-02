@@ -5,7 +5,9 @@
 
 # Jellyfin для YunoHost
 
-[![Уровень интеграции](https://dash.yunohost.org/integration/jellyfin.svg)](https://ci-apps.yunohost.org/ci/apps/jellyfin/) ![Состояние работы](https://ci-apps.yunohost.org/ci/badges/jellyfin.status.svg) ![Состояние сопровождения](https://ci-apps.yunohost.org/ci/badges/jellyfin.maintain.svg)
+[![Уровень интеграции](https://apps.yunohost.org/badge/integration/jellyfin)](https://ci-apps.yunohost.org/ci/apps/jellyfin/)
+![Состояние работы](https://apps.yunohost.org/badge/state/jellyfin)
+![Состояние сопровождения](https://apps.yunohost.org/badge/maintained/jellyfin)
 
 [![Установите Jellyfin с YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jellyfin)
 
@@ -19,7 +21,7 @@
 Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
 
-**Поставляемая версия:** 10.10.1~ynh1
+**Поставляемая версия:** 10.10.5~ynh1
 
 **Демо-версия:** <https://demo.jellyfin.org/stable/web/index.html>
 
