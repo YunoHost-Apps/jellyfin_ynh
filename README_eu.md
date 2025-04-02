@@ -21,7 +21,7 @@ EZ editatu eskuz.
 Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
 
-**Paketatutako bertsioa:** 10.10.5~ynh1
+**Paketatutako bertsioa:** 10.10.5~ynh2
 
 **Demoa:** <https://demo.jellyfin.org/stable/web/index.html>
 
@@ -42,7 +42,7 @@ Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin
 
 Bidali `pull request`a [`testing` abarrera](https://github.com/YunoHost-Apps/jellyfin_ynh/tree/testing).
 
-`testing` abarra probatzeko, ondorengoa egin:
+`testing` abarra probatzeko, honakoa egin:
 
 ```bash
 sudo yunohost app install https://github.com/YunoHost-Apps/jellyfin_ynh/tree/testing --debug

@@ -3,7 +3,7 @@ Este archivo README esta generado automaticamente<https://github.com/YunoHost/ap
 No se debe editar a mano.
 -->
 
-# Jellyfin para Yunohost
+# Jellyfin para YunoHost
 
 [![Nivel de integración](https://apps.yunohost.org/badge/integration/jellyfin)](https://ci-apps.yunohost.org/ci/apps/jellyfin/)
 ![Estado funcional](https://apps.yunohost.org/badge/state/jellyfin)
@@ -21,7 +21,7 @@ No se debe editar a mano.
 Jellyfin enables you to collect, manage, and stream your media. Run the Jellyfin server on your system and gain access to the leading free-software entertainment system, bells and whistles included.
 
 
-**Versión actual:** 10.10.5~ynh1
+**Versión actual:** 10.10.5~ynh2
 
 **Demo:** <https://demo.jellyfin.org/stable/web/index.html>
 
