@@ -22,13 +22,6 @@ ynh_remove_logrotate
 ynh_remove_nginx_config
 
 #=================================================
-# REMOVE PACKAGES
-#=================================================
-ynh_script_progression --message="Removing packages..." --weight=1
-
-ynh_remove_app_dependencies
-
-#=================================================
 # CLOSE A PORT
 #=================================================
 ynh_script_progression --message="Closing ports..." --weight=1
