@@ -25,8 +25,11 @@ yunohost = ">= 11.2.18"
 helpers_version = "2.1"
 architectures = ["armhf", "arm64", "amd64"]
 multi_instance = false
+
 ldap = true
+
 sso = true
+
 disk = "300M"
 ram.build = "200M"
 ram.runtime = "100M"
@@ -171,7 +174,6 @@ ram.runtime = "100M"
     url = "https://repo.jellyfin.org/files/plugin/ldap-authentication/ldap-authentication_19.0.0.0.zip"
     sha256 = "3b8366f670484c9ab1ece826667754b69736d910d9ccde90c105a67ba441ead9"
     in_subdir = false
-
 
     [resources.system_user]
     home = "/var/lib/jellyfin"

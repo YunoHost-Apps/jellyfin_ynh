@@ -19,8 +19,6 @@ fi
 
 ynh_config_remove_logrotate
 
-ynh_config_remove_nginx
-
 #=================================================
 # REMOVE VARIOUS FILES
 #=================================================
