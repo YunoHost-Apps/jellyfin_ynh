@@ -27,17 +27,6 @@ if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; th
 fi
 
 #=================================================
-# OPEN PORTS
-#=================================================
-ynh_script_progression "Checking whether to open ports..."
-configure_jellyfin_discovery_ports install
-
-ports_args=()
-if [[ "${opened_ports:-__NOTHING__}" != "__NOTHING__" ]]; then
-	ports_args=( "--needs_exposed_ports" "${opened_ports[@]}" )
-fi
-
-#=================================================
 # INSTALL PACKAGES
 #=================================================
 ynh_script_progression "Installing packages..."

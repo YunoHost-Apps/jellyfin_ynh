@@ -19,6 +19,11 @@ test_format = 1.0
     test_upgrade_from.f1ea7c2.args.domain = "domain.tld"
     test_upgrade_from.f1ea7c2.args.admin = "package_checker"
 
+    test_upgrade_from.1a42126.name = "10.10.5"
+    test_upgrade_from.1a42126.args.domain = "domain.tld"
+    test_upgrade_from.1a42126.args.admin = "package_checker"
+
+
     [default.curl_tests]
     home.path = "/web/index.html"
     home.expect_title = "Jellyfin"

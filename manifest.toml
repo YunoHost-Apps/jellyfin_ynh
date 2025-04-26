@@ -52,14 +52,6 @@ ram.runtime = "100M"
     help.fr = "Vous pourrez octroire l'accès à d'autres comptes et groupes avec le système de permissions plus tard."
     type = "user"
 
-    [install.discovery]
-    ask.en = "Should the ports for client and server discovery be opened?"
-    ask.fr = "Est-ce que les ports pour la découverte entre clients et serveur doivent être ouverts ?"
-    help.en = "Enable discovery if you use Jellyfin on your local network or through a VPN to smoothen detection between clients and server. If it is installed on a VPS and only accessed via its web interface, you should disable discovery."
-    help.fr = "Activez la découverte si vous utilisez Jellyfin sur votre réseau local ou via un VPN pour simplifier la détection entre clients et serveur. S'il est installé sur un VPS et utilisé uniquement via son interface web, vous devriez désactiver la découverte."
-    type = "boolean"
-    default = true
-
 [resources]
 
     [resources.sources.server_bullseye]
@@ -198,12 +190,11 @@ ram.runtime = "100M"
 
     [resources.ports]
     main.default = 8095
-    # If we ever want to automatically expose the discovery ports without a setting
-    # servicediscovery.default = 1900
-    # servicediscovery.exposed = "UDP"
-    # servicediscovery.fixed = true
-    # clientdiscovery.default = 7359
-    # clientdiscovery.exposed = "UDP"
-    # clientdiscovery.fixed = true
+    servicediscovery.default = 1900
+    servicediscovery.exposed = "UDP"
+    servicediscovery.fixed = true
+    clientdiscovery.default = 7359
+    clientdiscovery.exposed = "UDP"
+    clientdiscovery.fixed = true
 
     [resources.apt]

@@ -33,24 +33,10 @@ fi
 
 ynh_app_setting_delete --key=is_public
 
-# If discovery key does not exist, create it
-ynh_app_setting_set_default --key=discovery --value=0
-
 
 if [ ! -f "/etc/logrotate.d/$app" ]; then
 	# Fix possibly missing file due to buggy restore:
 	ynh_config_add_logrotate
-fi
-
-#=================================================
-# OPEN PORTS
-#=================================================
-ynh_script_progression "Checking whether to open ports..."
-configure_jellyfin_discovery_ports install
-
-ports_args=()
-if [[ "${opened_ports:-__NOTHING__}" != "__NOTHING__" ]]; then
-	ports_args=( "--needs_exposed_ports" "${opened_ports[@]}" )
 fi
 
 #=================================================
