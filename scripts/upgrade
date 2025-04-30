@@ -12,8 +12,6 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression "Stopping $app's systemd service..."
 
-yunohost service add "$app" --description="Jellyfin media center"
-
 ynh_systemctl --service="$app" --action="stop" --log_path="systemd" --timeout=15
 
 #=================================================
