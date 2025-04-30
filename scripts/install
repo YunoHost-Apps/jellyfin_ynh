@@ -87,7 +87,7 @@ ynh_config_add_nginx
 
 ynh_config_add --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
 systemctl daemon-reload
-yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"
+yunohost service add "$app" --description="Jellyfin media center"
 
 # Use logrotate to manage application logfile(s)
 ynh_config_add_logrotate

@@ -139,7 +139,7 @@ systemctl daemon-reload
 # Use logrotate to manage app-specific logfile(s)
 ynh_config_add_logrotate
 
-yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"
+yunohost service add "$app" --description="Jellyfin media center"
 
 #=================================================
 # START SYSTEMD SERVICE
