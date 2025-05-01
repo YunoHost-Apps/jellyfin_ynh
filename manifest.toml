@@ -192,11 +192,12 @@ ram.runtime = "100M"
 
     [resources.ports]
     main.default = 8095
-    servicediscovery.default = 1900
-    servicediscovery.exposed = "UDP"
-    servicediscovery.fixed = true
-    clientdiscovery.default = 7359
-    clientdiscovery.exposed = "UDP"
-    clientdiscovery.fixed = true
+    # If one day we plan to declare them
+    #servicediscovery.default = 1900
+    #servicediscovery.exposed = "UDP"
+    #servicediscovery.fixed = true
+    #clientdiscovery.default = 7359
+    #clientdiscovery.exposed = "UDP"
+    #clientdiscovery.fixed = true
 
     [resources.apt]
