@@ -6,7 +6,6 @@
   
   Choose one of the folders in `/home/yunohost.multimedia/share` upon configuration of your libraries.
 
-* Starting version 10.7.5~ynh2, you can ask for the discovery ports (1900 and 7359) to be opened.
-
-  They ease the setting up of your media center between clients and server.
-  * If you are upgrading to this version and above, set `discovery: '1'` in `/etc/yunohost/apps/jellyfin/settings.yml` if you want the upgrade to open them for you.
+* The app has its discovery ports (1900 and 7359) opened by default.
+They help Jellyfin clients to detect the server if it is on the same network.
+***However***, if your server only has a direct connection to the Internet (like a VPS), you should close these two ports and `Ignore` the corresponding warnings shown by the Diagnosis.
