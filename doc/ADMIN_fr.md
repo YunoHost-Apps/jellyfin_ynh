@@ -5,6 +5,5 @@
 * L'app a accès aux dossiers multimédia de YunoHost:
 indiquez un des dossiers de `/home/yunohost.multimedia/share` comme source lors du paramétrage de vos bibliothèques.
 
-* L'app a ses ports de découverte (1900 et 7359) ouverts par défaut.
-Ils aident les clients Jellyfin à détecter le serveur s'il est sur le même réseau.
-***Cependant***, si votre serveur n'a qu'une connexion directe aux Internets (comme un VPS), vous devriez fermer ces deux ports et `Ignorer` les avertissements correspondants affichés par le Diagnostic.
+* __APP__ a ses ports de découverte (1900 et 7359) fermés par défaut. Ceux-ci servent à proposer la dévouverte automatique de votre instance Jellyfin à tout client compatible connectés sur le même réseau (votre réseau local).
+Pour pouvoir bénéficier de cette fonctionnalité, vous *pouvez* ouvrir les ports 1900 et 7359 **UDP** si vous êtes sur votre serveur est hébergé chez vous, sur votre réseau local (autrement dit, pas un VPS).

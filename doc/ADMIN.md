@@ -6,6 +6,5 @@
   
   Choose one of the folders in `/home/yunohost.multimedia/share` upon configuration of your libraries.
 
-* The app has its discovery ports (1900 and 7359) opened by default.
-They help Jellyfin clients to detect the server if it is on the same network.
-***However***, if your server only has a direct connection to the Internet (like a VPS), you should close these two ports and `Ignore` the corresponding warnings shown by the Diagnosis.
+* __APP__ has its discovery ports (1900 and 7359) closed by default. These are used to offer automatic discovery of your Jellyfin instance to any compatible client connected on the same network (your local network).
+To take advantage of this feature, you *can* open ports 1900 and 7359 **UDP** if your server is hosted at home, on your local network (in other words, not a VPS).
