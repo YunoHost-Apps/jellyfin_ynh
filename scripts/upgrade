@@ -40,6 +40,14 @@ if [ ! -f "/etc/logrotate.d/$app" ]; then
 fi
 
 #=================================================
+# REMOVE OLD FILES
+#=================================================
+# Remove /var/lib/jellyfin/plugins-backup to mitigate a failed upgrade because a plugin is already there since an old upgrade.
+# If it’s still there, it’s likely that the admin didn’t use this version of the plugin anymore.
+ynh_script_progression "Removing /var/lib/jellyfin/plugins-backup directory..."
+ynh_safe_rm "/var/lib/jellyfin/plugins-backup"
+
+#=================================================
 # UPGRADE PACKAGES
 #=================================================
 ynh_script_progression "Upgrading packages..."

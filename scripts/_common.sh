@@ -12,7 +12,8 @@ version=$(echo "$pkg_version" | cut -d '-' -f 1)
 ffmpeg_pkg_version="7.1.1-2"
 
 # "targetAbi" line in plugin's meta.json, to check for outdated plugins
-plugin_abi="10.10.6.0"
+# Usually, it should be the major version of the Jellyfin release (e.g. Jellyfin 10.10.7 -> plugin_abi 10.10.0)
+plugin_abi="10.10.0"
 ldap_pkg_version="20.0.0.0"
 
 # Those directories are handled by the deb package
