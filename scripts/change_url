@@ -10,16 +10,16 @@ source /usr/share/yunohost/helpers
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping $app's systemd service..." --weight=2
+ynh_script_progression "Stopping $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="stop" --log_path="systemd" --timeout=15
 
 #=================================================
 # MODIFY URL IN NGINX CONF
 #=================================================
-ynh_script_progression --message="Updating NGINX web server configuration..." --weight=1
+ynh_script_progression "Updating NGINX web server configuration..."
 
-ynh_change_url_nginx_config
+ynh_config_change_url_nginx
 
 #=================================================
 # BASE URL
@@ -29,21 +29,21 @@ ynh_change_url_nginx_config
 if [ $change_path -eq 1 ]; then
 	# If somehow <BaseUrl /> was not replaced during install
 	if grep -q "<BaseUrl />" "$config_path/network.xml"; then
-		ynh_replace_string --match_string="<BaseUrl />" --replace_string="<BaseUrl>$new_path</BaseUrl>" --target_file="$config_path/network.xml"
+		ynh_replace --match="<BaseUrl />" --replace="<BaseUrl>$new_path</BaseUrl>" --file="$config_path/network.xml"
 	else
-		ynh_replace_string --match_string="<BaseUrl>$old_path</BaseUrl>" --replace_string="<BaseUrl>$new_path</BaseUrl>" --target_file="$config_path/network.xml"
+		ynh_replace --match="<BaseUrl>$old_path</BaseUrl>" --replace="<BaseUrl>$new_path</BaseUrl>" --file="$config_path/network.xml"
 	fi
 fi
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting $app's systemd service..." --weight=2
+ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action="start" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=15
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Change of URL completed for $app" --last
+ynh_script_progression "Change of URL completed for $app"
