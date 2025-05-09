@@ -10,14 +10,14 @@ source /usr/share/yunohost/helpers
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Stopping $app's systemd service..." --weight=1
+ynh_script_progression "Stopping $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action="stop" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="stop" --log_path="systemd" --timeout=15
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
-ynh_script_progression --message="Ensuring downward compatibility..." --weight=1
+ynh_script_progression "Ensuring downward compatibility..."
 
 # If render group exists, and system user doesn't belong to it, add it
 if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
@@ -28,37 +28,29 @@ fi
 # If config_path is mixed up with install_dir, fix them
 if [ -z "$config_path" ] || [[ $config_path = "/var/lib/jellyfin" ]]; then
 	config_path=/etc/jellyfin
-	ynh_app_setting_set --app="$app" --key=config_path --value=$config_path
+	ynh_app_setting_set --key=config_path --value=$config_path
 fi
 
-ynh_app_setting_delete --app="$app" --key=is_public
+ynh_app_setting_delete --key=is_public
 
-# If discovery key does not exist, create it
-if [ -z "${discovery:-}" ]; then
-	discovery=0
-	ynh_app_setting_set --app="$app" --key=discovery --value=$discovery
-fi
 
 if [ ! -f "/etc/logrotate.d/$app" ]; then
 	# Fix possibly missing file due to buggy restore:
-	ynh_use_logrotate
+	ynh_config_add_logrotate
 fi
 
 #=================================================
-# OPEN PORTS
+# REMOVE OLD FILES
 #=================================================
-ynh_script_progression --message="Checking whether to open ports..." --weight=1
-configure_jellyfin_discovery_ports install
-
-ports_args=()
-if [[ "${opened_ports:-__NOTHING__}" != "__NOTHING__" ]]; then
-	ports_args=( "--needs_exposed_ports" "${opened_ports[@]}" )
-fi
+# Remove /var/lib/jellyfin/plugins-backup to mitigate a failed upgrade because a plugin is already there since an old upgrade.
+# If it’s still there, it’s likely that the admin didn’t use this version of the plugin anymore.
+ynh_script_progression "Removing /var/lib/jellyfin/plugins-backup directory..."
+ynh_safe_rm "/var/lib/jellyfin/plugins-backup"
 
 #=================================================
 # UPGRADE PACKAGES
 #=================================================
-ynh_script_progression --message="Upgrading packages..." --weight=3
+ynh_script_progression "Upgrading packages..."
 
 # Backup the configuration files to prevent yunohost to see a manual edit
 bakdir=$(mktemp -d)
@@ -71,16 +63,16 @@ install_jellyfin_packages
 #=================================================
 # UPDATE A CONFIG FILE
 #=================================================
-ynh_script_progression --message="Updating a configuration file..." --weight=2
+ynh_script_progression "Updating configuration..."
 
 # Restore the files we just backed up before installing the debs...
 for name in system.xml network.xml logging.json; do
 	mv -f "$bakdir/$name" "$config_path/$name"
 done
-ynh_secure_remove "$bakdir"
+ynh_safe_rm "$bakdir"
 
-ynh_add_config --template="network.xml" --destination="$config_path/network.xml"
-ynh_add_config --template="logging.json" --destination="$config_path/logging.json"
+ynh_config_add --template="network.xml" --destination="$config_path/network.xml"
+ynh_config_add --template="logging.json" --destination="$config_path/logging.json"
 
 #=================================================
 # ENSURE NO OLD/INCOMPATIBLE PLUGINS ARE LEFT
@@ -97,7 +89,7 @@ if [ -d /var/lib/jellyfin/plugins ]; then
 		fi
 
 		if [ ! -f "$directory"/meta.json ]; then
-			ynh_print_warn --message="Jellyfin plugin '$name' looks legacy (missing meta.json). Moving to /var/lib/jellyfin/plugins-backup."
+			ynh_print_warn "Jellyfin plugin '$name' looks legacy (missing meta.json). Moving to /var/lib/jellyfin/plugins-backup."
 			mv "$directory" /var/lib/jellyfin/plugins-backup/
 		fi
 
@@ -107,7 +99,7 @@ if [ -d /var/lib/jellyfin/plugins ]; then
 		abi="$(jq -r '.targetAbi' "$directory/meta.json")"
 
 		if dpkg --compare-versions "$abi" lt "$plugin_abi"; then
-			ynh_print_warn --message="Jellyfin plugin '$name' ABI $abi is lower than expected $plugin_abi. Moving to /var/lib/jellyfin/plugins-backup."
+			ynh_print_warn "Jellyfin plugin '$name' ABI $abi is lower than expected $plugin_abi. Moving to /var/lib/jellyfin/plugins-backup."
 			mv "$directory" /var/lib/jellyfin/plugins-backup/
 		fi
 	done
@@ -116,11 +108,11 @@ fi
 #=================================================
 # INSTALL LDAP PLUGIN
 #=================================================
-ynh_script_progression --message="Installing LDAP plugin..." --weight=2
+ynh_script_progression "Installing LDAP plugin..."
 
-ynh_setup_source --full_replace=1 --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
+ynh_setup_source --full_replace --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
 mkdir -p /var/lib/jellyfin/plugins/configurations/
-ynh_add_config --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
+ynh_config_add --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
 #=================================================
 # SECURE FILES AND DIRECTORIES
@@ -133,7 +125,7 @@ chown -R "$app:" "$config_path"
 #=================================================
 # YUNOHOST MULTIMEDIA INTEGRATION
 #=================================================
-ynh_script_progression --message="Adding multimedia directories..." --weight=2
+ynh_script_progression "Adding multimedia directories..."
 
 # Build YunoHost multimedia directories
 ynh_multimedia_build_main_dir
@@ -144,28 +136,28 @@ ynh_multimedia_addaccess "$app"
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
+ynh_script_progression "Upgrading system configurations related to $app..."
 
 # Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
-ynh_add_config --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
+ynh_config_add --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
 systemctl daemon-reload
 
 # Use logrotate to manage app-specific logfile(s)
-ynh_use_logrotate
+ynh_config_add_logrotate
 
-yunohost service add "$app" --description="Jellyfin media center" "${ports_args[@]}"
+yunohost service add "$app" --description="Jellyfin media center"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting $app's systemd service..." --weight=1
+ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemd_action --service_name="$app" --action="restart" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="restart" --log_path="systemd" --timeout=15
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Upgrade of $app completed" --last
+ynh_script_progression "Upgrade of $app completed"

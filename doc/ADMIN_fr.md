@@ -5,7 +5,5 @@
 * L'app a accès aux dossiers multimédia de YunoHost:
 indiquez un des dossiers de `/home/yunohost.multimedia/share` comme source lors du paramétrage de vos bibliothèques.
 
-* À partir de la version 10.7.5~ynh2, vous pouvez demander l'ouverture des ports de découverte (1900 et 7359).
-Ils facilitent la mise en place de votre système multimédia entre les clients et le serveur.
-  * Si vous mettez à jour vers cette version et les suivantes, mettez `discovery: '1'` dans `/etc/yunohost/apps/jellyfin/settings.yml`
-si vous voulez que la mise à jour les ouvre pour vous.
+* __APP__ a ses ports de découverte (1900 et 7359) fermés par défaut. Ceux-ci servent à proposer la découverte automatique de votre instance Jellyfin à tout client compatible connectés sur le même réseau (votre réseau local).
+Pour pouvoir bénéficier de cette fonctionnalité, vous *pouvez* ouvrir les ports 1900 et 7359 **UDP** si vous êtes sur votre serveur est hébergé chez vous, sur votre réseau local (autrement dit, pas un VPS).
