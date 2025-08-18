@@ -13,14 +13,13 @@ REPO_ROOT = Path(__file__).parent.parent
 JELLYFIN_REPO = "https://repo.jellyfin.org"
 
 ARCHS = [
-    "armhf",
     "arm64",
     "amd64",
 ]
 
 DEBS = {
-    "bullseye": "11",
     "bookworm": "12",
+    "trixie": "13",
 }
 
 class JellyfinDistro:
