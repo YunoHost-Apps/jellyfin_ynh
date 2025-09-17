@@ -21,6 +21,7 @@ ARCHS = [
 DEBS = {
     "bullseye": "11",
     "bookworm": "12",
+    "trixie": "13",
 }
 
 class JellyfinDistro:
@@ -85,7 +86,7 @@ class JellyfinDistro:
             for arch, url in urls.items():
                 if arch not in manifest["resources"]["sources"][key]:
                     manifest["resources"]["sources"][key][arch] = {}
-                    
+
                 print(f"Checking for updates for Jellyfin's {package} (arch={arch},distro={self.debian_name}) to version {version}")
                 self.update_package_helper(manifest["resources"]["sources"][key][arch], package, version, url)
                 # Create the archive entry with the url updated
