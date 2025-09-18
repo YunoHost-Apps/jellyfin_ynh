@@ -9,7 +9,7 @@ debian_number=$(lsb_release --release --short)
 pkg_version="10.10.7"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
-ffmpeg_pkg_version="7.1.1-2"
+ffmpeg_pkg_version="7.1.1-7"
 
 # "targetAbi" line in plugin's meta.json, to check for outdated plugins
 # Usually, it should be the major version of the Jellyfin release (e.g. Jellyfin 10.10.7 -> plugin_abi 10.10.0)
