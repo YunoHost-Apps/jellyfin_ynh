@@ -3,10 +3,10 @@ Félicitations ! L’installation a réussi ! 🎉
 
 # Dossiers multimédias
 
-L'app a accès aux dossiers multimédia de YunoHost:
-indiquez un des sous-dossiers de `/home/yunohost.multimedia/share` comme source lors du paramétrage de vos bibliothèques.
+L'app a accès aux dossiers multimédia de YunoHost. Ces dossiers sont partagés avec d'autres applications pour faciliter l'ajout de fichiers et leur gestion.
 
-Ces dossiers sont partagés avec d'autres applications pour faciliter l'ajout de fichiers et leur gestion.
+Si vous souhaitez les utiliser, indiquez un des sous-dossiers de `/home/yunohost.multimedia/share` comme source lors du paramétrage de vos bibliothèques.
+
 
 # Ouverture des ports pour une utilisation locale
 
