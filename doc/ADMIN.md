@@ -8,7 +8,7 @@ The app relies on YunoHost's LDAP server for users to log in:
 
 The app can access YunoHost's multimedia directories:
 
-Choose one of the subfolders in `/home/yunohost.multimedia/share` upon configuration of your libraries.
+If you want to use them, choose one of the subfolders in `/home/yunohost.multimedia/share` upon configuration of your libraries.
 
 These directories are shared with other applications to facilitate files upload and management.
 
