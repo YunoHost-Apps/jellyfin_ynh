@@ -251,3 +251,4 @@ ram.runtime = "100M"
     #clientdiscovery.fixed = true
 
     [resources.apt]
+    packages = []
