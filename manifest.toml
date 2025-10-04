@@ -186,24 +186,20 @@ ram.runtime = "100M"
     prefetch = false
 
     [resources.sources.ffmpeg_bullseye]
-    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/7.x/7.1.2-2/armhf/jellyfin-ffmpeg7_7.1.2-2-bullseye_armhf.deb"
-    armhf.sha256 = "9c8c3035db150e9daf43bbf6976bb880ecfc97662a1fb8c59fe593e5c90aaf4a"
     arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/7.x/7.1.2-2/arm64/jellyfin-ffmpeg7_7.1.2-2-bullseye_arm64.deb"
-    arm64.sha256 = "8fd2a4cfa3e3c40cb473e290222e7b1c06106677cbe2cd2388c1e079a04a21c4"
+    arm64.sha256 = "7c501e82c60dab754644ac84603e843198de25a9271f9fc7d1836ee3a88be44b"
     amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/7.x/7.1.2-2/amd64/jellyfin-ffmpeg7_7.1.2-2-bullseye_amd64.deb"
-    amd64.sha256 = "9e73a0ae7e9b214d40a9922fcb89e8b9d16f80c27f2f22ac4958403008818846"
+    amd64.sha256 = "7bcdab7eb19105cd646d324d1898ac11437f662073712c12decf0cb89380fc7a"
 
     format = "whatever"
     extract = false
     rename = "jellyfin-ffmpeg7.deb"
 
     [resources.sources.ffmpeg_bookworm]
-    armhf.url = "https://repo.jellyfin.org/files/ffmpeg/debian/7.x/7.1.2-2/armhf/jellyfin-ffmpeg7_7.1.2-2-bookworm_armhf.deb"
-    armhf.sha256 = "2c5f47d3cebdeaaca3626b9f004311db990262fd50119c7122d39163e40dc13a"
     arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/7.x/7.1.2-2/arm64/jellyfin-ffmpeg7_7.1.2-2-bookworm_arm64.deb"
-    arm64.sha256 = "fe4cae4ec32b7f21f3ff1c78eb014bdcfd3945379baa8d978b5b3fdd67cd2984"
+    arm64.sha256 = "6f2f59ec9eacd8279a2c78dbfc658543f10de22d8bf574b43fa8034294d705b2"
     amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/7.x/7.1.2-2/amd64/jellyfin-ffmpeg7_7.1.2-2-bookworm_amd64.deb"
-    amd64.sha256 = "077956841187eb041172a7893f8c70ebb516f9740ac7821d5d2c37610dfdfdd1"
+    amd64.sha256 = "1ec50f46a4db3019291c4c4cb0d56bde34b85cd19e79f901ae8765b2fd3ee640"
 
     format = "whatever"
     extract = false
@@ -211,9 +207,9 @@ ram.runtime = "100M"
 
     [resources.sources.ffmpeg_trixie]
     arm64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/7.x/7.1.2-2/arm64/jellyfin-ffmpeg7_7.1.2-2-trixie_arm64.deb"
-    arm64.sha256 = "a5de534e49c8a0030d3351568a31481c9d63e219bd9fc291421c908c1f7e442d"
+    arm64.sha256 = "1dd812179979e3e46dcfb0145dc249782a5aba40ea6ca5925bd4cde83f94bcfe"
     amd64.url = "https://repo.jellyfin.org/files/ffmpeg/debian/7.x/7.1.2-2/amd64/jellyfin-ffmpeg7_7.1.2-2-trixie_amd64.deb"
-    amd64.sha256 = "0c6e7d73132dc3bf17e2efe6743f878a95bdead02b35c2d373b542b6aa693e81"
+    amd64.sha256 = "018d7c02703f6f352373e02aecf52defdf6382b39eb9ebbbc8b9b9fd936f9281"
 
     format = "whatever"
     extract = false
