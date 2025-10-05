@@ -249,3 +249,6 @@ ram.runtime = "100M"
     #clientdiscovery.default = 7359
     #clientdiscovery.exposed = "UDP"
     #clientdiscovery.fixed = true
+
+    [resources.apt]
+    packages = []
