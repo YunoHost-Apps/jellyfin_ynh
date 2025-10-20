@@ -7,6 +7,13 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
+if ynh_app_upgrading_from_version_before 10.11.0~ynh1; then
+    ynh_die "Your installation is to old to update to this version. \
+        \nPlease first manually update with 10.10.7~ynh2 with the following command: \
+        \n's\0u\0d\0o yunohost app upgrade $app -u https://github.com/YunoHost-Apps/jellyfin_ynh/commit/be23267b55c6f2c2caeb23566357d0564fe2f914' \
+        \nOnce done you can upgrade to the latest version."
+fi
+
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
