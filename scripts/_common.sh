@@ -6,15 +6,15 @@
 
 debian=$(lsb_release --codename --short)
 debian_number=$(lsb_release --release --short)
-pkg_version="10.10.7"
+pkg_version="10.11.2"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
-ffmpeg_pkg_version="7.1.1-2"
+ffmpeg_pkg_version="7.1.2-3"
 
 # "targetAbi" line in plugin's meta.json, to check for outdated plugins
 # Usually, it should be the major version of the Jellyfin release (e.g. Jellyfin 10.10.7 -> plugin_abi 10.10.0)
-plugin_abi="10.10.0"
-ldap_pkg_version="20.0.0.0"
+plugin_abi="10.11.0"
+ldap_pkg_version="21.0.0.0"
 
 # Those directories are handled by the deb package
 data_path="/var/lib/$app"

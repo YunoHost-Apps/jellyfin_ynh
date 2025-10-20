@@ -18,3 +18,8 @@ test_format = 1.0
     [default.curl_tests]
     home.path = "/web/index.html"
     home.expect_title = "Jellyfin"
+
+    # -------------------------------
+    # Commits to test upgrade from
+    # -------------------------------
+    test_upgrade_from.be23267b55c6f2c2caeb23566357d0564fe2f914.name = "10.10.7~ynh2"
