@@ -159,8 +159,8 @@ ram.runtime = "100M"
 
 
     [resources.sources.plugin_ldap]
-    url = "https://repo.jellyfin.org/files/plugin/ldap-authentication/ldap-authentication_21.0.0.0.zip"
-    sha256 = "b2ce3fe502e7e4bf8d34dc0f5ec15171bfec7f383328686a86f4597c02cd22d0"
+    url = "https://repo.jellyfin.org/files/plugin/ldap-authentication/ldap-authentication_22.0.0.0.zip"
+    sha256 = "c2386c001be439c9946280a02d62610f29e325d4094e83bd31221de3f7aa20ae"
     in_subdir = false
 
     [resources.system_user]
