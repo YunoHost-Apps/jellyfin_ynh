@@ -65,7 +65,9 @@ for name in system.xml network.xml logging.json; do
 	cp "$config_path/$name" "$bakdir/$name"
 done
 
+ynh_systemctl --service="$app" --action="mask"
 install_jellyfin_packages
+ynh_systemctl --service="$app" --action="unmask"
 
 #=================================================
 # UPDATE A CONFIG FILE
@@ -161,7 +163,7 @@ yunohost service add "$app" --description="Jellyfin media center"
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemctl --service="$app" --action="restart" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=15
 
 #=================================================
 # END OF SCRIPT

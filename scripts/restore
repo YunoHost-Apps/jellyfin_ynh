@@ -33,7 +33,9 @@ ynh_restore "/etc/default/jellyfin" || true
 #=================================================
 ynh_script_progression "Reinstalling packages..."
 
+ynh_systemctl --service="$app" --action="mask"
 install_jellyfin_packages
+ynh_systemctl --service="$app" --action="unmask"
 
 #=================================================
 # RESTORE USER RIGHTS
@@ -73,7 +75,7 @@ ynh_restore "/etc/logrotate.d/$app"
 #=================================================
 ynh_script_progression "Reloading NGINX web server and $app's service..."
 
-ynh_systemctl --service="$app" --action="restart" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=15
 
 ynh_systemctl --service=nginx --action=reload
 
