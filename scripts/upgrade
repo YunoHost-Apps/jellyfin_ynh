@@ -68,6 +68,9 @@ then
 	"
 fi
 
+echo $?
+sqlite3 "/var/lib/jellyfin/data/jellyfin.db" ".tables"
+
 #=================================================
 # REMOVE OLD FILES
 #=================================================
