@@ -46,6 +46,8 @@ if [ ! -f "/etc/logrotate.d/$app" ]; then
 	ynh_config_add_logrotate
 fi
 
+sqlite3 "/var/lib/jellyfin/data/library.db" ".tables"
+
 if ynh_app_upgrading_from_version_before 10.11.5~ynh1
 then
 	# Create UserDatas table before the migration // Thanks to https://github.com/getumbrel/umbrel-apps/pull/3872/changes/502e93dd57bd34e2899edb9ffd5dac1a7dbcbb89
@@ -68,8 +70,7 @@ then
 	"
 fi
 
-echo $?
-sqlite3 "/var/lib/jellyfin/data/jellyfin.db" ".tables"
+sqlite3 "/var/lib/jellyfin/data/library.db" ".tables"
 
 #=================================================
 # REMOVE OLD FILES
