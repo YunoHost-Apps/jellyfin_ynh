@@ -48,22 +48,24 @@ fi
 
 if ynh_app_upgrading_from_version_before 10.11.5~ynh1
 then
-# Create UserDatas table before the migration // Thanks to https://github.com/getumbrel/umbrel-apps/pull/3872/changes/502e93dd57bd34e2899edb9ffd5dac1a7dbcbb89
-	sqlite3 "/var/lib/jellyfin/data/jellyfin.db" <<'SQL'
+	# Create UserDatas table before the migration // Thanks to https://github.com/getumbrel/umbrel-apps/pull/3872/changes/502e93dd57bd34e2899edb9ffd5dac1a7dbcbb89
+	sqlite3 "/var/lib/jellyfin/data/jellyfin.db" "
+	BEGIN TRANSACTION;
 	CREATE TABLE IF NOT EXISTS UserDatas (
-    key TEXT NOT NULL,
-    userId TEXT NOT NULL,
-    rating REAL,
-    played INTEGER NOT NULL,
-    playCount INTEGER NOT NULL,
-    isFavorite INTEGER NOT NULL,
-    playbackPositionTicks INTEGER NOT NULL,
-    lastPlayedDate TEXT,
-    AudioStreamIndex INTEGER,
-    SubtitleStreamIndex INTEGER,
-    PRIMARY KEY (key, userId)
-);
-SQL
+    	key TEXT NOT NULL,
+    	userId TEXT NOT NULL,
+    	rating REAL,
+    	played INTEGER NOT NULL,
+    	playCount INTEGER NOT NULL,
+    	isFavorite INTEGER NOT NULL,
+    	playbackPositionTicks INTEGER NOT NULL,
+    	lastPlayedDate TEXT,
+    	AudioStreamIndex INTEGER,
+    	SubtitleStreamIndex INTEGER,
+    	PRIMARY KEY (key, userId)
+	);
+	COMMIT;
+	"
 fi
 
 #=================================================
