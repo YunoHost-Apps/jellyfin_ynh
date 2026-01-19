@@ -46,6 +46,32 @@ if [ ! -f "/etc/logrotate.d/$app" ]; then
 	ynh_config_add_logrotate
 fi
 
+sqlite3 "/var/lib/jellyfin/data/library.db" ".tables"
+
+if ynh_app_upgrading_from_version_before 10.11.5~ynh1
+then
+	# Create UserDatas table before the migration // Thanks to https://github.com/getumbrel/umbrel-apps/pull/3872/changes/502e93dd57bd34e2899edb9ffd5dac1a7dbcbb89
+	sqlite3 "/var/lib/jellyfin/data/library.db" "
+	BEGIN TRANSACTION;
+	CREATE TABLE IF NOT EXISTS UserDatas (
+    	key TEXT NOT NULL,
+    	userId TEXT NOT NULL,
+    	rating REAL,
+    	played INTEGER NOT NULL,
+    	playCount INTEGER NOT NULL,
+    	isFavorite INTEGER NOT NULL,
+    	playbackPositionTicks INTEGER NOT NULL,
+    	lastPlayedDate TEXT,
+    	AudioStreamIndex INTEGER,
+    	SubtitleStreamIndex INTEGER,
+    	PRIMARY KEY (key, userId)
+	);
+	COMMIT;
+	"
+fi
+
+sqlite3 "/var/lib/jellyfin/data/library.db" ".tables"
+
 #=================================================
 # REMOVE OLD FILES
 #=================================================
@@ -65,9 +91,9 @@ for name in system.xml network.xml logging.json; do
 	cp "$config_path/$name" "$bakdir/$name"
 done
 
-ynh_systemctl --service="$app" --action="mask"
+#ynh_systemctl --service="$app" --action="mask"
 install_jellyfin_packages
-ynh_systemctl --service="$app" --action="unmask"
+#ynh_systemctl --service="$app" --action="unmask"
 
 #=================================================
 # UPDATE A CONFIG FILE

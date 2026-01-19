@@ -189,4 +189,6 @@ ram.runtime = "100M"
     #clientdiscovery.fixed = true
 
     [resources.apt]
-    packages = []
+    packages = [
+        "sqlite3" # temporarily needed to tweak db during upgrade script to 10.11.5    
+    ]
