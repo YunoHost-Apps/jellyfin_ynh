@@ -11,7 +11,7 @@ about: When creating a bug report, please use the following template to provide 
    - *Otherwise, the issue may be due to the app itself. Refer to its documentation or repository for help.*
    - *When in doubt, post here and we will figure it out together.*
 3. *Delete the italic comments as you write over them below, and remove this guide.*
---- 
+---
 
 ### Describe the bug
 
