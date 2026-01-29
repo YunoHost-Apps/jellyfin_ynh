@@ -7,6 +7,13 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
+if ynh_app_upgrading_from_version_before 10.10.7~ynh1; then
+    ynh_die "Your installation is to old to update to this version. \
+        \nPlease first manually update with 10.10.7~ynh2 with the following command: \
+        \n's\0u\0d\0o yunohost app upgrade $app -u https://github.com/YunoHost-Apps/jellyfin_ynh/commit/be23267b55c6f2c2caeb23566357d0564fe2f914' \
+        \nOnce done you can upgrade to the latest version."
+fi
+
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
@@ -39,6 +46,32 @@ if [ ! -f "/etc/logrotate.d/$app" ]; then
 	ynh_config_add_logrotate
 fi
 
+sqlite3 "/var/lib/jellyfin/data/library.db" ".tables"
+
+if ynh_app_upgrading_from_version_before 10.11.5~ynh1
+then
+	# Create UserDatas table before the migration // Thanks to https://github.com/getumbrel/umbrel-apps/pull/3872/changes/502e93dd57bd34e2899edb9ffd5dac1a7dbcbb89
+	sqlite3 "/var/lib/jellyfin/data/library.db" "
+	BEGIN TRANSACTION;
+	CREATE TABLE IF NOT EXISTS UserDatas (
+    	key TEXT NOT NULL,
+    	userId TEXT NOT NULL,
+    	rating REAL,
+    	played INTEGER NOT NULL,
+    	playCount INTEGER NOT NULL,
+    	isFavorite INTEGER NOT NULL,
+    	playbackPositionTicks INTEGER NOT NULL,
+    	lastPlayedDate TEXT,
+    	AudioStreamIndex INTEGER,
+    	SubtitleStreamIndex INTEGER,
+    	PRIMARY KEY (key, userId)
+	);
+	COMMIT;
+	"
+fi
+
+sqlite3 "/var/lib/jellyfin/data/library.db" ".tables"
+
 #=================================================
 # REMOVE OLD FILES
 #=================================================
@@ -58,7 +91,9 @@ for name in system.xml network.xml logging.json; do
 	cp "$config_path/$name" "$bakdir/$name"
 done
 
+#ynh_systemctl --service="$app" --action="mask"
 install_jellyfin_packages
+#ynh_systemctl --service="$app" --action="unmask"
 
 #=================================================
 # UPDATE A CONFIG FILE
@@ -154,7 +189,7 @@ yunohost service add "$app" --description="Jellyfin media center"
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemctl --service="$app" --action="restart" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=15
 
 #=================================================
 # END OF SCRIPT
