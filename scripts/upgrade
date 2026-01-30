@@ -14,12 +14,51 @@ if ynh_app_upgrading_from_version_before 10.10.7~ynh1; then
         \nOnce done you can upgrade to the latest version."
 fi
 
+
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
 ynh_script_progression "Stopping $app's systemd service..."
 
 ynh_systemctl --service="$app" --action="stop" --log_path="systemd" --timeout=15
+
+if ynh_app_upgrading_from_version_before 10.11.6~ynh2; then
+
+    mkdir -p $install_dir/config
+    mkdir -p $install_dir/cache
+
+    cp -rf /var/www/jellyfin/* "$data_dir"
+	cp -rf /etc/$app/* "$install_dir/config"
+    cp -rf /var/cache/$app/* "$install_dir/cache"
+
+    ynh_safe_rm "/etc/$app/"
+    ynh_safe_rm "/etc/default/jellyfin"
+    ynh_safe_rm "/etc/systemd/system/jellyfin.service.d"
+    ynh_safe_rm "/etc/sudoers.d/jellyfin-sudoers"
+    ynh_safe_rm "/var/lib/$app"
+    ynh_safe_rm "/var/cache/$app"
+
+	ynh_safe_rm "/var/www/jellyfin/data"
+	ynh_safe_rm "/var/www/jellyfin/metadata"
+	ynh_safe_rm "/var/www/jellyfin/plugins"
+	ynh_safe_rm "/var/www/jellyfin/root"
+	ynh_safe_rm "/var/www/jellyfin/'Subtitle Edit'"
+
+    config_path="$install_dir/config"
+    log_path="/var/log/$app"
+    cache_path="$install_dir/cache"
+    ynh_app_setting_set --key=config_path --value="$config_path"
+
+	ynh_replace --match="<EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
+	            --replace="<EncoderAppPathDisplay>$install_dir/ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
+	            --file="$install_dir/config/encoding.xml"
+
+	chown -R $app:$app "$data_dir"
+	chown -R $app:$app "$install_dir"
+
+	# Remove old systemd config
+	ynh_config_remove_systemd
+fi
 
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
@@ -31,27 +70,17 @@ if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; th
 	adduser "$app" render
 fi
 
-# If path keys do not exist, create them
-# If config_path is mixed up with install_dir, fix them
-if [ -z "$config_path" ] || [[ $config_path = "/var/lib/jellyfin" ]]; then
-	config_path=/etc/jellyfin
-	ynh_app_setting_set --key=config_path --value=$config_path
-fi
-
 ynh_app_setting_delete --key=is_public
-
 
 if [ ! -f "/etc/logrotate.d/$app" ]; then
 	# Fix possibly missing file due to buggy restore:
 	ynh_config_add_logrotate
 fi
 
-sqlite3 "/var/lib/jellyfin/data/library.db" ".tables"
-
 if ynh_app_upgrading_from_version_before 10.11.5~ynh1
 then
 	# Create UserDatas table before the migration // Thanks to https://github.com/getumbrel/umbrel-apps/pull/3872/changes/502e93dd57bd34e2899edb9ffd5dac1a7dbcbb89
-	sqlite3 "/var/lib/jellyfin/data/library.db" "
+	sqlite3 "$data_dir/data/library.db" "
 	BEGIN TRANSACTION;
 	CREATE TABLE IF NOT EXISTS UserDatas (
     	key TEXT NOT NULL,
@@ -70,20 +99,61 @@ then
 	"
 fi
 
-sqlite3 "/var/lib/jellyfin/data/library.db" ".tables"
-
 #=================================================
 # REMOVE OLD FILES
 #=================================================
-# Remove /var/lib/jellyfin/plugins-backup to mitigate a failed upgrade because a plugin is already there since an old upgrade.
+# Remove $data_dir/plugins-backup to mitigate a failed upgrade because a plugin is already there since an old upgrade (see below).
 # If it’s still there, it’s likely that the admin didn’t use this version of the plugin anymore.
-ynh_script_progression "Removing /var/lib/jellyfin/plugins-backup directory..."
-ynh_safe_rm "/var/lib/jellyfin/plugins-backup"
+ynh_script_progression "Removing $data_dir/plugins-backup directory..."
+ynh_safe_rm "$data_dir/plugins-backup"
+
+#=================================================
+# ENSURE NO OLD/INCOMPATIBLE PLUGINS ARE LEFT
+#=================================================
+shopt -s nullglob
+mkdir -p $data_dir/plugins-backup
+
+if [ -d $data_dir/plugins ]; then
+	for directory in $data_dir/plugins/*; do
+		name="$(basename "$directory")"
+		if [[ "$name" = "configurations" ]]; then
+			# Keep plugin config
+			continue
+		fi
+
+		if [ ! -f "$directory"/meta.json ]; then
+			ynh_print_warn "Jellyfin plugin '$name' looks legacy (missing meta.json). Moving to $data_dir/plugins-backup."
+			mv "$directory" $data_dir/plugins-backup/
+		fi
+
+		# Jellyfin doesn't refuse to start with old plugins. It just does weird
+		# things such as https://github.com/jellyfin/jellyfin-plugin-ldapauth/issues/161
+		# As a precaution, move older ABI plugins to another folder so things don't break
+		abi="$(jq -r '.targetAbi' "$directory/meta.json")"
+
+		if dpkg --compare-versions "$abi" lt "$plugin_abi"; then
+			ynh_print_warn "Jellyfin plugin '$name' ABI $abi is lower than expected $plugin_abi. Moving to $data_dir/plugins-backup."
+			mv "$directory" $data_dir/plugins-backup/
+		fi
+	done
+fi
+
+#=================================================
+# INSTALL LDAP PLUGIN
+#=================================================
+ynh_script_progression "Installing LDAP plugin..."
+
+ynh_setup_source --dest_dir="$data_dir/plugins/LDAP Authentication" --source_id=plugin_ldap --full_replace
+
+mkdir -p $data_dir/plugins/configurations/
+ynh_config_add --template="LDAP-Auth.xml" --destination="$data_dir/plugins/configurations/LDAP-Auth.xml"
+
+chown -R "$app:" "$data_dir"
 
 #=================================================
 # UPGRADE PACKAGES
 #=================================================
-ynh_script_progression "Upgrading packages..."
+ynh_script_progression "Upgrading source files..."
 
 # Backup the configuration files to prevent yunohost to see a manual edit
 bakdir=$(mktemp -d)
@@ -91,9 +161,7 @@ for name in system.xml network.xml logging.json; do
 	cp "$config_path/$name" "$bakdir/$name"
 done
 
-#ynh_systemctl --service="$app" --action="mask"
-install_jellyfin_packages
-#ynh_systemctl --service="$app" --action="unmask"
+upgrade_jellyfin_packages
 
 #=================================================
 # UPDATE A CONFIG FILE
@@ -106,56 +174,17 @@ for name in system.xml network.xml logging.json; do
 done
 ynh_safe_rm "$bakdir"
 
+ynh_config_add --template=".env" --destination="$install_dir/.env"
 ynh_config_add --template="network.xml" --destination="$config_path/network.xml"
 ynh_config_add --template="logging.json" --destination="$config_path/logging.json"
-
-#=================================================
-# ENSURE NO OLD/INCOMPATIBLE PLUGINS ARE LEFT
-#=================================================
-shopt -s nullglob
-mkdir -p /var/lib/jellyfin/plugins-backup
-
-if [ -d /var/lib/jellyfin/plugins ]; then
-	for directory in /var/lib/jellyfin/plugins/*; do
-		name="$(basename "$directory")"
-		if [[ "$name" = "configurations" ]]; then
-			# Keep plugin config
-			continue
-		fi
-
-		if [ ! -f "$directory"/meta.json ]; then
-			ynh_print_warn "Jellyfin plugin '$name' looks legacy (missing meta.json). Moving to /var/lib/jellyfin/plugins-backup."
-			mv "$directory" /var/lib/jellyfin/plugins-backup/
-		fi
-
-		# Jellyfin doesn't refuse to start with old plugins. It just does weird
-		# things such as https://github.com/jellyfin/jellyfin-plugin-ldapauth/issues/161
-		# As a precaution, move older ABI plugins to another folder so things don't break
-		abi="$(jq -r '.targetAbi' "$directory/meta.json")"
-
-		if dpkg --compare-versions "$abi" lt "$plugin_abi"; then
-			ynh_print_warn "Jellyfin plugin '$name' ABI $abi is lower than expected $plugin_abi. Moving to /var/lib/jellyfin/plugins-backup."
-			mv "$directory" /var/lib/jellyfin/plugins-backup/
-		fi
-	done
-fi
-
-#=================================================
-# INSTALL LDAP PLUGIN
-#=================================================
-ynh_script_progression "Installing LDAP plugin..."
-
-ynh_setup_source --full_replace --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
-mkdir -p /var/lib/jellyfin/plugins/configurations/
-ynh_config_add --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
 
 #=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
 # Set permissions on app files
-chown -R "$app:" "$data_path"
-chown -R "$app:" "$config_path"
+chown -R "$app:" "$data_dir"
+chown -R "$app:" "$install_dir"
 
 #=================================================
 # YUNOHOST MULTIMEDIA INTEGRATION
@@ -169,6 +198,16 @@ ynh_multimedia_build_main_dir
 ynh_multimedia_addaccess "$app"
 
 #=================================================
+# SETUP SYSTEMD
+#=================================================
+ynh_script_progression "Setting up systemd..."
+
+# Create a dedicated systemd config
+ynh_config_add_systemd
+
+yunohost service add "${app}" --description="Jellyfin media center" --log="/var/log/${app}/${app}.log"
+
+#=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
 ynh_script_progression "Upgrading system configurations related to $app..."
@@ -176,20 +215,15 @@ ynh_script_progression "Upgrading system configurations related to $app..."
 # Create a dedicated NGINX config
 ynh_config_add_nginx
 
-ynh_config_add --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
-systemctl daemon-reload
-
 # Use logrotate to manage app-specific logfile(s)
 ynh_config_add_logrotate
-
-yunohost service add "$app" --description="Jellyfin media center"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="start" --timeout=15
 
 #=================================================
 # END OF SCRIPT

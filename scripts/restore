@@ -4,7 +4,6 @@
 # IMPORT GENERIC HELPERS
 #=================================================
 
-# Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
@@ -24,27 +23,14 @@ fi
 #=================================================
 ynh_script_progression "Restoring the app main directory..."
 
-ynh_restore "$data_path"
-ynh_restore "$config_path"
-ynh_restore "/etc/default/jellyfin" || true
+ynh_restore "$install_dir"
 
 #=================================================
-# REINSTALL PACKAGES
+# RESTORE THE DATA DIRECTORY
 #=================================================
-ynh_script_progression "Reinstalling packages..."
+ynh_script_progression "Restoring the data directory..."
 
-#ynh_systemctl --service="$app" --action="mask"
-install_jellyfin_packages
-#ynh_systemctl --service="$app" --action="unmask"
-
-#=================================================
-# RESTORE USER RIGHTS
-#=================================================
-ynh_script_progression "Restoring user rights..."
-
-# Restore permissions on app files
-chown -R "$app:" "$data_path"
-chown -R "$app:" "$config_path"
+ynh_restore "$data_dir"
 
 #=================================================
 # YUNOHOST MULTIMEDIA INTEGRATION
@@ -58,24 +44,33 @@ ynh_multimedia_build_main_dir
 ynh_multimedia_addaccess "$app"
 
 #=================================================
-# RESTORE SYSTEM CONFIGURATIONS
+# RESTORE SYSTEM CONFIGURATION
 #=================================================
 ynh_script_progression "Restoring system configurations related to $app..."
 
 ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
 
-ynh_restore "/etc/systemd/system/jellyfin.service.d" || true
-systemctl enable jellyfin.service --quiet
-yunohost service add "$app" --description="Jellyfin media center"
+ynh_restore "/etc/systemd/system/$app.service"
+systemctl enable "$app.service" --quiet
+
+yunohost service add "${app}" --description="Jellyfin media center" --log="/var/log/${app}/${app}.log"
 
 ynh_restore "/etc/logrotate.d/$app"
+
+#=================================================
+# RESTORE VARIOUS FILES
+#=================================================
+
+ynh_restore "/var/log/$app/"
+chown -R $app:$app "/var/log/$app/"
+chmod 750 "/var/log/$app/"
 
 #=================================================
 # RELOAD NGINX AND PHP-FPM OR THE APP SERVICE
 #=================================================
 ynh_script_progression "Reloading NGINX web server and $app's service..."
 
-ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="start" --timeout=15
 
 ynh_systemctl --service=nginx --action=reload
 
