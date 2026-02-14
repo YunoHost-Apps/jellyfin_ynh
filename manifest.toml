@@ -21,7 +21,7 @@ cpe = "cpe:2.3:a:jellyfin:jellyfin"
 fund = "https://opencollective.com/jellyfin"
 
 [integration]
-yunohost = ">= 12.0.17"
+yunohost = ">= 12.1.39"
 helpers_version = "2.1"
 architectures = ["arm64", "amd64"]
 multi_instance = false
@@ -189,5 +189,5 @@ ram.runtime = "100M"
 
     [resources.apt]
     packages = [
-        "sqlite3" # temporarily needed to tweak db during upgrade script to 10.11.5    
+        "sqlite3" # temporarily needed to tweak db during upgrade script to 10.11.5
     ]
