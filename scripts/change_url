@@ -12,7 +12,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression "Stopping $app's systemd service..."
 
-ynh_systemctl --service="$app" --action="stop" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="stop" --timeout=15
 
 #=================================================
 # MODIFY URL IN NGINX CONF
@@ -40,7 +40,7 @@ fi
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
-ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="start" --timeout=15
 
 #=================================================
 # END OF SCRIPT

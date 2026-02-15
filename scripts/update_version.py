@@ -23,21 +23,20 @@ DEBS = {
 }
 
 class JellyfinDistro:
-    def __init__(self, debian_number: str, debian_name: str, arch: List[str]):
-        self.debian_number = debian_number
-        self.debian_name = debian_name
+    def __init__(self, arch: List[str]):
         self.arch = arch
 
     # Version in form of 10.9.0-2
-    def server_url(self, version: str, arch: str) -> str:
-        return f"{JELLYFIN_REPO}/files/server/debian/stable/v{version}/{arch}/jellyfin-server_{version}+deb{self.debian_number}_{arch}.deb"
-
-    def web_url(self, version: str) -> str:
-        return f"{JELLYFIN_REPO}/files/server/debian/stable/v{version}/amd64/jellyfin-web_{version}+deb{self.debian_number}_all.deb"
+    def main_url(self, version: str, arch: str) -> str:
+        return f"{JELLYFIN_REPO}/files/server/linux/stable/v{version}/{arch}/jellyfin_{version}-{arch}.tar.xz"
 
     def ffmpeg_url(self, version: str, arch: str) -> str:
         major = version.split(".")[0]
-        return f"{JELLYFIN_REPO}/files/ffmpeg/debian/{major}.x/{version}/{arch}/jellyfin-ffmpeg7_{version}-{self.debian_name}_{arch}.deb"
+        if arch == "amd64":
+            return f"{JELLYFIN_REPO}/files/ffmpeg/linux/{major}.x/{version}/{arch}/jellyfin-ffmpeg_{version}_portable_linux64-gpl.tar.xz"
+        elif arch == "arm64":
+            return f"{JELLYFIN_REPO}/files/ffmpeg/linux/{major}.x/{version}/{arch}/jellyfin-ffmpeg_{version}_portable_linuxarm64-gpl.tar.xz"
+        fi
 
     def ldap_url(self, version: str) -> str:
         return f"{JELLYFIN_REPO}/files/plugin/ldap-authentication/ldap-authentication_{version}.zip"
@@ -46,22 +45,16 @@ class JellyfinDistro:
         url = None
         urls = {}
         archive_needed = False
-        if package == "server":
-            for arch in self.arch: urls[arch] = self.server_url(version, arch)
-            key = f"server_{self.debian_name}"
-            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-server.deb", "prefetch": False }
+        if package == "main":
+            for arch in self.arch: urls[arch] = self.main_url(version, arch)
+            key = f"main"
+            extra = { "format": "tar.xz", "extract": True, "in_subdir": True, "prefetch": False}
             archive_needed = True
-            archive_key = f"server_archive_{self.debian_name}"
-        elif package == "web":
-            url = self.web_url(version)
-            key = f"web_{self.debian_name}"
-            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-web.deb", "prefetch": False }
-            archive_needed = True
-            archive_key = f"web_archive_{self.debian_name}"
+            archive_key = f"main_archive"
         elif package == "ffmpeg":
             for arch in self.arch: urls[arch] = self.ffmpeg_url(version, arch)
-            key = f"ffmpeg_{self.debian_name}"
-            extra = { "format": "whatever", "extract": False, "rename": "jellyfin-ffmpeg7.deb" }
+            key = f"ffmpeg"
+            extra = { "format": "tar.xz", "extract": True, "in_subdir": False}
         elif package == "ldap":
             url = self.ldap_url(version)
             key = "plugin_ldap"
@@ -73,7 +66,7 @@ class JellyfinDistro:
 
         # Single URL, not per arch
         if url:
-            print(f"Checking for updates for Jellyfin's {package} (distro={self.debian_name}) to version {version}")
+            print(f"Checking for updates for Jellyfin's {package} to version {version}")
             self.update_package_helper(manifest["resources"]["sources"][key], package, version, url)
             if archive_needed:
                 manifest["resources"]["sources"][archive_key] = deepcopy(manifest["resources"]["sources"][key])
@@ -85,7 +78,7 @@ class JellyfinDistro:
                 if arch not in manifest["resources"]["sources"][key]:
                     manifest["resources"]["sources"][key][arch] = {}
 
-                print(f"Checking for updates for Jellyfin's {package} (arch={arch},distro={self.debian_name}) to version {version}")
+                print(f"Checking for updates for Jellyfin's {package} (arch={arch}) to version {version}")
                 self.update_package_helper(manifest["resources"]["sources"][key][arch], package, version, url)
                 # Create the archive entry with the url updated
             if archive_needed:
@@ -135,9 +128,8 @@ def main() -> None:
     ldap_version = version_from__common_sh("ldap_pkg_version")
 
     for debian_name, debian_number in DEBS.items():
-        jellyfin = JellyfinDistro(debian_number, debian_name, ARCHS)
-        jellyfin.update_package(manifest, "server", jellyfin_version)
-        jellyfin.update_package(manifest, "web", jellyfin_version)
+        jellyfin = JellyfinDistro(ARCHS)
+        jellyfin.update_package(manifest, "main", jellyfin_version)
         jellyfin.update_package(manifest, "ffmpeg", ffmpeg_version)
         jellyfin.update_package(manifest, "ldap", ldap_version)
 
