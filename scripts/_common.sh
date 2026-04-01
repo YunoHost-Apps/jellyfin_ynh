@@ -10,6 +10,8 @@ pkg_version="10.11.7"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
 ffmpeg_pkg_version="7.1.3-4"
+# Path for the service to retrieve the installed jellyfin-ffmpeg version
+path_with_ffmpeg="$install_dir/tools/ffmpeg:$install_dir/bin:$data_dir/bin:$PATH"
 
 # "targetAbi" line in plugin's meta.json, to check for outdated plugins
 # Usually, it should be the major version of the Jellyfin release (e.g. Jellyfin 10.10.7 -> plugin_abi 10.10.0)
