@@ -145,6 +145,7 @@ ynh_script_progression "Installing LDAP plugin..."
 
 ynh_setup_source --dest_dir="$data_dir/plugins/LDAP Authentication" --source_id=plugin_ldap --full_replace
 
+ynh_safe_rm $data_dir/plugins/configurations/LDAP-Auth.xml
 mkdir -p $data_dir/plugins/configurations/
 ynh_config_add --template="LDAP-Auth.xml" --destination="$data_dir/plugins/configurations/LDAP-Auth.xml"
 
