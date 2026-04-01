@@ -22,7 +22,7 @@ ynh_script_progression "Stopping $app's systemd service..."
 
 ynh_systemctl --service="$app" --action="stop" --log_path="systemd" --timeout=15
 
-if ynh_app_upgrading_from_version_before 10.11.6~ynh2; then
+if ynh_app_upgrading_from_version_before 10.11.7~ynh1; then
 
     mkdir -p $install_dir/config
     mkdir -p $install_dir/cache
