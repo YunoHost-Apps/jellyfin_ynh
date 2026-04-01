@@ -41,6 +41,7 @@ ynh_script_progression "Initialize database..."
 # Use logrotate to manage application logfile(s)
 mkdir -p "/var/log/$app"
 touch "/var/log/$app/$app.log"
+
 ynh_config_add_logrotate
 
 # Jellyfin has to be started once to create the database before we can change the conf files

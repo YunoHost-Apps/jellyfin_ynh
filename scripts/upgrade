@@ -150,6 +150,12 @@ ynh_config_add --template="LDAP-Auth.xml" --destination="$data_dir/plugins/confi
 
 chown -R "$app:" "$data_dir"
 
+# Use logrotate to manage application logfile(s)
+mkdir -p "/var/log/$app"
+touch "/var/log/$app/$app.log"
+
+ynh_config_add_logrotate
+
 #=================================================
 # UPGRADE PACKAGES
 #=================================================
