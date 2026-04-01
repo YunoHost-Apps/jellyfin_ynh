@@ -8,12 +8,9 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# CREATE DIRECTORIES
+# INITIALIZE AND STORE SETTINGS
 #=================================================
 
-if [ -d "$config_path" ]; then
-	ynh_die "There is already a directory: $config_path "
-fi
 ynh_app_setting_set --key=config_path --value="$config_path"
 
 #=================================================
@@ -27,22 +24,51 @@ if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; th
 fi
 
 #=================================================
-# INSTALL PACKAGES
+# DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression "Installing packages..."
+ynh_script_progression "Setting up source files..."
 
 install_jellyfin_packages
+
+# Create necessary directories
+mkdir -p "$install_dir/config"
+
+#=================================================
+# INIT DB
+#=================================================
+ynh_script_progression "Initialize database..."
+
+# Use logrotate to manage application logfile(s)
+mkdir -p "/var/log/$app"
+touch "/var/log/$app/$app.log"
+ynh_config_add_logrotate
+
+# Jellyfin has to be started once to create the database before we can change the conf files
+# We already install the network.xml file because it works with it and it’s needed to not have a port conflict while running the command that follows
+# While running the command, we don’t indicate the path to the config dir, so it will assume to be at $data_dir/config
+mkdir -p "$data_dir/config"
+ynh_config_add --template="network.xml" --destination="$data_dir/config/network.xml"
+
+$install_dir/jellyfin/jellyfin -d $data_dir > "/var/log/$app/$app.log" 2>&1 &
+
+# Wait for previous command to have operated (database creation shouldn’t take to much time (about 10 seconds on my tests))
+ynh_script_progression "Waiting for Jellyfin to finish to create database..."
+sleep 30
+
+# Terminate the command because it won’t stop by itself. It should be safe as we watched the logs until the database was entirely migrated
+pkill -f "$install_dir/jellyfin/jellyfin" || true
+
+chown -R $app:$app "$install_dir"
+chown -R $app:$app "$data_dir"
+
+ynh_safe_rm $data_dir/config
 
 #=================================================
 # ADD A CONFIGURATION
 #=================================================
-ynh_print_info "Waiting 30s to let Jellyfin fully start a first time..."
-sleep 30
-
 ynh_script_progression "Adding $app's configuration..."
 
-ynh_systemctl --service="$app" --action="stop" --log_path="systemd" --timeout=15
-
+ynh_config_add --template=".env" --destination="$install_dir/.env"
 ynh_config_add --template="system.xml" --destination="$config_path/system.xml"
 ynh_config_add --template="network.xml" --destination="$config_path/network.xml"
 ynh_config_add --template="logging.json" --destination="$config_path/logging.json"
@@ -52,10 +78,10 @@ ynh_config_add --template="logging.json" --destination="$config_path/logging.jso
 #=================================================
 ynh_script_progression "Installing LDAP plugin..."
 
-ynh_setup_source --dest_dir="/var/lib/jellyfin/plugins/LDAP Authentication" --source_id=plugin_ldap
+ynh_setup_source --dest_dir="$data_dir/plugins/LDAP Authentication" --source_id=plugin_ldap
 
-mkdir -p /var/lib/jellyfin/plugins/configurations/
-ynh_config_add --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugins/configurations/LDAP-Auth.xml"
+mkdir -p $data_dir/plugins/configurations/
+ynh_config_add --template="LDAP-Auth.xml" --destination="$data_dir/plugins/configurations/LDAP-Auth.xml"
 
 #=================================================
 # SECURE FILES AND DIRECTORIES
@@ -63,8 +89,8 @@ ynh_config_add --template="LDAP-Auth.xml" --destination="/var/lib/jellyfin/plugi
 ynh_script_progression "Securing files and directories..."
 
 # Set permissions to app files
-chown -R "$app:" "$data_path"
-chown -R "$app:" "$config_path"
+chown -R "$app:" "$data_dir"
+chown -R "$app:" "$install_dir"
 
 #=================================================
 # YUNOHOST MULTIMEDIA INTEGRATION
@@ -78,6 +104,16 @@ ynh_multimedia_build_main_dir
 ynh_multimedia_addaccess "$app"
 
 #=================================================
+# SETUP SYSTEMD
+#=================================================
+ynh_script_progression "Setting up systemd..."
+
+# Create a dedicated systemd config
+ynh_config_add_systemd
+
+yunohost service add "${app}" --description="Jellyfin media center" --log="/var/log/${app}/${app}.log"
+
+#=================================================
 # SYSTEM CONFIGURATION
 #=================================================
 ynh_script_progression "Adding system configurations related to $app..."
@@ -85,20 +121,13 @@ ynh_script_progression "Adding system configurations related to $app..."
 # Create a dedicated NGINX config using the conf/nginx.conf template
 ynh_config_add_nginx
 
-ynh_config_add --template="systemd.service" --destination="/etc/systemd/system/jellyfin.service.d/baseurl.service.conf"
-systemctl daemon-reload
-yunohost service add "$app" --description="Jellyfin media center"
-
-# Use logrotate to manage application logfile(s)
-ynh_config_add_logrotate
-
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
 ynh_script_progression "Starting $app's systemd service..."
 
 # Start a systemd service
-ynh_systemctl --service="$app" --action="start" --log_path="systemd" --timeout=15
+ynh_systemctl --service="$app" --action="start" --timeout=15
 
 #=================================================
 # END OF SCRIPT
