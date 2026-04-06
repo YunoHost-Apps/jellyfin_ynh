@@ -49,9 +49,18 @@ if ynh_app_upgrading_from_version_before 10.11.7~ynh1; then
     cache_path="$install_dir/cache"
     ynh_app_setting_set --key=config_path --value="$config_path"
 
-	ynh_replace --match="<EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
-	            --replace="<EncoderAppPathDisplay>$install_dir/ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
-	            --file="$install_dir/config/encoding.xml"
+    ynh_replace --match="<EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
+                --replace="<EncoderAppPathDisplay>$install_dir/ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
+                --file="$install_dir/config/encoding.xml"
+    ynh_replace --match="/var/cache/$app" \
+                --replace="$cache_path" \
+                --file="$install_dir/config/system.xml"
+    ynh_replace --match="/var/cache/$app" \
+                --replace="$cache_path" \
+                --file="$install_dir/config/encoding.xml"
+    ynh_replace --match="/var/lib/$app/metadata" \
+                --replace="$data_dir/metadata" \
+                --file="$install_dir/config/system.xml"
 
 	chown -R $app:$app "$data_dir"
 	chown -R $app:$app "$install_dir"
