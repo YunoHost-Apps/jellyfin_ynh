@@ -14,6 +14,12 @@ if ynh_app_upgrading_from_version_before 10.10.7~ynh1; then
         \nOnce done you can upgrade to the latest version."
 fi
 
+if ynh_app_upgrading_from_version_before 10.11.6~ynh1; then
+    ynh_die "Your installation is to old to update to this version. \
+        \nPlease first manually update with 10.11.6~ynh1 with the following command: \
+        \n's\0u\0d\0o yunohost app upgrade $app -u https://github.com/YunoHost-Apps/jellyfin_ynh/commit/05f7c4ffa8a1ec92e775603945612bca05c69b62' \
+        \nOnce done you can upgrade to the latest version."
+fi
 
 #=================================================
 # STOP SYSTEMD SERVICE
