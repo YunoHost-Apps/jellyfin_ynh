@@ -22,7 +22,7 @@ ynh_script_progression "Stopping $app's systemd service..."
 
 ynh_systemctl --service="$app" --action="stop" --log_path="systemd" --timeout=15
 
-if ynh_app_upgrading_from_version_before 10.11.7~ynh1; then
+if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
 
     mkdir -p $install_dir/config
     mkdir -p $install_dir/cache
@@ -145,6 +145,34 @@ if [ -d $data_dir/plugins ]; then
 			mv "$directory" $data_dir/plugins-backup/
 		fi
 	done
+fi
+
+#=================================================
+# UPDATE DB FOR PATH MIGRATIONS
+#=================================================
+
+if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
+	sqlite3 "$data_dir/data/jellyfin.db" "
+	UPDATE BaseItems SET 
+		Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+	WHERE Path LIKE '/var/lib/jellyfin%';
+
+	UPDATE BaseItems SET 
+		Data = REPLACE(Data, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+	WHERE Data LIKE '%/var/lib/jellyfin%';
+	
+	UPDATE BaseItemImageInfos SET 
+		Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+	WHERE Path LIKE '/var/lib/jellyfin%';
+
+	UPDATE ImageInfos SET 
+    	Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+	WHERE Path LIKE '/var/lib/jellyfin%';
+
+	UPDATE MediaStreamInfos SET 
+    	Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+	WHERE Path LIKE '/var/lib/jellyfin%';
+	"
 fi
 
 #=================================================
