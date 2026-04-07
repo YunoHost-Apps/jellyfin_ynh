@@ -8,6 +8,7 @@ Restart=always
 User=__APP__
 Group=__APP__
 WorkingDirectory=__INSTALL_DIR__/jellyfin
+Environment="PATH=__PATH_WITH_JELLYFIN__"
 EnvironmentFile=__INSTALL_DIR__/.env
 ExecStart=__INSTALL_DIR__/jellyfin/jellyfin -d __DATA_DIR__ -c __INSTALL_DIR__/config --ffmpeg __INSTALL_DIR__/ffmpeg/ffmpeg
 StandardOutput=append:/var/log/__APP__/__APP__.log

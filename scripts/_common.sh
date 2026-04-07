@@ -20,6 +20,9 @@ config_path="$install_dir/config"
 log_path="/var/log/$app"
 cache_path="$install_dir/cache"
 
+# set path to be able to call the jellyfin command directly from yunohost app shell
+path_with_jellyfin="$install_dir/jellyfin:$install_dir/bin:$data_dir/bin:$PATH"
+
 install_jellyfin_packages() {
     # If there is a new version, the server resource is moved to archive
     main_url="$(ynh_read_manifest "resources.sources.main.${YNH_ARCH}.url")"
