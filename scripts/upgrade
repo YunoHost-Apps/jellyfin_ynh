@@ -58,6 +58,9 @@ if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
     ynh_replace --match="<EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
                 --replace="<EncoderAppPathDisplay>$install_dir/ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
                 --file="$install_dir/config/encoding.xml"
+	ynh_replace --match="<TranscodingTempPath>/var/lib/jellyfin/transcodes</TranscodingTempPath>" \
+                --replace="<TranscodingTempPath>$install_dir/cache/transcodes</TranscodingTempPath>" \
+                --file="$install_dir/config/encoding.xml"
     ynh_replace --match="/var/cache/$app" \
                 --replace="$cache_path" \
                 --file="$install_dir/config/system.xml"
