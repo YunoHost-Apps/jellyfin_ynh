@@ -7,7 +7,7 @@ name = "Jellyfin"
 description.en = "Media System that manage and stream your media"
 description.fr = "Système multimédia qui gère et diffuse vos médias"
 
-version = "10.11.9~ynh1"
+version = "10.11.9~ynh2"
 
 maintainers = ["tituspijean"]
 
@@ -90,8 +90,8 @@ ram.runtime = "100M"
     in_subdir = false
 
     [resources.sources.plugin_ldap]
-    url = "https://repo.jellyfin.org/files/plugin/ldap-authentication/ldap-authentication_22.0.0.0.zip"
-    sha256 = "c2386c001be439c9946280a02d62610f29e325d4094e83bd31221de3f7aa20ae"
+    url = "https://repo.jellyfin.org/files/plugin/ldap-authentication/ldap-authentication_23.0.0.0.zip"
+    sha256 = "952e33fa8d3ac512ccb5c1e2e1c655cbb1957e41fa1f00bd6ccf3076e0467446"
     in_subdir = false
 
     [resources.system_user]
