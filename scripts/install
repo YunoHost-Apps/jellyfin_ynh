@@ -23,6 +23,12 @@ if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; th
 	adduser "$app" render
 fi
 
+# Use logrotate to manage application logfile(s)
+mkdir -p "/var/log/$app"
+touch "/var/log/$app/$app.log"
+
+ynh_config_add_logrotate
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
@@ -34,37 +40,6 @@ install_jellyfin_packages
 mkdir -p "$install_dir/config"
 
 #=================================================
-# INIT DB
-#=================================================
-ynh_script_progression "Initialize database..."
-
-# Use logrotate to manage application logfile(s)
-mkdir -p "/var/log/$app"
-touch "/var/log/$app/$app.log"
-
-ynh_config_add_logrotate
-
-# Jellyfin has to be started once to create the database before we can change the conf files
-# We already install the network.xml file because it works with it and it’s needed to not have a port conflict while running the command that follows
-# While running the command, we don’t indicate the path to the config dir, so it will assume to be at $data_dir/config
-mkdir -p "$data_dir/config"
-ynh_config_add --template="network.xml" --destination="$data_dir/config/network.xml"
-
-$install_dir/jellyfin/jellyfin -d $data_dir > "/var/log/$app/$app.log" 2>&1 &
-
-# Wait for previous command to have operated (database creation shouldn’t take to much time (about 10 seconds on my tests))
-ynh_script_progression "Waiting for Jellyfin to finish to create database..."
-sleep 30
-
-# Terminate the command because it won’t stop by itself. It should be safe as we watched the logs until the database was entirely migrated
-pkill -f "$install_dir/jellyfin/jellyfin" || true
-
-chown -R $app:$app "$install_dir"
-chown -R $app:$app "$data_dir"
-
-ynh_safe_rm $data_dir/config
-
-#=================================================
 # ADD A CONFIGURATION
 #=================================================
 ynh_script_progression "Adding $app's configuration..."
@@ -73,6 +48,14 @@ ynh_config_add --template=".env" --destination="$install_dir/.env"
 ynh_config_add --template="system.xml" --destination="$config_path/system.xml"
 ynh_config_add --template="network.xml" --destination="$config_path/network.xml"
 ynh_config_add --template="logging.json" --destination="$config_path/logging.json"
+
+#=================================================
+# INIT DB
+#=================================================
+ynh_script_progression "Initialize database..."
+
+# Following command seeds the database and stops Jellyfin once it's done
+$install_dir/jellyfin/jellyfin --mode SeedSystem --datadir $data_dir -c $install_dir/config --ffmpeg $install_dir/ffmpeg/ffmpeg
 
 #=================================================
 # INSTALL LDAP PLUGIN
