@@ -34,7 +34,7 @@ if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
     mkdir -p $install_dir/cache
 
     cp -rf /var/www/jellyfin/* "$data_dir"
-	cp -rf /etc/$app/* "$install_dir/config"
+    cp -rf /etc/$app/* "$install_dir/config"
     cp -rf /var/cache/$app/* "$install_dir/cache"
 
     ynh_safe_rm "/etc/$app/"
@@ -44,11 +44,11 @@ if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
     ynh_safe_rm "/var/lib/$app"
     ynh_safe_rm "/var/cache/$app"
 
-	ynh_safe_rm "/var/www/jellyfin/data"
-	ynh_safe_rm "/var/www/jellyfin/metadata"
-	ynh_safe_rm "/var/www/jellyfin/plugins"
-	ynh_safe_rm "/var/www/jellyfin/root"
-	ynh_safe_rm "/var/www/jellyfin/'Subtitle Edit'"
+    ynh_safe_rm "/var/www/jellyfin/data"
+    ynh_safe_rm "/var/www/jellyfin/metadata"
+    ynh_safe_rm "/var/www/jellyfin/plugins"
+    ynh_safe_rm "/var/www/jellyfin/root"
+    ynh_safe_rm "/var/www/jellyfin/'Subtitle Edit'"
 
     config_path="$install_dir/config"
     log_path="/var/log/$app"
@@ -58,7 +58,7 @@ if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
     ynh_replace --match="<EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
                 --replace="<EncoderAppPathDisplay>$install_dir/ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
                 --file="$install_dir/config/encoding.xml"
-	ynh_replace --match="<TranscodingTempPath>/var/lib/jellyfin/transcodes</TranscodingTempPath>" \
+    ynh_replace --match="<TranscodingTempPath>/var/lib/jellyfin/transcodes</TranscodingTempPath>" \
                 --replace="<TranscodingTempPath>$install_dir/cache/transcodes</TranscodingTempPath>" \
                 --file="$install_dir/config/encoding.xml"
     ynh_replace --match="/var/cache/$app" \
@@ -71,11 +71,11 @@ if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
                 --replace="$data_dir/metadata" \
                 --file="$install_dir/config/system.xml"
 
-	chown -R $app:$app "$data_dir"
-	chown -R $app:$app "$install_dir"
+    chown -R $app:$app "$data_dir"
+    chown -R $app:$app "$install_dir"
 
-	# Remove old systemd config
-	ynh_config_remove_systemd
+    # Remove old systemd config
+    ynh_config_remove_systemd
 fi
 
 #=================================================
@@ -85,36 +85,36 @@ ynh_script_progression "Ensuring downward compatibility..."
 
 # If render group exists, and system user doesn't belong to it, add it
 if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
-	adduser "$app" render
+    adduser "$app" render
 fi
 
 ynh_app_setting_delete --key=is_public
 
 if [ ! -f "/etc/logrotate.d/$app" ]; then
-	# Fix possibly missing file due to buggy restore:
-	ynh_config_add_logrotate
+    # Fix possibly missing file due to buggy restore:
+    ynh_config_add_logrotate
 fi
 
 if ynh_app_upgrading_from_version_before 10.11.5~ynh1
 then
-	# Create UserDatas table before the migration // Thanks to https://github.com/getumbrel/umbrel-apps/pull/3872/changes/502e93dd57bd34e2899edb9ffd5dac1a7dbcbb89
-	sqlite3 "$data_dir/data/library.db" "
-	BEGIN TRANSACTION;
-	CREATE TABLE IF NOT EXISTS UserDatas (
-    	key TEXT NOT NULL,
-    	userId TEXT NOT NULL,
-    	rating REAL,
-    	played INTEGER NOT NULL,
-    	playCount INTEGER NOT NULL,
-    	isFavorite INTEGER NOT NULL,
-    	playbackPositionTicks INTEGER NOT NULL,
-    	lastPlayedDate TEXT,
-    	AudioStreamIndex INTEGER,
-    	SubtitleStreamIndex INTEGER,
-    	PRIMARY KEY (key, userId)
-	);
-	COMMIT;
-	"
+    # Create UserDatas table before the migration // Thanks to https://github.com/getumbrel/umbrel-apps/pull/3872/changes/502e93dd57bd34e2899edb9ffd5dac1a7dbcbb89
+    sqlite3 "$data_dir/data/library.db" "
+    BEGIN TRANSACTION;
+    CREATE TABLE IF NOT EXISTS UserDatas (
+        key TEXT NOT NULL,
+        userId TEXT NOT NULL,
+        rating REAL,
+        played INTEGER NOT NULL,
+        playCount INTEGER NOT NULL,
+        isFavorite INTEGER NOT NULL,
+        playbackPositionTicks INTEGER NOT NULL,
+        lastPlayedDate TEXT,
+        AudioStreamIndex INTEGER,
+        SubtitleStreamIndex INTEGER,
+        PRIMARY KEY (key, userId)
+    );
+    COMMIT;
+    "
 fi
 
 #=================================================
@@ -132,28 +132,28 @@ shopt -s nullglob
 mkdir -p $data_dir/plugins-backup
 
 if [ -d $data_dir/plugins ]; then
-	for directory in $data_dir/plugins/*; do
-		name="$(basename "$directory")"
-		if [[ "$name" = "configurations" ]]; then
-			# Keep plugin config
-			continue
-		fi
+    for directory in $data_dir/plugins/*; do
+        name="$(basename "$directory")"
+        if [[ "$name" = "configurations" ]]; then
+            # Keep plugin config
+            continue
+        fi
 
-		if [ ! -f "$directory"/meta.json ]; then
-			ynh_print_warn "Jellyfin plugin '$name' looks legacy (missing meta.json). Moving to $data_dir/plugins-backup."
-			mv "$directory" $data_dir/plugins-backup/
-		fi
+        if [ ! -f "$directory"/meta.json ]; then
+            ynh_print_warn "Jellyfin plugin '$name' looks legacy (missing meta.json). Moving to $data_dir/plugins-backup."
+            mv "$directory" $data_dir/plugins-backup/
+        fi
 
-		# Jellyfin doesn't refuse to start with old plugins. It just does weird
-		# things such as https://github.com/jellyfin/jellyfin-plugin-ldapauth/issues/161
-		# As a precaution, move older ABI plugins to another folder so things don't break
-		abi="$(jq -r '.targetAbi' "$directory/meta.json")"
+        # Jellyfin doesn't refuse to start with old plugins. It just does weird
+        # things such as https://github.com/jellyfin/jellyfin-plugin-ldapauth/issues/161
+        # As a precaution, move older ABI plugins to another folder so things don't break
+        abi="$(jq -r '.targetAbi' "$directory/meta.json")"
 
-		if dpkg --compare-versions "$abi" lt "$plugin_abi"; then
-			ynh_print_warn "Jellyfin plugin '$name' ABI $abi is lower than expected $plugin_abi. Moving to $data_dir/plugins-backup."
-			mv "$directory" $data_dir/plugins-backup/
-		fi
-	done
+        if dpkg --compare-versions "$abi" lt "$plugin_abi"; then
+            ynh_print_warn "Jellyfin plugin '$name' ABI $abi is lower than expected $plugin_abi. Moving to $data_dir/plugins-backup."
+            mv "$directory" $data_dir/plugins-backup/
+        fi
+    done
 fi
 
 #=================================================
@@ -161,27 +161,27 @@ fi
 #=================================================
 
 if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
-	sqlite3 "$data_dir/data/jellyfin.db" "
-	UPDATE BaseItems SET 
-		Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
-	WHERE Path LIKE '/var/lib/jellyfin%';
+    sqlite3 "$data_dir/data/jellyfin.db" "
+    UPDATE BaseItems SET 
+        Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+    WHERE Path LIKE '/var/lib/jellyfin%';
 
-	UPDATE BaseItems SET 
-		Data = REPLACE(Data, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
-	WHERE Data LIKE '%/var/lib/jellyfin%';
-	
-	UPDATE BaseItemImageInfos SET 
-		Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
-	WHERE Path LIKE '/var/lib/jellyfin%';
+    UPDATE BaseItems SET 
+        Data = REPLACE(Data, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+    WHERE Data LIKE '%/var/lib/jellyfin%';
 
-	UPDATE ImageInfos SET 
-    	Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
-	WHERE Path LIKE '/var/lib/jellyfin%';
+    UPDATE BaseItemImageInfos SET 
+        Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+    WHERE Path LIKE '/var/lib/jellyfin%';
 
-	UPDATE MediaStreamInfos SET 
-    	Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
-	WHERE Path LIKE '/var/lib/jellyfin%';
-	"
+    UPDATE ImageInfos SET 
+        Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+    WHERE Path LIKE '/var/lib/jellyfin%';
+
+    UPDATE MediaStreamInfos SET 
+        Path = REPLACE(Path, '/var/lib/jellyfin', '/home/yunohost.app/jellyfin')
+    WHERE Path LIKE '/var/lib/jellyfin%';
+    "
 fi
 
 #=================================================
@@ -211,7 +211,7 @@ ynh_script_progression "Upgrading source files..."
 # Backup the configuration files to prevent yunohost to see a manual edit
 bakdir=$(mktemp -d)
 for name in system.xml network.xml logging.json; do
-	cp "$config_path/$name" "$bakdir/$name"
+    cp "$config_path/$name" "$bakdir/$name"
 done
 
 upgrade_jellyfin_packages
@@ -223,7 +223,7 @@ ynh_script_progression "Updating configuration..."
 
 # Restore the files we just backed up before installing the debs...
 for name in system.xml network.xml logging.json; do
-	mv -f "$bakdir/$name" "$config_path/$name"
+    mv -f "$bakdir/$name" "$config_path/$name"
 done
 ynh_safe_rm "$bakdir"
 

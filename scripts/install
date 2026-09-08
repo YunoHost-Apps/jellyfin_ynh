@@ -19,8 +19,8 @@ ynh_app_setting_set --key=config_path --value="$config_path"
 ynh_script_progression "Configuring the dedicated system user..."
 
 if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
-	# Add user to render group
-	adduser "$app" render
+    # Add user to render group
+    adduser "$app" render
 fi
 
 # Use logrotate to manage application logfile(s)

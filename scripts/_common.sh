@@ -28,7 +28,7 @@ install_jellyfin_packages() {
     main_url="$(ynh_read_manifest "resources.sources.main.${YNH_ARCH}.url")"
     main_resource="main"
     if ! curl --output /dev/null --silent --head --fail "$main_url"; then
-    	main_resource="main_archive"
+        main_resource="main_archive"
     fi
 
     ynh_setup_source --dest_dir="$install_dir/jellyfin" --source_id="$main_resource"
@@ -40,7 +40,7 @@ upgrade_jellyfin_packages() {
     main_url="$(ynh_read_manifest "resources.sources.main.${YNH_ARCH}.url")"
     main_resource="main"
     if ! curl --output /dev/null --silent --head --fail "$main_url"; then
-    	main_resource="main_archive"
+        main_resource="main_archive"
     fi
 
     ynh_setup_source --dest_dir="$install_dir/jellyfin/" --source_id="$main_resource" --full_replace --keep="config"
