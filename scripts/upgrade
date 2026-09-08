@@ -232,6 +232,14 @@ ynh_config_add --template="network.xml" --destination="$config_path/network.xml"
 ynh_config_add --template="logging.json" --destination="$config_path/logging.json"
 
 #=================================================
+# UPDATE DB
+#=================================================
+ynh_script_progression "Updating database..."
+
+# Following command migrate the database and stops Jellyfin once it's done
+$install_dir/jellyfin/jellyfin --mode MigrateSystem --datadir $data_dir -c $install_dir/config --ffmpeg $install_dir/ffmpeg/ffmpeg
+
+#=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
