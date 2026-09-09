@@ -7,7 +7,7 @@ name = "Jellyfin"
 description.en = "Media System that manage and stream your media"
 description.fr = "Système multimédia qui gère et diffuse vos médias"
 
-version = "10.11.11~ynh1"
+version = "12.0~ynh1"
 
 maintainers = ["tituspijean"]
 
@@ -58,10 +58,10 @@ ram.runtime = "100M"
 [resources]
 
     [resources.sources.main]
-    arm64.url = "https://repo.jellyfin.org/files/server/linux/stable/v10.11.11/arm64/jellyfin_10.11.11-arm64.tar.xz"
-    arm64.sha256 = "2b0fa433548dbb81148218ea0cdf93f450d3db9049abf1e07c81bc5af9c79a92"
-    amd64.url = "https://repo.jellyfin.org/files/server/linux/stable/v10.11.11/amd64/jellyfin_10.11.11-amd64.tar.xz"
-    amd64.sha256 = "7e94666f5ffa08f3110eb3456e24210a720c9d7a04ebb0a23b775155451c1631"
+    arm64.url = "https://repo.jellyfin.org/files/server/linux/stable/v12.0/arm64/jellyfin_12.0-arm64.tar.xz"
+    arm64.sha256 = "f2e6926d4ff85382d2d1de255796aaae60f56fedaea5aaecf0d183ae5083d2a7"
+    amd64.url = "https://repo.jellyfin.org/files/server/linux/stable/v12.0/amd64/jellyfin_12.0-amd64.tar.xz"
+    amd64.sha256 = "13c52b18119e5c2e9a2682f7b97eb4fac9babd64d43618c4ce567e578e80124a"
 
     format = "tar.xz"
     extract = true
@@ -69,10 +69,10 @@ ram.runtime = "100M"
     prefetch = false
 
     [resources.sources.main_archive]
-    arm64.url = "https://repo.jellyfin.org/archive/server/linux/stable/v10.11.11/arm64/jellyfin_10.11.11-arm64.tar.xz"
-    arm64.sha256 = "2b0fa433548dbb81148218ea0cdf93f450d3db9049abf1e07c81bc5af9c79a92"
-    amd64.url = "https://repo.jellyfin.org/archive/server/linux/stable/v10.11.11/amd64/jellyfin_10.11.11-amd64.tar.xz"
-    amd64.sha256 = "7e94666f5ffa08f3110eb3456e24210a720c9d7a04ebb0a23b775155451c1631"
+    arm64.url = "https://repo.jellyfin.org/archive/server/linux/stable/v12.0/arm64/jellyfin_12.0-arm64.tar.xz"
+    arm64.sha256 = "f2e6926d4ff85382d2d1de255796aaae60f56fedaea5aaecf0d183ae5083d2a7"
+    amd64.url = "https://repo.jellyfin.org/archive/server/linux/stable/v12.0/amd64/jellyfin_12.0-amd64.tar.xz"
+    amd64.sha256 = "13c52b18119e5c2e9a2682f7b97eb4fac9babd64d43618c4ce567e578e80124a"
 
     format = "tar.xz"
     extract = true
@@ -80,18 +80,18 @@ ram.runtime = "100M"
     prefetch = false
 
     [resources.sources.ffmpeg]
-    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/linux/7.x/7.1.4-3/arm64/jellyfin-ffmpeg_7.1.4-3_portable_linuxarm64-gpl.tar.xz"
-    arm64.sha256 = "77e4b5d044ab73e1f26c9aadaa5d6014d1782500bf2c29afb3ab81f5bea98b1f"
-    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/linux/7.x/7.1.4-3/amd64/jellyfin-ffmpeg_7.1.4-3_portable_linux64-gpl.tar.xz"
-    amd64.sha256 = "cab9ff40a47e4232d231e4eb7e4e85fabfeec56c6905266bc94291fc0881f83f"
+    arm64.url = "https://repo.jellyfin.org/files/ffmpeg/linux/8.x/8.1.2-4/arm64/jellyfin-ffmpeg_8.1.2-4_portable_linuxarm64-gpl.tar.xz"
+    arm64.sha256 = "ceb9642ee513491d0440bc0027dfa33f2fc6c9966cabb0ec69f43edcbb853e84"
+    amd64.url = "https://repo.jellyfin.org/files/ffmpeg/linux/8.x/8.1.2-4/amd64/jellyfin-ffmpeg_8.1.2-4_portable_linux64-gpl.tar.xz"
+    amd64.sha256 = "6e7150c358f9817a04ce82c62d81135cb4535d8525047393f4b296fff3d7a664"
 
     format = "tar.xz"
     extract = true
     in_subdir = false
 
     [resources.sources.plugin_ldap]
-    url = "https://repo.jellyfin.org/files/plugin/ldap-authentication/ldap-authentication_23.0.0.0.zip"
-    sha256 = "952e33fa8d3ac512ccb5c1e2e1c655cbb1957e41fa1f00bd6ccf3076e0467446"
+    url = "https://repo.jellyfin.org/files/plugin/ldap-authentication/ldap-authentication_24.0.0.0.zip"
+    sha256 = "3be1f9d6a6ce9ea375e556dd30136d178a8dbe35cbe866d30d3451dc3ff7e804"
     in_subdir = false
 
     [resources.system_user]

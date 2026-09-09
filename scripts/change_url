@@ -27,12 +27,12 @@ ynh_config_change_url_nginx
 
 # Change the path in system.xml config file
 if [ $change_path -eq 1 ]; then
-	# If somehow <BaseUrl /> was not replaced during install
-	if grep -q "<BaseUrl />" "$config_path/network.xml"; then
-		ynh_replace --match="<BaseUrl />" --replace="<BaseUrl>$new_path</BaseUrl>" --file="$config_path/network.xml"
-	else
-		ynh_replace --match="<BaseUrl>$old_path</BaseUrl>" --replace="<BaseUrl>$new_path</BaseUrl>" --file="$config_path/network.xml"
-	fi
+    # If somehow <BaseUrl /> was not replaced during install
+    if grep -q "<BaseUrl />" "$config_path/network.xml"; then
+        ynh_replace --match="<BaseUrl />" --replace="<BaseUrl>$new_path</BaseUrl>" --file="$config_path/network.xml"
+    else
+        ynh_replace --match="<BaseUrl>$old_path</BaseUrl>" --replace="<BaseUrl>$new_path</BaseUrl>" --file="$config_path/network.xml"
+    fi
 fi
 
 #=================================================
