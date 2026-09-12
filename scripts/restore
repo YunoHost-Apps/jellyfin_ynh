@@ -14,8 +14,8 @@ ynh_script_progression "Reconfiguring the dedicated system user..."
 
 # It could be created later by the deb, but it's cleaner here
 if getent group render && ! id -Gn "$app" | grep -qw "\brender\b" >/dev/null; then
-	# Add user to render group
-	adduser $app render
+    # Add user to render group
+    adduser $app render
 fi
 
 #=================================================
