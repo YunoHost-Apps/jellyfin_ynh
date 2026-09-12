@@ -31,11 +31,11 @@ ynh_systemctl --service="$app" --action="stop" --log_path="systemd" --timeout=15
 if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
 
     mkdir -p $install_dir/config
-    mkdir -p $install_dir/cache
+    mkdir -p $data_dir/cache
 
     cp -rf /var/www/jellyfin/* "$data_dir"
     cp -rf /etc/$app/* "$install_dir/config"
-    cp -rf /var/cache/$app/* "$install_dir/cache"
+    cp -rf /var/cache/$app/* "$data_dir/cache"
 
     ynh_safe_rm "/etc/$app/"
     ynh_safe_rm "/etc/default/jellyfin"
@@ -52,14 +52,14 @@ if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
 
     config_path="$install_dir/config"
     log_path="/var/log/$app"
-    cache_path="$install_dir/cache"
+    cache_path="$data_dir/cache"
     ynh_app_setting_set --key=config_path --value="$config_path"
 
     ynh_replace --match="<EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
                 --replace="<EncoderAppPathDisplay>$install_dir/ffmpeg/ffmpeg</EncoderAppPathDisplay>" \
                 --file="$install_dir/config/encoding.xml"
     ynh_replace --match="<TranscodingTempPath>/var/lib/jellyfin/transcodes</TranscodingTempPath>" \
-                --replace="<TranscodingTempPath>$install_dir/cache/transcodes</TranscodingTempPath>" \
+                --replace="<TranscodingTempPath>$data_dir/cache/transcodes</TranscodingTempPath>" \
                 --file="$install_dir/config/encoding.xml"
     ynh_replace --match="/var/cache/$app" \
                 --replace="$cache_path" \
@@ -76,6 +76,23 @@ if ynh_app_upgrading_from_version_before 10.11.8~ynh1; then
 
     # Remove old systemd config
     ynh_config_remove_systemd
+fi
+
+if ynh_app_upgrading_from_version_before 12.0~ynh2; then
+    # Migrate cache directory to datadir
+    cache_path="$data_dir/cache"
+    mkdir -p "$cache_path/transcodes"
+    cp -rf "$install_dir/cache/*" "$cache_path"
+    ynh_safe_rm "$install_dir/cache"
+    chown -R $app:$app "$data_dir"
+
+    # Migrate configuration
+    ynh_replace --match="$install_dir/cache" \
+                --replace="$cache_path" \
+                --file="$install_dir/config/system.xml"
+    ynh_replace --match="$install_dir/cache" \
+                --replace="$cache_path" \
+                --file="$install_dir/config/encoding.xml"
 fi
 
 #=================================================

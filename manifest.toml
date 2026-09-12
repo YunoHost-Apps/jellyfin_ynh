@@ -99,6 +99,7 @@ ram.runtime = "100M"
     [resources.install_dir]
 
     [resources.data_dir]
+    subdirs = ["cache/transcodes"]
 
     [resources.permissions]
     # auth_header=false is because Jellyfin expects custom data in the Authorization HTTP header (notably, for Jellyfin Vue)
