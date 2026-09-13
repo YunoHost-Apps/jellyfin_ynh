@@ -48,7 +48,6 @@ ynh_config_add --template=".env" --destination="$install_dir/.env"
 ynh_config_add --template="system.xml" --destination="$config_path/system.xml"
 ynh_config_add --template="network.xml" --destination="$config_path/network.xml"
 ynh_config_add --template="logging.json" --destination="$config_path/logging.json"
-ynh_config_add --template="encoding.xml" --destination="$config_path/encoding.xml"
 
 #=================================================
 # INIT DB
