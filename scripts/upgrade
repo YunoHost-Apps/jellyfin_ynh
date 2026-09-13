@@ -82,7 +82,7 @@ if [ -d "$install_dir/cache" ]; then
     # Migrate cache directory to datadir
     cache_path="$data_dir/cache"
     mkdir -p "$cache_path/transcodes"
-    cp -rf "$install_dir/cache/*" "$cache_path"
+    cp -rf $install_dir/cache/* "$cache_path"
     ynh_safe_rm "$install_dir/cache"
     chown -R $app:$app "$data_dir"
 
