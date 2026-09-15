@@ -7,7 +7,7 @@ name = "Jellyfin"
 description.en = "Media System that manage and stream your media"
 description.fr = "Système multimédia qui gère et diffuse vos médias"
 
-version = "12.0~ynh1"
+version = "12.1~ynh1"
 
 maintainers = ["tituspijean"]
 
@@ -58,10 +58,10 @@ ram.runtime = "100M"
 [resources]
 
     [resources.sources.main]
-    arm64.url = "https://repo.jellyfin.org/files/server/linux/stable/v12.0/arm64/jellyfin_12.0-arm64.tar.xz"
-    arm64.sha256 = "f2e6926d4ff85382d2d1de255796aaae60f56fedaea5aaecf0d183ae5083d2a7"
-    amd64.url = "https://repo.jellyfin.org/files/server/linux/stable/v12.0/amd64/jellyfin_12.0-amd64.tar.xz"
-    amd64.sha256 = "13c52b18119e5c2e9a2682f7b97eb4fac9babd64d43618c4ce567e578e80124a"
+    arm64.url = "https://repo.jellyfin.org/files/server/linux/stable/v12.1/arm64/jellyfin_12.1-arm64.tar.xz"
+    arm64.sha256 = "39eba9b231e6d3c297be8c1b43a80c50cc22ec48329474a5e47595e860223e3a"
+    amd64.url = "https://repo.jellyfin.org/files/server/linux/stable/v12.1/amd64/jellyfin_12.1-amd64.tar.xz"
+    amd64.sha256 = "09e58d1dc3722fb36b5ef0975fe55a65de5c73e8867ef7bbcd7ac81d44e1c59b"
 
     format = "tar.xz"
     extract = true
@@ -69,10 +69,10 @@ ram.runtime = "100M"
     prefetch = false
 
     [resources.sources.main_archive]
-    arm64.url = "https://repo.jellyfin.org/archive/server/linux/stable/v12.0/arm64/jellyfin_12.0-arm64.tar.xz"
-    arm64.sha256 = "f2e6926d4ff85382d2d1de255796aaae60f56fedaea5aaecf0d183ae5083d2a7"
-    amd64.url = "https://repo.jellyfin.org/archive/server/linux/stable/v12.0/amd64/jellyfin_12.0-amd64.tar.xz"
-    amd64.sha256 = "13c52b18119e5c2e9a2682f7b97eb4fac9babd64d43618c4ce567e578e80124a"
+    arm64.url = "https://repo.jellyfin.org/archive/server/linux/stable/v12.1/arm64/jellyfin_12.1-arm64.tar.xz"
+    arm64.sha256 = "39eba9b231e6d3c297be8c1b43a80c50cc22ec48329474a5e47595e860223e3a"
+    amd64.url = "https://repo.jellyfin.org/archive/server/linux/stable/v12.1/amd64/jellyfin_12.1-amd64.tar.xz"
+    amd64.sha256 = "09e58d1dc3722fb36b5ef0975fe55a65de5c73e8867ef7bbcd7ac81d44e1c59b"
 
     format = "tar.xz"
     extract = true
