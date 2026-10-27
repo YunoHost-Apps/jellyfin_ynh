@@ -6,7 +6,7 @@
 
 debian=$(lsb_release --codename --short)
 debian_number=$(lsb_release --release --short)
-pkg_version="12.2"
+pkg_version="12.4"
 version=$(echo "$pkg_version" | cut -d '-' -f 1)
 
 ffmpeg_pkg_version="8.1.3-1"
