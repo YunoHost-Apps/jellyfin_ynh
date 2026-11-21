@@ -212,6 +212,13 @@ ynh_safe_rm $data_dir/plugins/configurations/LDAP-Auth.xml
 mkdir -p $data_dir/plugins/configurations/
 ynh_config_add --template="LDAP-Auth.xml" --destination="$data_dir/plugins/configurations/LDAP-Auth.xml"
 
+#=================================================
+# INSTALL SUBTITLE EXTRACT PLUGIN
+#=================================================
+ynh_script_progression "Installing Subtitle Extract plugin..."
+
+ynh_setup_source --dest_dir="$data_dir/plugins/subtitleextract" --source_id=plugin_subtitle_extract --full_replace
+
 chown -R "$app:" "$data_dir"
 
 # Use logrotate to manage application logfile(s)

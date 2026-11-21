@@ -69,6 +69,13 @@ mkdir -p $data_dir/plugins/configurations/
 ynh_config_add --template="LDAP-Auth.xml" --destination="$data_dir/plugins/configurations/LDAP-Auth.xml"
 
 #=================================================
+# INSTALL SUBTITLE EXTRACT PLUGIN
+#=================================================
+ynh_script_progression "Installing subtitle extract plugin..."
+
+ynh_setup_source --dest_dir="$data_dir/plugins/subtitleextract" --source_id=plugin_subtitle_extract
+
+#=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
 ynh_script_progression "Securing files and directories..."

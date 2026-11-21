@@ -94,6 +94,11 @@ ram.runtime = "100M"
     sha256 = "3be1f9d6a6ce9ea375e556dd30136d178a8dbe35cbe866d30d3451dc3ff7e804"
     in_subdir = false
 
+    [resources.sources.plugin_subtitle_extract]
+    url = "https://repo.jellyfin.org/files/plugin/subtitle-extract/subtitle-extract_8.0.0.0.zip"
+    sha256 = "ed8868024721c9322bc58c2378f19649921d45d0642d764d726a025356321185"
+    in_subdir = false
+
     [resources.system_user]
 
     [resources.install_dir]

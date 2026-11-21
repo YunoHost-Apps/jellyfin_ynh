@@ -40,6 +40,9 @@ class JellyfinDistro:
     def ldap_url(self, version: str) -> str:
         return f"{JELLYFIN_REPO}/files/plugin/ldap-authentication/ldap-authentication_{version}.zip"
 
+    def subtitle_extract_url(self, version: str) -> str:
+        return f"{JELLYFIN_REPO}/files/plugin/subtitle-extract/subtitle-extract_{version}.zip"
+
     def update_package(self, manifest: Dict, package: str, version: str):
         url = None
         urls = {}
@@ -57,6 +60,10 @@ class JellyfinDistro:
         elif package == "ldap":
             url = self.ldap_url(version)
             key = "plugin_ldap"
+            extra = {"in_subdir": False}
+        elif package == "subtitle_extract":
+            url = self.subtitle_extract_url(version)
+            key = "plugin_subtitle_extract"
             extra = {"in_subdir": False}
         else: raise Exception(f"Wrong jellyfin package: {package}")
 
@@ -125,12 +132,14 @@ def main() -> None:
     jellyfin_version = version_from__common_sh("pkg_version")
     ffmpeg_version = version_from__common_sh("ffmpeg_pkg_version")
     ldap_version = version_from__common_sh("ldap_pkg_version")
+    subtitle_extract_version = version_from__common_sh("subtitle_extract_pkg_version")
 
     for debian_name, debian_number in DEBS.items():
         jellyfin = JellyfinDistro(ARCHS)
         jellyfin.update_package(manifest, "main", jellyfin_version)
         jellyfin.update_package(manifest, "ffmpeg", ffmpeg_version)
         jellyfin.update_package(manifest, "ldap", ldap_version)
+        jellyfin.update_package(manifest, "subtitle_extract", subtitle_extract_version)
 
     manifest_file.open("w", encoding="utf-8").write(tomlkit.dumps(manifest))
 

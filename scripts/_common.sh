@@ -15,6 +15,7 @@ ffmpeg_pkg_version="8.1.3-1"
 # Usually, it should be the major version of the Jellyfin release (e.g. Jellyfin 10.10.7 -> plugin_abi 10.10.0)
 plugin_abi="12.0"
 ldap_pkg_version="24.0.0.0"
+subtitle_extract_pkg_version="8.0.0.0"
 
 config_path="$install_dir/config"
 log_path="/var/log/$app"
