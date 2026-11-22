@@ -107,11 +107,6 @@ fi
 
 ynh_app_setting_delete --key=is_public
 
-if [ ! -f "/etc/logrotate.d/$app" ]; then
-    # Fix possibly missing file due to buggy restore:
-    ynh_config_add_logrotate
-fi
-
 if ynh_app_upgrading_from_version_before 10.11.5~ynh1
 then
     # Create UserDatas table before the migration // Thanks to https://github.com/getumbrel/umbrel-apps/pull/3872/changes/502e93dd57bd34e2899edb9ffd5dac1a7dbcbb89
@@ -208,18 +203,6 @@ ynh_script_progression "Installing LDAP plugin..."
 
 ynh_setup_source --dest_dir="$data_dir/plugins/LDAP Authentication" --source_id=plugin_ldap --full_replace
 
-ynh_safe_rm $data_dir/plugins/configurations/LDAP-Auth.xml
-mkdir -p $data_dir/plugins/configurations/
-ynh_config_add --template="LDAP-Auth.xml" --destination="$data_dir/plugins/configurations/LDAP-Auth.xml"
-
-chown -R "$app:" "$data_dir"
-
-# Use logrotate to manage application logfile(s)
-mkdir -p "/var/log/$app"
-touch "/var/log/$app/$app.log"
-
-ynh_config_add_logrotate
-
 #=================================================
 # UPGRADE PACKAGES
 #=================================================
@@ -247,6 +230,17 @@ ynh_safe_rm "$bakdir"
 ynh_config_add --template=".env" --destination="$install_dir/.env"
 ynh_config_add --template="network.xml" --destination="$config_path/network.xml"
 ynh_config_add --template="logging.json" --destination="$config_path/logging.json"
+
+ynh_safe_rm $data_dir/plugins/configurations/LDAP-Auth.xml
+mkdir -p $data_dir/plugins/configurations/
+ynh_config_add --template="LDAP-Auth.xml" --destination="$data_dir/plugins/configurations/LDAP-Auth.xml"
+
+# Use logrotate to manage application logfile(s)
+mkdir -p "/var/log/$app"
+touch "/var/log/$app/$app.log"
+
+ynh_config_remove_logrotate
+ynh_config_add_logrotate
 
 #=================================================
 # UPDATE DB
@@ -292,9 +286,6 @@ ynh_script_progression "Upgrading system configurations related to $app..."
 
 # Create a dedicated NGINX config
 ynh_config_add_nginx
-
-# Use logrotate to manage app-specific logfile(s)
-ynh_config_add_logrotate
 
 #=================================================
 # START SYSTEMD SERVICE
